@@ -51,7 +51,7 @@
                         </li>
                         
                         <li class="nav-item mx-5">
-                            <a class="btn btn-primary text-white px-4 rounded-pill shadow" href="#">Join Us</a>
+                            <a class="custom-button" href="#" >Join Us</a>
                         </li>
                     </ul>
                 </div>

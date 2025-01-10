@@ -9,7 +9,7 @@
             of
             the
             ultimate lottery platform.</p>
-          <button class="text-center text-md-start btn btn-primary btn-lg rounded-pill">BUY TICKET NOW!</button>
+          <button class="custom-button">BUY TICKET NOW!</button>
         </div>
         <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
           <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
@@ -21,7 +21,7 @@
 
 
     <div class="container-fluid mt-5">
-      <div class="row align-items-center" style="background: #e2e1e2;">
+      <div class="row align-items-center" style="background:#eef4f7;">
         <div class="col-12 col-md-4 px-md-5 mt-3">
           <h4 class="mb-4 fw-bold text-dark text-center text-md-start mt-3">Buy Lottery Tickets Online</h4>
           <p class="mb-4 text-center text-md-start">
@@ -65,9 +65,6 @@
     <section class="jackpot" id="jackpot">
       <div class="container-fluid">
         <div class="row">
-
-
-
           <div class="team-boxed">
             <div class="container ">
               <div class="intro mt-4">
@@ -76,64 +73,37 @@
                   try for a chance to win a big cash prize.</p>
               </div>
               <div class="row people align-items-center justify-content-center">
-                <div class="col-md-4 col-lg-3 item border-bottom border-primary shadow rounded "
-                  style="background-color: white;">
-                  <div class="box text-center py-4">
 
-                    <img class="rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
-
-
-                    <h3 class="name text-danger mb-2">€161,557,581</h3>
-
-
-                    <p class="title mb-2">US Powerball</p>
-
-
-                    <p class="description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
+                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 10px;" onclick="selectCard(this)">
+                  <div class="card-box text-center py-4">
+                    <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
+                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
-
-
-                  <button class="btn btn-primary rounded-pill w-50 mx-auto d-block play-now-btn">Play Now</button>
+                  <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
 
-                <div class="col-md-4 col-lg-3 item border-bottom border-primary shadow rounded mx-2"
-                  style="background-color: white;">
-                  <div class="box text-center py-4">
-
-                    <img class="rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
-
-
-                    <h3 class="name text-danger mb-2">€161,557,581</h3>
-
-
-                    <p class="title mb-2">US Powerball</p>
-
-
-                    <p class="description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
+                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 20px;" onclick="selectCard(this)">
+                  <div class="card-box text-center py-4">
+                    <img class="card-logo rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
+                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
-
-
-                  <button class="btn btn-primary rounded-pill w-50 mx-auto d-block play-now-btn">Play Now</button>
+                  <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
-                <div class="col-md-4 col-lg-3 item border-bottom border-primary shadow rounded"
-                  style="background-color: white;">
-                  <div class="box text-center py-4">
 
-                    <img class="rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
-
-
-                    <h3 class="name text-danger mb-2">€161,557,581</h3>
-
-
-                    <p class="title mb-2">US Powerball</p>
-
-
-                    <p class="description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
+                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 20px;" onclick="selectCard(this)">
+                  <div class="card-box text-center py-4">
+                    <img class="card-logo rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
+                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
-
-
-                  <button class="btn btn-primary rounded-pill w-50 mx-auto d-block play-now-btn">Play Now</button>
+                  <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
+
               </div>
               <p class=" text-secondary text-center text-decoration-underline">See All Lotteries</p>
             </div>
@@ -163,7 +133,7 @@
                       <h5 class="fw-bold">Lottery Winning Numbers</h5>
                     </div>
                     <div class="card-body">
-                      <table class="table align-middle">
+                      <table class="table align-middle" style="border-style: none;">
                         <thead>
                           <tr>
                             <th>Lottery</th>
@@ -172,17 +142,17 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr style="background-color: #E2DFD2;">
+                          <tr style="background-color: #EEEEEE;">
                             <td>
                               <i class="bi bi-heart-fill text-danger me-2"></i> Cancer Charity
                             </td>
                             <td>30/05/2018</td>
                             <td>
-                              <span class="badge bg-light text-dark border">19</span>
-                              <span class="badge bg-light text-dark border">31</span>
-                              <span class="badge bg-light text-dark border">21</span>
-                              <span class="badge bg-primary text-white border">69</span>
-                              <span class="badge bg-primary text-white border">77</span>
+                              <span class="badge badgecol2  border">19</span>
+                              <span class="badge badgecol2 border">31</span>
+                              <span class="badge badgecol2 border">21</span>
+                              <span class="badge badgecol1 border">69</span>
+                              <span class="badge badgecol1 border">77</span>
                             </td>
                           </tr>
                           <tr>
@@ -191,24 +161,24 @@
                             </td>
                             <td>30/05/2018</td>
                             <td>
-                              <span class="badge bg-light text-dark border">19</span>
-                              <span class="badge bg-light text-dark border">21</span>
-                              <span class="badge bg-light text-dark border">69</span>
-                              <span class="badge bg-primary text-white border">77</span>
-                              <span class="badge bg-primary text-white border">66</span>
+                              <span class="badge badgecol1  border">19</span>
+                              <span class="badge badgecol3 border">31</span>
+                              <span class="badge badgecol1 border">21</span>
+                              <span class="badge badgecol3 border">69</span>
+                              <span class="badge badgecol3 border">77</span>
                             </td>
                           </tr>
-                          <tr style="background-color: #E2DFD2;">
+                          <tr style="background-color: #EEEEEE;">
                             <td>
                               <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
                             </td>
                             <td>30/05/2018</td>
                             <td>
-                              <span class="badge bg-light text-dark border">19</span>
-                              <span class="badge bg-light text-dark border">21</span>
-                              <span class="badge bg-light text-dark border">69</span>
-                              <span class="badge bg-primary text-white border">77</span>
-                              <span class="badge bg-primary text-white border">66</span>
+                              <span class="badge badgecol1  border">19</span>
+                              <span class="badge badgecol1 border">31</span>
+                              <span class="badge badgecol2 border">21</span>
+                              <span class="badge badgecol1 border">69</span>
+                              <span class="badge badgecol2 border">77</span>
                             </td>
                           </tr>
                         </tbody>
@@ -226,7 +196,7 @@
                     <div class="card-body">
                       <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between align-items-center"
-                          style="background-color: #E2DFD2;">
+                          style="background-color: #EEEEEE;">
                           <div>
                             <i class="bi bi-flag-fill text-primary me-2"></i> Viola Pitman
                             <small class="d-block text-muted">Cancer Charity, 30/05/2018</small>
@@ -241,7 +211,7 @@
                           <span class="text-success fw-bold">€3400.00</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center"
-                          style="background-color: #E2DFD2;">
+                          style="background-color: #EEEEEE;">
                           <div>
                             <i class="bi bi-flag-fill text-primary me-2"></i> Inez Newton
                             <small class="d-block text-muted">Powerball, 30/05/2018</small>
@@ -298,7 +268,7 @@
                 </div>
               </div>
               <div class="col-4" style="height: 250px;">
-                <div class="feature-box text-center border rounded-3 p-3 bg-primary">
+                <div class="feature-box text-center border rounded-3 p-3" style=" background-color: #63b5f6;">
 
                   <p class="text-light">
                     One of the core advantages of playing an online lotto is that it is
@@ -340,7 +310,7 @@
 
 
 
-    <section class="buy" id="buy" style="background-color: #FCF5E5;">
+    <section class="buy" id="buy" style="background-color: #EEEEEE;">
       <div class="container-fluid ">
         <div class="row align-content-center justify-content-center">
           <div class="col-12 mt-3">
@@ -369,7 +339,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="background-color: #E2DFD2;">
+                  <tr style="background-color: #EEEEEE;">
                     <td>
                       <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
                       Cancer Charity
@@ -377,10 +347,45 @@
                     <td>€53,000,000</td>
                     <td>€3.9</td>
                     <td>
-                      01 <span class="text-secondary">days</span> 05 <span class="text-secondary">hrs</span>
-                      28 <span class="text-secondary">mins</span> 28 <span class="text-secondary">secs</span>
+                      <div class="row">
+
+                        <div class="col-3" >
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
+                            <div class="col-12">days</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">hrs</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">mins</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">secs</div>
+                          </div>
+                        </div>
+                        
+                      </div>
                     </td>
-                    <td><span class="badge bg-info text-white">50%</span></td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;">
+                          <span class="progress-text">50%</span>
+                        </div>
+                      </div>
+                    </td>
                     <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
                   </tr>
                   <tr>
@@ -391,24 +396,95 @@
                     <td>€13,000,000</td>
                     <td>€3.9</td>
                     <td>
-                      01 <span class="text-secondary">days</span> 05 <span class="text-secondary">hrs</span>
-                      28 <span class="text-secondary">mins</span> 28 <span class="text-secondary">secs</span>
+                      <div class="row">
+
+                        <div class="col-3" >
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
+                            <div class="col-12">days</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">hrs</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">mins</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">secs</div>
+                          </div>
+                        </div>
+                        
+                      </div>
                     </td>
-                    <td><span class="badge bg-info text-white">50%</span></td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;">
+                          <span class="progress-text">50%</span>
+                        </div>
+                      </div>
+                    </td>
                     <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
                   </tr>
-                  <tr style="background-color: #E2DFD2;">
+
+                  <tr style="background-color: #EEEEEE;">
                     <td>
                       <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      Mega Millions
+                      Cancer Charity
                     </td>
-                    <td>€33,000,000</td>
+                    <td>€53,000,000</td>
                     <td>€3.9</td>
                     <td>
-                      01 <span class="text-secondary">days</span> 05 <span class="text-secondary">hrs</span>
-                      28 <span class="text-secondary">mins</span> 28 <span class="text-secondary">secs</span>
+                      <div class="row">
+
+                        <div class="col-3" >
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
+                            <div class="col-12">days</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">hrs</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">mins</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">secs</div>
+                          </div>
+                        </div>
+                        
+                      </div>
                     </td>
-                    <td><span class="badge bg-info text-white">50%</span></td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;">
+                          <span class="progress-text">50%</span>
+                        </div>
+                      </div>
+                    </td>
                     <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
                   </tr>
                   <tr>
@@ -419,26 +495,48 @@
                     <td>€13,000,000</td>
                     <td>€3.9</td>
                     <td>
-                      01 <span class="text-secondary">days</span> 05 <span class="text-secondary">hrs</span>
-                      28 <span class="text-secondary">mins</span> 28 <span class="text-secondary">secs</span>
+                      <div class="row">
+
+                        <div class="col-3" >
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
+                            <div class="col-12">days</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">hrs</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">mins</div>
+                          </div>
+                        </div>
+
+                        <div class="col-3">
+                          <div class="row">
+                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
+                            <div class="col-12">secs</div>
+                          </div>
+                        </div>
+                        
+                      </div>
                     </td>
-                    <td><span class="badge bg-info text-white">50%</span></td>
+                    <td>
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;">
+                          <span class="progress-text">50%</span>
+                        </div>
+                      </div>
+                    </td>
                     <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
                   </tr>
-                  <tr style="background-color: #E2DFD2;">
-                    <td>
-                      <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      Mega Millions
-                    </td>
-                    <td>€66,010,000</td>
-                    <td>€1.7</td>
-                    <td>
-                      01 <span class="text-secondary">days</span> 05 <span class="text-secondary">hrs</span>
-                      28 <span class="text-secondary">mins</span> 28 <span class="text-secondary">secs</span>
-                    </td>
-                    <td><span class="badge bg-info text-white">50%</span></td>
-                    <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                  </tr>
+                 
                 </tbody>
               </table>
             </div>
@@ -453,47 +551,47 @@
     </section>
 
     <section class="contact py-5" id="contact">
-  <div class="container text-center">
-    <div class="row">
-      <div class="col-lg-4 mx-auto mt-4">
-        <h4 class="mb-3">We answer all of your questions</h4>
-        <h2 class="mb-4 fw-bold">CONTACT US</h2>
-        <p class="mb-5">
-          If you have any questions or queries our helpful support team will be more than happy to assist.
-        </p>
-        <form>
-          <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Full Name" />
+      <div class="container text-center">
+        <div class="row">
+          <div class="col-lg-4 mx-auto mt-4">
+            <h4 class="mb-3">We answer all of your questions</h4>
+            <h2 class="mb-4 fw-bold">CONTACT US</h2>
+            <p class="mb-5">
+              If you have any questions or queries our helpful support team will be more than happy to assist.
+            </p>
+            <form>
+              <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Full Name" />
+              </div>
+              <div class="mb-3">
+                <input type="email" class="form-control" placeholder="Email Address" />
+              </div>
+              <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Phone No" />
+              </div>
+              <div class="mb-3">
+                <textarea class="form-control" rows="4" placeholder="Message"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">SEND MESSAGE</button>
+            </form>
           </div>
-          <div class="mb-3">
-            <input type="email" class="form-control" placeholder="Email Address" />
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Phone No" />
-          </div>
-          <div class="mb-3">
-            <textarea class="form-control" rows="4" placeholder="Message"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">SEND MESSAGE</button>
-        </form>
-      </div>
 
-      <div class="col-md-4 mt-4">
-        <img :src="image6" style="height: auto; max-width: 100%;" alt="Lottery" class="img-fluid" />
-      </div>
-    </div>
+          <div class="col-md-4 mt-4">
+            <img :src="image6" style="height: auto; max-width: 100%;" alt="Lottery" class="img-fluid" />
+          </div>
+        </div>
 
-    <div class="row mt-5">
-      <div class="d-flex justify-content-center gap-4 flex-wrap">
-        <img src="#" alt="EnvatoMarket" class="icon" style="width: 50px; height: auto;" />
-        <img src="#" alt="CodeCanyon" class="icon" style="width: 50px; height: auto;" />
-        <img src="#" alt="GraphicRiver" class="icon" style="width: 50px; height: auto;" />
-        <img src="#" alt="3DOcean" class="icon" style="width: 50px; height: auto;" />
-        <img src="#" alt="AudioJungle" class="icon" style="width: 50px; height: auto;" />
+        <div class="row mt-5">
+          <div class="d-flex justify-content-center gap-4 flex-wrap">
+            <img src="#" alt="EnvatoMarket" class="icon" style="width: 50px; height: auto;" />
+            <img src="#" alt="CodeCanyon" class="icon" style="width: 50px; height: auto;" />
+            <img src="#" alt="GraphicRiver" class="icon" style="width: 50px; height: auto;" />
+            <img src="#" alt="3DOcean" class="icon" style="width: 50px; height: auto;" />
+            <img src="#" alt="AudioJungle" class="icon" style="width: 50px; height: auto;" />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
 
@@ -522,6 +620,77 @@ export default {
 
 
 <style scoped>
+/* Base styles for card */
+.card-wrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Default black shadow */
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.card-wrapper:hover {
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+  /* Slightly larger black shadow on hover */
+  transform: scale(1.03);
+}
+
+/* Highlighted/Selected card */
+.card-wrapper.selected-card {
+  box-shadow: 0px 4px 15px rgba(60, 149, 244, 0.5);
+  /* Blue glow shadow */
+  transform: scale(1.05);
+  /* Slight zoom effect */
+}
+
+/* Card content styles */
+.card-box {
+  padding: 20px;
+}
+
+.card-logo {
+  height: 80px;
+  width: 80px;
+}
+
+.card-prize {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-title {
+  font-size: 1rem;
+  color: #333;
+}
+
+.card-description {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Button styles */
+.card-button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #63b5f6;
+  border: none;
+  color: white;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+
+.card-button:hover {
+  background-color: #3d729e;
+}
+
+
 .item {
   position: relative;
   padding-bottom: 60px;
@@ -563,10 +732,10 @@ export default {
   color: #6c757d;
 }
 
-.item:hover {
+/* .item:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
-}
+} */
 
 
 .contact {
@@ -597,7 +766,7 @@ export default {
 }
 
 .contact button {
-  background: #007bff;
+  background: #63b5f6;
   border: none;
   border-radius: 0.5rem;
   padding: 0.8rem;
@@ -641,6 +810,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
+
 }
 
 .feature-box p {
@@ -660,7 +830,7 @@ export default {
 
 .feature-box:hover {
   background-color: #f1f8ff;
-  border-color: #0d6efd;
+  border-color: #63b5f6;
   transform: translateY(-5px);
 }
 
@@ -677,11 +847,55 @@ export default {
 }
 
 .badge {
-  padding: 0.5rem 0.75rem;
+  display: inline-flex;
+  /* Centers content */
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  /* Fixed width for circle */
+  height: 40px;
+  /* Fixed height for circle */
+  border-radius: 50%;
+  /* Makes it a circle */
   font-size: 0.85rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+  /* Aligns number vertically */
+  padding: 0;
+  /* Removes extra padding */
+  border: 2px solid #ccc;
+  /* Default border color */
 }
 
+/* Dynamic colors */
+.badgecol1 {
+  background-color: #63b5f6;
+  /* Light gray */
+  color: #ececec;
+  /* Dark text */
+  margin-left: 10px;
+}
 
+.badgecol2 {
+  background-color: #EEEEEE;
+  /* Light gray */
+  color: #5d5d5d;
+  /* Dark text */
+  border-style: solid;
+  border-color: #525252;
+  margin-left: 10px;
+}
+
+.badgecol3 {
+  background-color: white;
+  /* Light gray */
+  color: #5d5d5d;
+  /* Dark text */
+  border-style: solid;
+  border-color: #525252;
+  margin-left: 10px;
+}
 
 .middle-button {
   position: absolute;
@@ -740,7 +954,7 @@ export default {
 .time-number {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #007bff;
+  color: #63b5f6;
 }
 
 .time-label {
@@ -750,7 +964,7 @@ export default {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #63b5f6;
   border: none;
   color: #fff;
   padding: 0.75rem 1.5rem;
@@ -773,7 +987,7 @@ export default {
 }
 
 .btn-outline-primary {
-  border: 1px solid #007bff;
+  border: 1px solid #63b5f6;
   color: #007bff;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
@@ -788,7 +1002,7 @@ export default {
 
 .team-boxed {
   color: #313437;
-  background-color: #eef4f7;
+  background-color: #fff;
 }
 
 .team-boxed p {
