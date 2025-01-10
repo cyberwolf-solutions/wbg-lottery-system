@@ -1,23 +1,21 @@
 <template>
   <div class="landing-page container-fluid px-0">
     <div class="container-fluid mt-2 mb-3">
-      <div class="row mx-5">
-        <div class="py-5 col-12 col-md-6 align-content-center ">
-          <h1 class="hero-title text-center text-md-start">Take the chance to <br> change your life</h1>
-          <p class="hero-subtitle text-center text-md-start">Sorteo is an online lottery platform inspired by a few
-            sorteo <br> lover's fantasy
-            of
-            the
-            ultimate lottery platform.</p>
-          <button class="custom-button">BUY TICKET NOW!</button>
-        </div>
-        <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
-          <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
-
-        </div>
-      </div>
-
+  <div class="row mx-5">
+    <div class="py-5 col-12 col-md-6 align-content-center d-flex flex-column justify-content-center align-items-center align-items-md-start">
+      <h1 class="hero-title text-center text-md-start">Take the chance to <br> change your life</h1>
+      <p class="hero-subtitle text-center text-md-start">
+        Sorteo is an online lottery platform inspired by a few sorteo <br> lover's fantasy
+        of the ultimate lottery platform.
+      </p>
+      <button class="custom-button mt-3">BUY TICKET NOW!</button>
     </div>
+    <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
+      <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
+    </div>
+  </div>
+</div>
+
 
 
     <div class="container-fluid mt-5">
@@ -74,7 +72,8 @@
               </div>
               <div class="row people align-items-center justify-content-center">
 
-                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 10px;" onclick="selectCard(this)">
+                <div class="card-wrapper item col-md-4 col-lg-3"
+                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
@@ -84,7 +83,8 @@
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
 
-                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 20px;" onclick="selectCard(this)">
+                <div class="card-wrapper item col-md-4 col-lg-3"
+                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
@@ -94,7 +94,8 @@
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
 
-                <div class="card-wrapper item col-md-4 col-lg-3" style="margin-left: 20px;" onclick="selectCard(this)">
+                <div class="card-wrapper item col-md-4 col-lg-3"
+                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
@@ -133,56 +134,61 @@
                       <h5 class="fw-bold">Lottery Winning Numbers</h5>
                     </div>
                     <div class="card-body">
-                      <table class="table align-middle" style="border-style: none;">
-                        <thead>
-                          <tr>
-                            <th>Lottery</th>
-                            <th>Draw Date</th>
-                            <th>Winning Numbers</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr style="background-color: #EEEEEE;">
-                            <td>
-                              <i class="bi bi-heart-fill text-danger me-2"></i> Cancer Charity
-                            </td>
-                            <td>30/05/2018</td>
-                            <td>
-                              <span class="badge badgecol2  border">19</span>
-                              <span class="badge badgecol2 border">31</span>
-                              <span class="badge badgecol2 border">21</span>
-                              <span class="badge badgecol1 border">69</span>
-                              <span class="badge badgecol1 border">77</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
-                            </td>
-                            <td>30/05/2018</td>
-                            <td>
-                              <span class="badge badgecol1  border">19</span>
-                              <span class="badge badgecol3 border">31</span>
-                              <span class="badge badgecol1 border">21</span>
-                              <span class="badge badgecol3 border">69</span>
-                              <span class="badge badgecol3 border">77</span>
-                            </td>
-                          </tr>
-                          <tr style="background-color: #EEEEEE;">
-                            <td>
-                              <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
-                            </td>
-                            <td>30/05/2018</td>
-                            <td>
-                              <span class="badge badgecol1  border">19</span>
-                              <span class="badge badgecol1 border">31</span>
-                              <span class="badge badgecol2 border">21</span>
-                              <span class="badge badgecol1 border">69</span>
-                              <span class="badge badgecol2 border">77</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div style="overflow-x: auto; white-space: nowrap;">
+                        <table class="table align-middle" style="border-style: none;">
+                          <thead>
+                            <tr>
+                              <th>Lottery</th>
+                              <th>Draw Date</th>
+                              <th>Winning Numbers</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr style="background-color: #EEEEEE;">
+                              <td>
+                                <i class="bi bi-heart-fill text-danger me-2"></i> Cancer Charity
+                              </td>
+                              <td>30/05/2018</td>
+                              <td>
+
+                                <span class="badge badgecol2 border ">19</span>
+                                <span class="badge badgecol2 border ">31</span>
+                                <span class="badge badgecol2 border">21</span>
+                                <span class="badge badgecol1 border ">69</span>
+                                <span class="badge badgecol1 border">77</span>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
+                              </td>
+                              <td>30/05/2018</td>
+                              <td>
+                                <span class="badge badgecol1 border">19</span>
+                                <span class="badge badgecol3 border">31</span>
+                                <span class="badge badgecol1 border">21</span>
+                                <span class="badge badgecol3 border">69</span>
+                                <span class="badge badgecol3 border">77</span>
+                              </td>
+                            </tr>
+                            <tr style="background-color: #EEEEEE;">
+                              <td>
+                                <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
+                              </td>
+                              <td>30/05/2018</td>
+                              <td>
+                                <span class="badge badgecol1 border">19</span>
+                                <span class="badge badgecol1 border">31</span>
+                                <span class="badge badgecol2 border">21</span>
+                                <span class="badge badgecol1 border">69</span>
+                                <span class="badge badgecol2 border">77</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -238,8 +244,8 @@
 
 
 
-    <section class="whychose " id="WhyChoose">
-      <div class="container-fluid mt-5">
+    <section class="whychose" id="WhyChoose">
+      <div class="container-fluid mt-5 px-3 px-md-5">
         <div class="row align-content-center justify-content-center">
           <div class="col-12">
             <div class="intro mt-4 mb-3">
@@ -250,26 +256,25 @@
             </div>
           </div>
         </div>
-        <div class="row align-items-center justify-content-end mt-4 ">
+        <div class="row align-items-center justify-content-end mt-4">
           <!-- Left Column -->
-          <div class="col-md-6 mx-5">
+          <div class="col-md-6">
             <div class="row g-3">
-              <!-- Feature Box -->
-              <div class="col-4" style="height: 250px;">
+              <!-- Feature Boxes -->
+              <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-trophy text-primary fs-2"></i>
                   <p class="fw-bold mt-2">Biggest lottery jackpots</p>
                 </div>
               </div>
-              <div class="col-4" style="height: 250px;">
+              <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-coin text-primary fs-2"></i>
                   <p class="fw-bold mt-2">No commission on Winnings</p>
                 </div>
               </div>
-              <div class="col-4" style="height: 250px;">
-                <div class="feature-box text-center border rounded-3 p-3" style=" background-color: #63b5f6;">
-
+              <div class="col-6 col-md-4" style="height: 250px;">
+                <div class="feature-box text-center border rounded-3 p-3" style="background-color: #63b5f6;">
                   <p class="text-light">
                     One of the core advantages of playing an online lotto is that it is
                     both safe and secure. So, there is no need for you to go, queue, or
@@ -277,19 +282,19 @@
                   </p>
                 </div>
               </div>
-              <div class="col-4" style="height: 250px;">
+              <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-cash-stack text-primary fs-2"></i>
                   <p class="fw-bold mt-2">Instant payout system</p>
                 </div>
               </div>
-              <div class="col-4" style="height: 250px;">
+              <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-star text-primary fs-2"></i>
                   <p class="fw-bold mt-2">Performance Bonuses</p>
                 </div>
               </div>
-              <div class="col-4 " style="height: 250px;">
+              <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-headset text-primary fs-2"></i>
                   <p class="fw-bold mt-2">Dedicated Support</p>
@@ -300,12 +305,12 @@
 
           <!-- Right Column -->
           <div class="col-md-4 text-center my-1">
-
             <img :src="image5" alt="Lottery" class="img-fluid" />
           </div>
         </div>
       </div>
     </section>
+
 
 
 
@@ -327,218 +332,95 @@
         <div class="row justify-content-center mt-4">
           <div class="col-12 col-md-10  rounded">
             <div class="table-responsive rounded">
-              <table class="table table-bordered text-center align-middle bg-white shadow rounded">
-                <thead class="bg-light  align-middle" style="height: 70px;">
-                  <tr>
-                    <th>Lottery</th>
-                    <th>Jackpot</th>
-                    <th>Price</th>
-                    <th>Time to Draw</th>
-                    <th>Sold</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style="background-color: #EEEEEE;">
-                    <td>
-                      <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      Cancer Charity
-                    </td>
-                    <td>€53,000,000</td>
-                    <td>€3.9</td>
-                    <td>
-                      <div class="row">
-
-                        <div class="col-3" >
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
-                            <div class="col-12">days</div>
+              <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle bg-white shadow rounded">
+                  <thead class="bg-light align-middle" style="height: 70px;">
+                    <tr>
+                      <th>Lottery</th>
+                      <th>Jackpot</th>
+                      <th>Price</th>
+                      <th>Time to Draw</th>
+                      <th>Sold</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="background-color: #EEEEEE;">
+                      <td>
+                        <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
+                        Cancer Charity
+                      </td>
+                      <td>€53,000,000</td>
+                      <td>€3.9</td>
+                      <td>
+                        <div class="d-flex justify-content-center">
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>days</div>
+                          </div>
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>hrs</div>
+                          </div>
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>mins</div>
+                          </div>
+                          <div class="text-center">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>secs</div>
                           </div>
                         </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">hrs</div>
+                      </td>
+                      <td>
+                        <div class="progress-bar">
+                          <div class="progress-fill" style="width: 50%;">
+                            <span class="progress-text">50%</span>
                           </div>
                         </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">mins</div>
+                      </td>
+                      <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
+                        US Powerball
+                      </td>
+                      <td>€13,000,000</td>
+                      <td>€3.9</td>
+                      <td>
+                        <div class="d-flex justify-content-center">
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>days</div>
+                          </div>
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>hrs</div>
+                          </div>
+                          <div class="text-center me-2">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>mins</div>
+                          </div>
+                          <div class="text-center">
+                            <span class="badge badgecol2 border">19</span>
+                            <div>secs</div>
                           </div>
                         </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">secs</div>
+                      </td>
+                      <td>
+                        <div class="progress-bar">
+                          <div class="progress-fill" style="width: 50%;">
+                            <span class="progress-text">50%</span>
                           </div>
                         </div>
-                        
-                      </div>
-                    </td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="progress-fill" style="width: 50%;">
-                          <span class="progress-text">50%</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      US Powerball
-                    </td>
-                    <td>€13,000,000</td>
-                    <td>€3.9</td>
-                    <td>
-                      <div class="row">
+                      </td>
+                      <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-                        <div class="col-3" >
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
-                            <div class="col-12">days</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">hrs</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">mins</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">secs</div>
-                          </div>
-                        </div>
-                        
-                      </div>
-                    </td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="progress-fill" style="width: 50%;">
-                          <span class="progress-text">50%</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                  </tr>
-
-                  <tr style="background-color: #EEEEEE;">
-                    <td>
-                      <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      Cancer Charity
-                    </td>
-                    <td>€53,000,000</td>
-                    <td>€3.9</td>
-                    <td>
-                      <div class="row">
-
-                        <div class="col-3" >
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
-                            <div class="col-12">days</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">hrs</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">mins</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">secs</div>
-                          </div>
-                        </div>
-                        
-                      </div>
-                    </td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="progress-fill" style="width: 50%;">
-                          <span class="progress-text">50%</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                      US Powerball
-                    </td>
-                    <td>€13,000,000</td>
-                    <td>€3.9</td>
-                    <td>
-                      <div class="row">
-
-                        <div class="col-3" >
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border" >19</span></div>
-                            <div class="col-12">days</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">hrs</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">mins</div>
-                          </div>
-                        </div>
-
-                        <div class="col-3">
-                          <div class="row">
-                            <div class="col-12"> <span class="badge badgecol2  border">19</span></div>
-                            <div class="col-12">secs</div>
-                          </div>
-                        </div>
-                        
-                      </div>
-                    </td>
-                    <td>
-                      <div class="progress-bar">
-                        <div class="progress-fill" style="width: 50%;">
-                          <span class="progress-text">50%</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                  </tr>
-                 
-                </tbody>
-              </table>
             </div>
             <div class="text-center mt-5 mb-5">
               <a href="#" class="btn btn-link text-primary">View All Lotteries</a>
