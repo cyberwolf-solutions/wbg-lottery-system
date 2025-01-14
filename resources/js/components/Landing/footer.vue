@@ -1,6 +1,6 @@
 <template>
-    <footer class="footer bg-light py-5" style="background-color: #F5F5DC;">
-        <div class="container">
+    <footer class="footer bg-light py-5 " style="background-color: #F5F5DC;">
+        <div class="container-fluid px-0">
             <div class="row text-center text-lg-start">
                 <!-- Logo and About Section -->
                 <div class="col-lg-3 mb-4">
@@ -26,7 +26,7 @@
                     </ul>
                 </div>
 
-                
+
 
                 <!-- Newsletter -->
                 <div class="col-lg-6 mb-4">
@@ -64,6 +64,15 @@
         </div>
     </footer>
 </template>
+
+<script>
+
+export default {
+    name: "Footer",
+}
+
+</script>
+
 <style>
 .footer {
     background: #f9f9f9;
