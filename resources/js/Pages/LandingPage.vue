@@ -1,5 +1,7 @@
 <template>
+  
   <div class="landing-page container-fluid px-0">
+    <Nav />
     <div class="container-fluid mt-2 mb-3">
       <div class="row mx-5">
         <div
@@ -479,13 +481,15 @@
 
 
 
+
+    <Footer />
   </div>
-  <footer/>
 </template>
 
 
 <script>
-import footer from "@/components/Landing/footer.vue";
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
 export default {
   data() {
     return {
@@ -500,7 +504,8 @@ export default {
   },
   name: "Home",
   components: {
-    footer,
+    Footer,
+    Nav
   },
 
 

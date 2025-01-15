@@ -1,5 +1,5 @@
-<template>
-    <div>
+<template v-if="!$page.props.auth.user">
+    <div class="container-fluid px-0">
         <!-- Top Header -->
         <div class="top-header bg-light py-2 mb-1">
             <div class="container d-flex justify-content-between align-items-center">
@@ -29,7 +29,8 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+
+                <div class="navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item mx-2  ">
                             <a class="nav-link " href="#">Home</a>
@@ -49,10 +50,18 @@
                         <li class="nav-item mx-2">
                             <a class="nav-link" href="#contact">Contact</a>
                         </li>
-                        
+
                         <li class="nav-item mx-5">
-                            <a class="custom-button" href="#" >Join Us</a>
+                            <template v-if="!$page.props.auth.user">
+                                <a class="btn btn-primary text-white px-4 rounded-pill shadow"
+                                    :href="route('register')">Join Us</a>
+                            </template>
+                            <template v-else>
+                                <a class="btn btn-primary text-white px-4 rounded-pill shadow"
+                                    :href="route('login')">Log in</a>
+                            </template>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -62,12 +71,17 @@
 
 
 <script>
+
+import { Link } from '@inertiajs/vue3';
+
+
 export default {
     data() {
         return {
             logoUrl: '/assets/images/logo.png', // Path to your logo
         };
     },
+    name: "Nav",
 };
 </script>
 
@@ -75,7 +89,8 @@ export default {
 /* Top Header Styling */
 
 .hover-blue:hover {
-    color: blue; /* Change this to your desired shade of blue */
+    color: blue;
+    /* Change this to your desired shade of blue */
 }
 
 
