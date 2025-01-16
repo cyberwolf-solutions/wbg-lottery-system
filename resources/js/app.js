@@ -29,3 +29,23 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
+
+// Reactive state to track selected numbers for each ticket
+const selectedNumbers = ref(Array.from({ length: 5 }, () => []));
+
+// Toggles the selection of a number for a specific ticket
+function toggleNumber(ticketIndex, number) {
+    const ticketNumbers = [...selectedNumbers.value[ticketIndex]]; // Create a shallow copy to maintain reactivity
+    if (ticketNumbers.includes(number)) {
+        // Remove the number if already selected
+        selectedNumbers.value[ticketIndex] = ticketNumbers.filter(n => n !== number);
+    } else {
+        // Add the number if not already selected
+        selectedNumbers.value[ticketIndex].push(number);
+    }
+}
+
+// Formats numbers to start with 00, 01, etc.
+function formatNumber(number) {
+    return number < 10 ? `0${number}` : `${number}`;
+}
