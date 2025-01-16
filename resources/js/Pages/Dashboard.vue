@@ -7,6 +7,7 @@ import { Head } from '@inertiajs/vue3';
 
 <template>
 
+
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -16,6 +17,7 @@ import { Head } from '@inertiajs/vue3';
         </template>
 
         <div class="py-12">
+
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
             <div class="p-6">
@@ -55,6 +57,7 @@ import { Head } from '@inertiajs/vue3';
                                 Selected Numbers: 9, 13, 20, 22, 29, 8
                             </div>
                         </div>
+
                     </div>
                 </div>
 
