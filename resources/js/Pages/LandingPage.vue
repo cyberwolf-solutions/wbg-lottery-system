@@ -1,5 +1,5 @@
 <template>
-  
+
   <div class="landing-page container-fluid px-0">
     <Nav />
     <div class="container-fluid mt-2 mb-3">
@@ -478,7 +478,20 @@
       </div>
     </section>
 
-
+    <!-- <div>
+      <Nav />
+      <div class="container text-center mt-5">
+        <h1>Landing Page</h1>
+        <div v-if="Object.keys(landingPageData).length === 0">Loading...</div>
+        <ul v-else class="list-group">
+          <li class="list-group-item">Can Login: {{ landingPageData.canLogin }}</li>
+          <li class="list-group-item">Can Register: {{ landingPageData.canRegister }}</li>
+          <li class="list-group-item">Laravel Version: {{ landingPageData.laravelVersion }}</li>
+          <li class="list-group-item">PHP Version: {{ landingPageData.phpVersion }}</li>
+        </ul>
+      </div>
+      <Footer />
+    </div> -->
 
 
 
@@ -490,6 +503,11 @@
 <script>
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
+import axios from 'axios';
+
+
+
+
 export default {
   data() {
     return {
@@ -499,9 +517,27 @@ export default {
       image4: '/assets/images/3.png',
       image5: '/assets/images/why.png',
       image6: '/assets/images/contact.png',
+
+      landingPageData: {},
     };
 
   },
+
+  created() {
+    this.fetchLandingPageData();
+  },
+  methods: {
+    async fetchLandingPageData() {
+      try {
+        const response = await axios.get('/api/landing-page-data');
+        // console.log('Data fetched:', response.data);
+        this.landingPageData = response.data;
+      } catch (error) {
+        console.error('Error fetching landing page data:', error);
+      }
+    },
+  },
+
   name: "Home",
   components: {
     Footer,
