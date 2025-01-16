@@ -40,7 +40,7 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
                                 <NavLink
-                                    
+                                      :href="route('walet.index')"
                                 >
                                     Wallet
                                 </NavLink>

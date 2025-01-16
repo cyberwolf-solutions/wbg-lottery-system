@@ -36,7 +36,7 @@ import { Head } from '@inertiajs/vue3';
                         </div>
 
                         <div class="grid grid-cols-5 gap-6 mt-4">
-                            <div v-for="number in 50" :key="number"
+                            <div v-for="number in 100" :key="number"
                                 class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-blue-500 hover:text-white">
                                 {{ number }}
                             </div>
