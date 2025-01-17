@@ -12,7 +12,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Wallet', [
+        return Inertia::render('User/Wallet', [
             'status' => session('status'),
         ]);
     }

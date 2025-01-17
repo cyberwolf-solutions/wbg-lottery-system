@@ -29,6 +29,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/wallet', [WalletController::class, 'index'])->name('walet.index');
+Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
 
 require __DIR__.'/auth.php';

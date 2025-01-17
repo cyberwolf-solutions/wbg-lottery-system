@@ -1,7 +1,24 @@
 <script setup>
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+const isModalOpen = ref(false);
 
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+
+const closeModal = () => {
+    isModalOpen.value = false;
+};
+
+
+const handleRequest = () => {
+    console.log("Request submitted!");
+    closeModal();
+};
 
 </script>
 
@@ -11,10 +28,59 @@ import { Head } from '@inertiajs/vue3';
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Wallet
-            </h2>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                    Wallet
+                </h2>
+                <button
+                    class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600"
+                    @click="openModal">
+                    Request
+                </button>
+            </div>
+
+
+
+
+
         </template>
+        <!-- Modal -->
+        <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                <h3 class="text-lg font-semibold mb-4">Request Credit</h3>
+                <div class="mb-4">
+                    <label for="creditAmount" class="block text-sm font-medium text-gray-700">
+                        Credit Amount
+                    </label>
+                    <input id="creditAmount" type="number" placeholder="Enter credit amount"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+                <div class="mb-4">
+                    <label for="Note" class="block text-sm font-medium text-gray-700">
+                        Credit Amount
+                    </label>
+                    <input id="Note" type="text" placeholder="Add a note"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+                <div class="mb-4">
+                    <label for="attachment" class="block text-sm font-medium text-gray-700">
+                        Attachment
+                    </label>
+                    <input id="attachment" type="file"
+                        class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400"
+                        @click="closeModal">
+                        Cancel
+                    </button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600"
+                        @click="handleRequest">
+                        Request
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="container-fluid items-center justify-center rounded">
             <div class="row items-center justify-center rounded">
@@ -117,10 +183,10 @@ import { Head } from '@inertiajs/vue3';
                     <!-- table 2 -->
                     <div class="card" style="border-style: none; background:white;margin-top: 60px;">
                         <div class="card-header">
-                          table 2
+                            table 2
                         </div>
                         <div class="card-body">
-                          
+
                             <div class="px-3">
                                 <table class="table table-hover">
                                     <thead style=" border-bottom: 0.1px solid silver;">
@@ -169,13 +235,13 @@ import { Head } from '@inertiajs/vue3';
                     </div>
 
 
-                       <!-- table 3 -->
-                       <div class="card" style="border-style: none; background:white;margin-top: 60px;">
+                    <!-- table 3 -->
+                    <div class="card" style="border-style: none; background:white;margin-top: 60px;">
                         <div class="card-header">
-                          table 3
+                            table 3
                         </div>
                         <div class="card-body">
-                          
+
                             <div class="px-3">
                                 <table class="table table-hover">
                                     <thead style=" border-bottom: 0.1px solid silver;">
