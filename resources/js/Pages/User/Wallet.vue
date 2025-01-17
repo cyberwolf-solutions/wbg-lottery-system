@@ -33,7 +33,7 @@ const handleRequest = () => {
                     Wallet
                 </h2>
                 <button
-                    class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600"
+                    class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600" style="background-color: rgb(96, 200, 242);"
                     @click="openModal">
                     Request
                 </button>
@@ -82,6 +82,92 @@ const handleRequest = () => {
             </div>
         </div>
 
+        <!-- view card Modal -->
+        <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Card details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Card number</label>
+                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
+                                placeholder="1002 9737 3822" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">CVV</label>
+                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
+                                placeholder="5684" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Expiary date</label>
+                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
+                                placeholder="09/27" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Name</label>
+                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
+                                placeholder="name" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" style="background-color: rgb(96, 200, 242);;" data-bs-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- edit card Modal -->
+          <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Card details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Card number</label>
+                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
+                                placeholder="Enter Card number" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">CVV</label>
+                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
+                                placeholder="Enter CVV" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Expiary date</label>
+                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
+                                placeholder="Enter Expiary date" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Name</label>
+                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
+                                placeholder="Enter name" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" style="background-color: rgb(96, 200, 242);;" data-bs-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="container-fluid items-center justify-center rounded">
             <div class="row items-center justify-center rounded">
                 <!-- Main Content -->
@@ -91,51 +177,57 @@ const handleRequest = () => {
                        <p style="color: silver;">Here you can see all the statistics</p>
                     </div> -->
                     <div class="px-3 mt-6">
-  <!-- Summary Section -->
-  <div class="d-flex justify-content-between align-items-center bg-light p-4 rounded shadow-sm">
-    <!-- Total Budget -->
-    <div class="text-center">
-      <p class="mb-2 text-secondary">Total Budget</p>
-      <h3 class="fw-bold text-gray">$85,125.00</h3>
-    </div>
-    <!-- Credit Limit -->
-    <div class="text-center">
-      <p class="mb-2 text-secondary">Credit Limit</p>
-      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$110,000.00</h3>
-    </div>
-    <!-- My Goals -->
-    <div class="text-center">
-      <p class="mb-2 text-secondary">My Goals</p>
-      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$2,177.00</h3>
-    </div>
-    <!-- Saved -->
-    <div class="text-center">
-      <p class="mb-2 text-secondary">Saved</p>
-      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$15,125.00</h3>
-    </div>
-  </div>
+                        <!-- Summary Section -->
+                        <div class="d-flex justify-content-between align-items-center bg-light p-4 rounded shadow-sm">
+                            <!-- Total Budget -->
+                            <div class="text-center">
+                                <p class="mb-2 text-secondary">Total Budget</p>
+                                <h3 class="fw-bold text-gray">$85,125.00</h3>
+                            </div>
+                            <!-- Credit Limit -->
+                            <div class="text-center">
+                                <p class="mb-2 text-secondary">Credit Limit</p>
+                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$110,000.00</h3>
+                            </div>
+                            <!-- My Goals -->
+                            <div class="text-center">
+                                <p class="mb-2 text-secondary">My Goals</p>
+                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$2,177.00</h3>
+                            </div>
+                            <!-- Saved -->
+                            <div class="text-center">
+                                <p class="mb-2 text-secondary">Saved</p>
+                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$15,125.00</h3>
+                            </div>
+                        </div>
 
-  <!-- Card Section -->
-  <div class="p-4 my-4 bg-white rounded shadow-sm">
-    <div class="d-flex justify-content-between align-items-center">
-      <!-- Card Info -->
-      <div class="d-flex align-items-center">
-        <div class="me-4 text-center">
-          <h5 class="mb-0 text-primary">VISA</h5>
-          <small class="text-muted">Gold</small>
-        </div>
-        <div class="text-center">
-          <p class="mb-0 fw-semibold">**** 2321</p>
-          <small class="text-secondary">Exp: 02/26</small>
-        </div>
-      </div>
-      <!-- Badge -->
-      <div>
-        <span class="badge bg-warning text-dark py-2 px-3 rounded-pill fs-6">Classic</span>
-      </div>
-    </div>
-  </div>
-</div>
+                        <!-- Card Section -->
+                        <div class="p-4 my-4 bg-white rounded shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- Card Info -->
+                                <div class="d-flex align-items-center">
+                                    <div class="me-4 text-center">
+                                        <h5 class="mb-0 text-primary">VISA</h5>
+                                        <small class="text-muted">Gold</small>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="mb-0 fw-semibold">**** 2321</p>
+                                        <small class="text-secondary">Exp: 02/26</small>
+                                    </div>
+                                </div>
+                                <!-- Badge -->
+                                <div>
+                                    <button class="btn-sm font-bold text-white rounded-lg ml-4" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        style="background-color: rgb(96, 200, 242);border-radius: 100px;"><i class="bi bi-eye-fill"></i></button>
+
+                                    <button class="btn-sm btn-warning font-bold text-white rounded-lg ml-4" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop1"
+                                        style="border-radius: 100px;"><i class="bi bi-pencil-square"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="card" style="border-style: none; background:white;">
                         <div class="card-body">
