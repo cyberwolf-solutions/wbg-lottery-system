@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\PrizesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Foundation\Application;
@@ -30,5 +32,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
 
 require __DIR__.'/auth.php';
