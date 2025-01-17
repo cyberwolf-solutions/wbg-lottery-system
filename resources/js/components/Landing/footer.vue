@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer bg-light py-5 " style="background-color: #F5F5DC;">
+    <footer class="footer bg-light py-5 mx-3" style="background-color: #F5F5DC; overflow-x: hidden;">
         <div class="container-fluid px-0">
             <div class="row text-center text-lg-start">
                 <!-- Logo and About Section -->
