@@ -133,48 +133,54 @@ const handleRequest = () => {
                     <div class="card" style="border-style: none; background:white;">
                         <div class="card-body">
                             <div class="px-3">
-                                <table class="table table-hover">
-                                    <thead style=" border-bottom: 0.1px solid silver;">
+                                <table
+                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
+                                    <thead class="bg-gray-100 border-b border-gray-300">
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Paypal</td>
-                                            <td class="text-success">$2,000.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Meta</td>
-                                            <td class="text-danger">-$170.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>In Progress</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Meta</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr>
-                                            <td>Apple</td>
-                                            <td class="text-success">$2,187.00</td>
-                                            <td>18.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Apple</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
+                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Playstation</td>
-                                            <td class="text-success">$4,177.00</td>
-                                            <td>16.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
+                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Amazon</td>
-                                            <td class="text-danger">-$277.00</td>
-                                            <td>15.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
+                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>
@@ -188,48 +194,54 @@ const handleRequest = () => {
                         <div class="card-body">
 
                             <div class="px-3">
-                                <table class="table table-hover">
-                                    <thead style=" border-bottom: 0.1px solid silver;">
+                                <table
+                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
+                                    <thead class="bg-gray-100 border-b border-gray-300">
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Paypal</td>
-                                            <td class="text-success">$2,000.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Meta</td>
-                                            <td class="text-danger">-$170.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>In Progress</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Meta</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr>
-                                            <td>Apple</td>
-                                            <td class="text-success">$2,187.00</td>
-                                            <td>18.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Apple</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
+                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Playstation</td>
-                                            <td class="text-success">$4,177.00</td>
-                                            <td>16.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
+                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Amazon</td>
-                                            <td class="text-danger">-$277.00</td>
-                                            <td>15.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
+                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>
@@ -243,53 +255,60 @@ const handleRequest = () => {
                         <div class="card-body">
 
                             <div class="px-3">
-                                <table class="table table-hover">
-                                    <thead style=" border-bottom: 0.1px solid silver;">
+                                <table
+                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
+                                    <thead class="bg-gray-100 border-b border-gray-300">
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
+                                            </th>
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Paypal</td>
-                                            <td class="text-success">$2,000.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Meta</td>
-                                            <td class="text-danger">-$170.00</td>
-                                            <td>20.02.2023</td>
-                                            <td>In Progress</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Meta</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
+                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
+                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr>
-                                            <td>Apple</td>
-                                            <td class="text-success">$2,187.00</td>
-                                            <td>18.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Apple</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
+                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Playstation</td>
-                                            <td class="text-success">$4,177.00</td>
-                                            <td>16.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
+                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr>
-                                            <td>Amazon</td>
-                                            <td class="text-danger">-$277.00</td>
-                                            <td>15.02.2023</td>
-                                            <td>Completed</td>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
+                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
+                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
+                                            <td class="px-4 py-3 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>
                     <!-- Transactions Table -->
 
+                    
                 </div>
             </div>
         </div>
