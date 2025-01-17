@@ -91,59 +91,67 @@ const handleRequest = () => {
                        <p style="color: silver;">Here you can see all the statistics</p>
                     </div> -->
                     <div class="px-3 mt-6">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <p>Total Budget</p>
-                                <h3 style="font-weight: bold;font-size: larger;color:gray">$85,125.00</h3>
-                            </div>
-                            <div>
-                                <p>Credit Limit</p>
-                                <h3 style="font-weight: bold;font-size: larger;color:rgb(96, 200, 242)">$110,000.00</h3>
-                            </div>
-                            <div>
-                                <p>My Goals</p>
-                                <h3 style="font-weight: bold;font-size: larger;color:rgb(96, 200, 242)">$2,177.00</h3>
-                            </div>
-                            <div>
-                                <p>Saved</p>
-                                <h3 style="font-weight: bold;font-size: larger;color:rgb(96, 200, 242)">$15,125.00</h3>
-                            </div>
-                        </div>
-                    </div>
+  <!-- Summary Section -->
+  <div class="d-flex justify-content-between align-items-center bg-light p-4 rounded shadow-sm">
+    <!-- Total Budget -->
+    <div class="text-center">
+      <p class="mb-2 text-secondary">Total Budget</p>
+      <h3 class="fw-bold text-gray">$85,125.00</h3>
+    </div>
+    <!-- Credit Limit -->
+    <div class="text-center">
+      <p class="mb-2 text-secondary">Credit Limit</p>
+      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$110,000.00</h3>
+    </div>
+    <!-- My Goals -->
+    <div class="text-center">
+      <p class="mb-2 text-secondary">My Goals</p>
+      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$2,177.00</h3>
+    </div>
+    <!-- Saved -->
+    <div class="text-center">
+      <p class="mb-2 text-secondary">Saved</p>
+      <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$15,125.00</h3>
+    </div>
+  </div>
 
-                    <!-- Card Section -->
-                    <div class=" p-4 my-4 rounded" style="border-style: none; background:white">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <div class="me-3">
-                                    <h5 class="mb-0">VISA</h5>
-                                    <small>Gold</small>
-                                </div>
-                                <div>
-                                    <p class="mb-0">**** 2321</p>
-                                    <small>Exp: 02/26</small>
-                                </div>
-                            </div>
-                            <div>
-                                <span class="badge bg-warning text-dark">Classic</span>
-                            </div>
-                        </div>
-                    </div>
+  <!-- Card Section -->
+  <div class="p-4 my-4 bg-white rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center">
+      <!-- Card Info -->
+      <div class="d-flex align-items-center">
+        <div class="me-4 text-center">
+          <h5 class="mb-0 text-primary">VISA</h5>
+          <small class="text-muted">Gold</small>
+        </div>
+        <div class="text-center">
+          <p class="mb-0 fw-semibold">**** 2321</p>
+          <small class="text-secondary">Exp: 02/26</small>
+        </div>
+      </div>
+      <!-- Badge -->
+      <div>
+        <span class="badge bg-warning text-dark py-2 px-3 rounded-pill fs-6">Classic</span>
+      </div>
+    </div>
+  </div>
+</div>
 
                     <div class="card" style="border-style: none; background:white;">
                         <div class="card-body">
-                            <div class="px-3">
-                                <table
-                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-                                    <thead class="bg-gray-100 border-b border-gray-300">
+                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+                                <table class="table-auto w-full border-collapse border border-gray-300">
+                                    <thead class="bg-gray-100">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
+                                                Name
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
+                                                Numbers
                                             </th>
                                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
                                             </th>
                                         </tr>
                                     </thead>
@@ -193,18 +201,19 @@ const handleRequest = () => {
                         </div>
                         <div class="card-body">
 
-                            <div class="px-3">
-                                <table
-                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-                                    <thead class="bg-gray-100 border-b border-gray-300">
+                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+                                <table class="table-auto w-full border-collapse border border-gray-300">
+                                    <thead class="bg-gray-100">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
+                                                Name
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
+                                                Numbers
                                             </th>
                                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
                                             </th>
                                         </tr>
                                     </thead>
@@ -254,18 +263,19 @@ const handleRequest = () => {
                         </div>
                         <div class="card-body">
 
-                            <div class="px-3">
-                                <table
-                                    class="table-auto w-full border-collapse border border-gray-300 rounded-lg shadow-md">
-                                    <thead class="bg-gray-100 border-b border-gray-300">
+                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+                                <table class="table-auto w-full border-collapse border border-gray-300">
+                                    <thead class="bg-gray-100">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
+                                                Name
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Amount
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
+                                                Numbers
                                             </th>
                                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Status
+                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
                                             </th>
                                         </tr>
                                     </thead>
@@ -308,7 +318,7 @@ const handleRequest = () => {
                     </div>
                     <!-- Transactions Table -->
 
-                    
+
                 </div>
             </div>
         </div>

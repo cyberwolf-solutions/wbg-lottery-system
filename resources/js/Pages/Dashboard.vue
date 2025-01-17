@@ -296,7 +296,7 @@ button {
 
 .btn-quick-pick:hover {
 
-
+    background-color: rgb(96, 200, 242);
     color: white;
 }
 
@@ -306,8 +306,4 @@ button {
     margin-right: auto;
     font-style: italic;
 }
-
-
-
- 
   </style>
