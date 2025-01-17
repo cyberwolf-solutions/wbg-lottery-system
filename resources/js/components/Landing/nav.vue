@@ -51,29 +51,66 @@
                             <a class="nav-link" href="#contact">Contact</a>
                         </li>
 
+                        <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">
                             <template v-if="!$page.props.auth.user">
-                                <a class="btn btn-primary text-white px-4 rounded-pill shadow"
-                                    :href="route('register')">Join Us</a>
+                                <button
+                                    class="btn btn-primary text-white px-4 rounded-pill shadow"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#registerModal"
+                                >
+                                    Join Us
+                                </button>
                             </template>
                             <template v-else>
                                 <a class="btn btn-primary text-white px-4 rounded-pill shadow"
                                     :href="route('login')">Log in</a>
                             </template>
                         </li>
-
                     </ul>
                 </div>
             </div>
         </nav>
     </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <h5 class="modal-title" id="registerModalLabel">Join Us</h5> -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <RegisterForm />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <LoginForm />
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </template>
 
 
 <script>
 
 import { Link } from '@inertiajs/vue3';
-
+import RegisterForm from '@/Pages/Auth/Register.vue';
+import LoginForm from '@/Pages/Auth/Login.vue';
 
 export default {
     data() {
@@ -82,6 +119,10 @@ export default {
         };
     },
     name: "Nav",
+    components: {
+        RegisterForm,
+        LoginForm
+  },
 };
 </script>
 

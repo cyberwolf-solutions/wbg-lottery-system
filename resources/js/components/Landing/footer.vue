@@ -1,10 +1,10 @@
 <template>
     <footer class="footer bg-light py-5 mx-3" style="background-color: #F5F5DC; overflow-x: hidden;">
         <div class="container-fluid px-0">
-            <div class="row text-center text-lg-start">
+            <div class="row  text-center text-lg-start">
                 <!-- Logo and About Section -->
-                <div class="col-lg-3 mb-4">
-                    <img src="#" alt="Logo" class="mb-3" />
+                <div class="col-lg-3 mb-4 ">
+                    <!-- <img :src="logoUrl" alt="Logo" height="50" width="50" /> -->
                     <ul class="list-unstyled">
                         <li><a href="#" class="text-muted nav-link">About us</a></li>
                         <li><a href="#" class="text-muted nav-link">How it Works</a></li>
@@ -69,6 +69,12 @@
 
 export default {
     name: "Footer",
+
+    data() {
+        return {
+            logoUrl: '/assets/images/logo.png', // Path to your logo
+        };
+    },
 }
 
 </script>

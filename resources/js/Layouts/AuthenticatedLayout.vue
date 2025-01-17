@@ -38,12 +38,12 @@ const showingNavigationDropdown = ref(false);
                                     prizes
                                 </NavLink>
 
-                                 <!-- notofocation -->
-                                 <NavLink :active="route().current('notification.index')" class=""
+                                <!-- notofocation -->
+                                <!-- <NavLink :active="route().current('notification.index')" class=""
                                     data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
                                     aria-controls="offcanvasExample">
                                     <i class="bi bi-bell-fill"></i>
-                                </NavLink>
+                                </NavLink> -->
                                 <!-- notofocation -->
 
                             </div>
@@ -59,32 +59,35 @@ const showingNavigationDropdown = ref(false);
                             </div>
                             <div class="offcanvas-body">
                                 <div class="card" style="border-style: none;">
-                                    <div class="card-header" style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                      9.00 a.m
+                                    <div class="card-header"
+                                        style="background-color: whitesmoke;border-style: none;font-size: 10px;">
+                                        9.00 a.m
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">New login at 8.56 a.m</h5>
-                                     
+
                                     </div>
                                 </div>
 
                                 <div class="card" style="border-style: none;">
-                                    <div class="card-header" style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                      9.00 a.m
+                                    <div class="card-header"
+                                        style="background-color: whitesmoke;border-style: none;font-size: 10px;">
+                                        9.00 a.m
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">New login at 8.56 a.m</h5>
-                                     
+
                                     </div>
                                 </div>
 
                                 <div class="card" style="border-style: none;">
-                                    <div class="card-header" style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                      9.00 a.m
+                                    <div class="card-header"
+                                        style="background-color: whitesmoke;border-style: none;font-size: 10px;">
+                                        9.00 a.m
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">New login at 8.56 a.m</h5>
-                                     
+
                                     </div>
                                 </div>
                             </div>
@@ -110,6 +113,11 @@ const showingNavigationDropdown = ref(false);
                                                 </svg>
                                             </button>
                                         </span>
+                                        <NavLink :active="route().current('notification.index')" class="mx-2"
+                                            data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+                                            aria-controls="offcanvasExample">
+                                            <i class="bi bi-bell-fill"></i>
+                                        </NavLink>
                                     </template>
 
                                     <template #content>
@@ -120,6 +128,7 @@ const showingNavigationDropdown = ref(false);
                                             Log Out
                                         </DropdownLink>
                                     </template>
+
                                 </Dropdown>
                             </div>
                         </div>

@@ -76,8 +76,8 @@
               <div class="row people align-items-center justify-content-center">
 
                 <div class="card-wrapper item col-md-4 col-lg-3"
-                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
-                  <div class="card-box text-center py-4">
+                  style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
+                  <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
                     <p class="card-title title mb-2">US Powerball</p>
@@ -86,9 +86,10 @@
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
 
+
                 <div class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
-                  <div class="card-box text-center py-4">
+                  <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
                     <p class="card-title title mb-2">US Powerball</p>
@@ -99,7 +100,7 @@
 
                 <div class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
-                  <div class="card-box text-center py-4">
+                  <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
                     <p class="card-title title mb-2">US Powerball</p>
