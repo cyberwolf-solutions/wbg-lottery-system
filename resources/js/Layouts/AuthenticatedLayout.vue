@@ -8,6 +8,29 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+
+
+
+const lotteries = ref([
+    { id: 1, name: "Lottery 1" },
+    { id: 2, name: "Lottery 2" },
+    { id: 3, name: "Lottery 3" },
+]);
+
+const fetchLotteryData = async (lotteryId) => {
+    try {
+        // const response = await axios.get(`/api/lottery/${lotteryId}`);
+        const response = await axios.get(`/api/lottery/${lotteryId}`);
+        // This will navigate to the lottery view and pass the lottery data
+        this.$inertia.visit(`/lottery/${lotteryId}`, {
+            method: 'get', // specify the HTTP method if needed
+            data: { lotteryData: response.data },
+        });
+    } catch (error) {
+        console.error("Error fetching lottery data:", error);
+    }
+};
+
 </script>
 
 <template>
@@ -34,10 +57,43 @@ const showingNavigationDropdown = ref(false);
                                     Wallet
                                 </NavLink>
 
+                                <!-- <NavLink :href="route('wallet.index')" :active="route().current('wallet.index')">
+                                    Lotteries
+                                </NavLink> -->
+
                                 <NavLink :href="route('prize.index')" :active="route().current('prize.index')">
                                     prizes
                                 </NavLink>
 
+                                <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                                    <div class="relative ms-3">
+                                        <Dropdown align="right" width="48">
+                                            <template #trigger>
+                                                <span class="inline-flex rounded-md">
+                                                    <button type="button"
+                                                        class="inline-flex items-center rounded-md  bg-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
+                                                        Lotteries
+                                                        <svg class="-me-0.5 ms-2 h-4 w-4"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </template>
+                                            <template #content>
+                                                <div v-for="lottery in lotteries" :key="lottery.id">
+                                                    <DropdownLink @click="fetchLotteryData(lottery.id)"
+                                                        class="text-sm text-gray-700 hover:text-gray-900">
+                                                        {{ lottery.name }}
+                                                    </DropdownLink>
+                                                </div>
+                                            </template>
+                                        </Dropdown>
+                                    </div>
+                                </div>
                                 <!-- notofocation -->
                                 <!-- <NavLink :active="route().current('notification.index')" class=""
                                     data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"

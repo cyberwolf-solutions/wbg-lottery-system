@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\testController;
+use App\Http\Controllers\LotteriesController;
 use Illuminate\Contracts\Foundation\Application;
 
 Route::get('/user', function (Request $request) {
@@ -21,3 +22,5 @@ Route::get('/landing-page-data', function () {
     ]);
 });
 // });
+
+Route::get('/lottery/{id}', [LotteriesController::class, 'index']);

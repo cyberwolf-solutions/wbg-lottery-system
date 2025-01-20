@@ -54,6 +54,7 @@ const changePage = (page) => {
 </script>
 
 <template>
+
   <Head title="Dashboard" />
   <AuthenticatedLayout>
     <template #header>
@@ -65,59 +66,52 @@ const changePage = (page) => {
     <div class="container mx-auto px-4 mt-6">
       <!-- Search Bar -->
       <div class="flex justify-between items-center mb-4">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-1/3"
-        />
+        <input type="text" v-model="searchQuery" placeholder="Search..."
+          class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-1/3" />
       </div>
 
       <!-- Table -->
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table class="table-auto w-full border-collapse border border-gray-300">
-          <thead class="bg-gray-100">
+      <div class="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
+        <table class="min-w-full table-auto">
+          <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
             <tr>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery Name</th>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked Numbers</th>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date</th>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Lottery Name</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Picked Numbers</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Prize</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="(item, index) in paginatedData" :key="index" class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-gray-800">{{ item.name }}</td>
-              <td class="px-4 py-3 text-green-500 font-medium">{{ item.pickedNumbers }}</td>
-              <td class="px-4 py-3 text-gray-600">{{ item.date }}</td>
-              <td class="px-4 py-3 text-gray-800">{{ item.prize }}</td>
+          <tbody class="bg-white">
+            <tr v-for="(item, index) in paginatedData" :key="index"
+              class="hover:bg-gray-50 transition-all duration-200 ease-in-out">
+              <td class="px-6 py-4 text-gray-800 font-medium">{{ item.name }}</td>
+              <td class="px-6 py-4 text-green-600 font-medium">{{ item.pickedNumbers }}</td>
+              <td class="px-6 py-4 text-gray-700">{{ item.date }}</td>
+              <td class="px-6 py-4 text-gray-800 font-semibold">{{ item.prize }}</td>
             </tr>
             <tr v-if="paginatedData.length === 0">
-              <td colspan="4" class="px-4 py-3 text-center text-gray-600">No results found</td>
+              <td colspan="4" class="px-6 py-4 text-center text-gray-500">No results found</td>
             </tr>
           </tbody>
         </table>
       </div>
 
+
       <!-- Pagination -->
-      <div class="flex justify-between items-center mt-4">
-        <button
-          class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300 disabled:opacity-50"
-          :disabled="currentPage === 1"
-          @click="changePage(currentPage - 1)"
-        >
-          Previous
-        </button>
-        <div class="text-sm text-gray-600">
-          Page {{ currentPage }} of {{ totalPages }}
-        </div>
-        <button
-          class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300 disabled:opacity-50"
-          :disabled="currentPage === totalPages"
-          @click="changePage(currentPage + 1)"
-        >
-          Next
-        </button>
-      </div>
+      <div class="flex justify-between items-center mt-4 px-4">
+  <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
+    :disabled="currentPage === 1" @click="changePage(currentPage - 1)">
+    Previous
+  </button>
+  <div class="text-sm text-gray-700 font-semibold">
+    Page {{ currentPage }} of {{ totalPages }}
+  </div>
+  <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
+    :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">
+    Next
+  </button>
+</div>
+
     </div>
   </AuthenticatedLayout>
 </template>
