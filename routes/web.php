@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\PrizesController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WalletController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\PrizesController;
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LotteriesController;
+use App\Http\Controllers\NotificationsController;
 
 // Route::get('/', function () {
 //     return Inertia::render('LandingPage', [
@@ -33,5 +34,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
 Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
+
+// Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 
 require __DIR__.'/auth.php';

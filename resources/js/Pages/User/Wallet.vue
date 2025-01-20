@@ -25,7 +25,7 @@ const handleRequest = () => {
 <template>
 
 
-    <Head title="Dashboard" />
+    <Head title="Wallet" />
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
@@ -33,8 +33,8 @@ const handleRequest = () => {
                     Wallet
                 </h2>
                 <button
-                    class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600" style="background-color: rgb(96, 200, 242);"
-                    @click="openModal">
+                    class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600"
+                    style="background-color: rgb(96, 200, 242);" @click="openModal">
                     Request
                 </button>
             </div>
@@ -83,82 +83,91 @@ const handleRequest = () => {
         </div>
 
         <!-- view card Modal -->
-        <div class="modal fade " id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       <!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-lg shadow-lg">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Account Number Input -->
+                <div class="mb-4">
+                    <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account Number</label>
+                    <input type="text" id="accountNumber" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="1002 9737 3822">
+                </div>
+
+                <!-- Account Name Input -->
+                <div class="mb-4">
+                    <label for="accountName" class="block text-sm font-medium text-gray-700">Account Name</label>
+                    <input type="text" id="accountName" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="5684">
+                </div>
+
+                <!-- Bank Name Input -->
+                <div class="mb-4">
+                    <label for="bankName" class="block text-sm font-medium text-gray-700">Bank</label>
+                    <input type="text" id="bankName" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="09/27">
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- edit card Modal -->
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Bank details</h1>
+                <div class="modal-content rounded-lg shadow-lg">
+                    <div class="modal-header border-0">
+                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Account number</label>
-                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
-                                placeholder="1002 9737 3822" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        <!-- Account Number Input -->
+                        <div class="mb-4">
+                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account
+                                Number</label>
+                            <input type="text" id="accountNumber"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Enter Account Number">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Account Name</label>
-                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
-                                placeholder="5684" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        <!-- Account Name Input -->
+                        <div class="mb-4">
+                            <label for="accountName" class="block text-sm font-medium text-gray-700">Account
+                                Name</label>
+                            <input type="text" id="accountName"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Enter Account Name">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Bank</label>
-                            <input type="email" class="form-control form-control-sm" disabled id="exampleFormControlInput1"
-                                placeholder="09/27" style="border-radius: 10px;font-size: 13px;height: 10px;">
+                        <!-- Bank Name Input -->
+                        <div class="mb-4">
+                            <label for="bankName" class="block text-sm font-medium text-gray-700">Bank Name</label>
+                            <input type="text" id="bankName"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Enter Bank Name">
                         </div>
-
-
-
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" style="background-color: rgb(96, 200, 242);;" data-bs-dismiss="modal">Close</button>
-                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                    <div class="modal-footer border-0">
+                        <button type="button"
+                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="button"
+                            class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600">Save</button>
                     </div>
                 </div>
             </div>
         </div>
 
-          <!-- edit card Modal -->
-          <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Bank details</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Account number</label>
-                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
-                                placeholder="Enter Card number" style="border-radius: 10px;font-size: 13px;height: 10px;">
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Account name</label>
-                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
-                                placeholder="Enter CVV" style="border-radius: 10px;font-size: 13px;height: 10px;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Bank</label>
-                            <input type="email" class="form-control form-control-sm"  id="exampleFormControlInput1"
-                                placeholder="Enter Expiary date" style="border-radius: 10px;font-size: 13px;height: 10px;">
-                        </div>
-
-                       
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" style="background-color: rgb(96, 200, 242);;" data-bs-dismiss="modal">Close</button>
-                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="container-fluid items-center justify-center rounded">
             <div class="row items-center justify-center rounded">
@@ -170,31 +179,32 @@ const handleRequest = () => {
                     </div> -->
                     <div class="px-3 mt-6">
                         <!-- Summary Section -->
-                        <div class="d-flex justify-content-between align-items-center bg-light p-4 rounded shadow-sm">
+                        <div
+                            class="d-flex justify-content-between align-items-center bg-gradient p-4 rounded-xl shadow-lg">
                             <!-- Total Budget -->
                             <div class="text-center">
-                                <p class="mb-2 text-secondary">Total Budget</p>
-                                <h3 class="fw-bold text-gray">$85,125.00</h3>
+                                <p class="mb-2 text-muted">Total Balance</p>
+                                <h3 class="fw-bold text-dark">$85,125.00</h3>
                             </div>
                             <!-- Credit Limit -->
                             <div class="text-center">
-                                <p class="mb-2 text-secondary">Credit Limit</p>
-                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$110,000.00</h3>
+                                <p class="mb-2 text-muted">Credit Limit</p>
+                                <h3 class="fw-bold text-info">$110,000.00</h3>
                             </div>
                             <!-- My Goals -->
                             <div class="text-center">
-                                <p class="mb-2 text-secondary">My Goals</p>
-                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$2,177.00</h3>
+                                <p class="mb-2 text-muted">Request</p>
+                                <h3 class="fw-bold text-info">$2,177.00</h3>
                             </div>
                             <!-- Saved -->
                             <div class="text-center">
-                                <p class="mb-2 text-secondary">Saved</p>
-                                <h3 class="fw-bold" style="color: rgb(96, 200, 242);">$15,125.00</h3>
+                                <p class="mb-2 text-muted">Saved</p>
+                                <h3 class="fw-bold text-info">$15,125.00</h3>
                             </div>
                         </div>
 
                         <!-- Card Section -->
-                        <div class="p-4 my-4 bg-white rounded shadow-sm">
+                        <div class="p-4 my-4 bg-white rounded-xl shadow-lg">
                             <div class="d-flex justify-content-between align-items-center">
                                 <!-- Card Info -->
                                 <div class="d-flex align-items-center">
@@ -209,197 +219,211 @@ const handleRequest = () => {
                                 </div>
                                 <!-- Badge -->
                                 <div>
-                                    <button class="btn-sm font-bold text-white rounded-lg ml-4" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        style="background-color: rgb(96, 200, 242);border-radius: 100px;"><i class="bi bi-eye-fill"></i></button>
+                                    <button class="btn-sm font-bold text-white rounded-circle ml-4"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                        style="background-color: #60c8f2; transition: background-color 0.3s ease;">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
 
-                                    <button class="btn-sm btn-warning font-bold text-white rounded-lg ml-4" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop1"
-                                        style="border-radius: 100px;"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-sm btn-warning font-bold text-white rounded-circle ml-4"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop1"
+                                        style="transition: background-color 0.3s ease;">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card" style="border-style: none; background:white;">
+
+                    <div class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4">
                         <div class="card-body">
-                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                                <table class="table-auto w-full border-collapse border border-gray-300">
-                                    <thead class="bg-gray-100">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
-                                                Name
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Lottery Name</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Picked Numbers</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
-                                                Numbers
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Prize
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
+                                            <td class="px-6 py-4 text-green-600 font-medium">$2,000.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Meta</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
+                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Meta</td>
+                                            <td class="px-6 py-4 text-red-600 font-medium">-$170.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Apple</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
-                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Apple</td>
+                                            <td class="px-6 py-4 text-green-600 font-medium">$2,187.00</td>
+                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
+                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
-                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
+                                            <td class="px-6 py-4 text-green-600 font-medium">$4,177.00</td>
+                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
+                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
-                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
+                                            <td class="px-6 py-4 text-red-600 font-medium">-$277.00</td>
+                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
+
+
 
 
                     <!-- table 2 -->
-                    <div class="card" style="border-style: none; background:white;margin-top: 60px;">
-                        <div class="card-header">
-                            table 2
-                        </div>
+                    <div
+                        class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Transactions</div>
                         <div class="card-body">
-
-                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                                <table class="table-auto w-full border-collapse border border-gray-300">
-                                    <thead class="bg-gray-100">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
-                                                Name
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Lottery Name</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Picked Numbers</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
-                                                Numbers
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Prize
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$2,000.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Meta</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Meta</td>
+                                            <td class="px-6 py-4 text-red-500 font-medium">-$170.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Apple</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
-                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Apple</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$2,187.00</td>
+                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
-                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$4,177.00</td>
+                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
-                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
+                                            <td class="px-6 py-4 text-red-500 font-medium">-$277.00</td>
+                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
+
 
 
                     <!-- table 3 -->
-                    <div class="card" style="border-style: none; background:white;margin-top: 60px;">
-                        <div class="card-header">
-                            table 3
-                        </div>
+                    <div
+                        class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Wins</div>
                         <div class="card-body">
-
-                            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                                <table class="table-auto w-full border-collapse border border-gray-300">
-                                    <thead class="bg-gray-100">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lottery
-                                                Name
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Lottery Name</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Picked Numbers</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Date
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Picked
-                                                Numbers
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Date
-                                            </th>
-                                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">Prize
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Prize
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Paypal</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,000.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$2,000.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Meta</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$170.00</td>
-                                            <td class="px-4 py-3 text-gray-600">20.02.2023</td>
-                                            <td class="px-4 py-3 text-yellow-600">In Progress</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Meta</td>
+                                            <td class="px-6 py-4 text-red-500 font-medium">-$170.00</td>
+                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
+                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Apple</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$2,187.00</td>
-                                            <td class="px-4 py-3 text-gray-600">18.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Apple</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$2,187.00</td>
+                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Playstation</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">$4,177.00</td>
-                                            <td class="px-4 py-3 text-gray-600">16.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">$4,177.00</td>
+                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-3 text-gray-800">Amazon</td>
-                                            <td class="px-4 py-3 text-red-500 font-medium">-$277.00</td>
-                                            <td class="px-4 py-3 text-gray-600">15.02.2023</td>
-                                            <td class="px-4 py-3 text-gray-800">Completed</td>
+                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
+                                            <td class="px-6 py-4 text-red-500 font-medium">-$277.00</td>
+                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
+                                            <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </div>
+
                     <!-- Transactions Table -->
 
 
