@@ -111,7 +111,7 @@ export default {
     },
 };
 // Set the target date and time
-const targetDate = new Date("2025-01-20T00:00:00").getTime();
+const targetDate = new Date("2025-01-23T00:00:00").getTime();
 
 function updateCountdown() {
     const now = new Date().getTime();

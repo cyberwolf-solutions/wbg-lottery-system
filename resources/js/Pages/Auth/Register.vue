@@ -181,6 +181,19 @@ const submitPasswordRequest = () => {
 const switchTab = (tab) => {
     activeTab.value = tab;
 };
+
+
+const loginWithGoogle = () => {
+    window.location.href = "http://localhost:8000/api/auth/google";
+};
+
+
+const handleGoogleCallback = (response) => {
+    localStorage.setItem("token", response.token);
+    // Optionally, redirect to a protected route
+    this.$router.push("/dashboard");
+};
+
 </script>
 
 <template>
@@ -308,27 +321,27 @@ const switchTab = (tab) => {
         <!-- Social Login -->
         <div class="text-center my-6 text-gray-500">Or login with</div>
         <div class="flex flex-col md:flex-row justify-center md:space-x-4 space-y-4 md:space-y-0">
-    <!-- Facebook Button -->
-    <button
-        class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        <span class="material-icons hidden md:block">f</span>
-        <span class="text-center">Facebook</span>
-    </button>
+            <!-- Facebook Button -->
+            <button
+                class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                <span class="material-icons hidden md:block">f</span>
+                <span class="text-center">Facebook</span>
+            </button>
 
-    <!-- Google Button -->
-    <button
-        class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-        <span class="material-icons hidden md:block">G</span>
-        <span class="text-center">Google</span>
-    </button>
+            <!-- Google Button -->
+            <button @click="loginWithGoogle"
+                class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                <span class="material-icons hidden md:block">G</span>
+                <span class="text-center">Google</span>
+            </button>
 
-    <!-- Twitter Button -->
-    <button
-        class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500">
-        <span class="material-icons hidden md:block">t</span>
-        <span class="text-center">Twitter</span>
-    </button>
-</div>
+            <!-- Twitter Button -->
+            <button
+                class="flex flex-col items-center md:flex-row md:items-center space-y-1 md:space-y-0 md:space-x-2 px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500">
+                <span class="material-icons hidden md:block">t</span>
+                <span class="text-center">Twitter</span>
+            </button>
+        </div>
 
 
 
