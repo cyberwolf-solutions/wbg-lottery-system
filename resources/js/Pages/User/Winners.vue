@@ -16,14 +16,106 @@ import { Head } from '@inertiajs/vue3';
             </h2>
         </template>
 
-        <div class="row d-flex justify-content-center align-items-center mt-4">
+        <div class="d-flex justify-content-center align-items-center mt-4"
+            style="height: auto; flex-direction: column; text-align: center;">
+            <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">List of lottery winners</p>
+            <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won lottery jackpots
+                and million dollar prizes. Read their storie below.
+            </p>
+        </div>
 
+
+
+        <div class="row d-flex justify-content-center align-items-center mt-4">
             <div class="col-8">
                 <div class="row">
-                    <div class="col-3">
-                        <div class="card" style="width: 18rem;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top">
-                            <div class="card-body">
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
+                                <p class="card-text">Some quick example text to build on the card title and make up the
+                                    bulk
+                                    of the
+                                    card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 14rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
+                            <div class="card-body" style="border-top-color: aqua;">
                                 <p class="card-text">Some quick example text to build on the card title and make up the
                                     bulk
                                     of the
@@ -38,6 +130,74 @@ import { Head } from '@inertiajs/vue3';
 
         </div>
 
+        <!-- ------ -->
+
+        <div class="row d-flex justify-content-center align-items-center" style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
+            <div class="col-12" style="background-color:#EAF4FC;">
+
+                <div class="row d-flex justify-content-center align-items-center mt-4">
+                    <div class="col-10 text-center">
+                        <h1
+                            style="margin-top: 50px;color: #333; margin-bottom: 20px;font-size: 30px;font-weight: bold;">
+                            How to
+                            Collect Your Wins</h1>
+                        <div style="width: 50%;margin-left: auto;margin-right: auto;">
+                            <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
+                                Winners updated weekly. Prize value listed as won may not reflect actual net claims
+                                payment
+                                amount
+                                in photo
+                                due to combined prize claim amounts and other adjustments. Purchase location shown where
+                                applicable.
+                                All Prizes are 100% commission-FREE.
+                            </p>
+                        </div>
+
+                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
+
+                            <!-- Win Section -->
+                            <div
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
+                                <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
+                                <p style="color: #555; font-size: 12px;">
+                                    Win any prize while playing your favourite lotteries online at Sorteo.
+                                </p>
+                            </div>
+
+                            <!-- Notification Section -->
+                            <div
+                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                                <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
+                                <p style="color: #555; font-size: 14px;">
+                                    Receive an instant notification by email or SMS!
+                                </p>
+                            </div>
+
+                            <!-- Collect Prize Section -->
+                            <div
+                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
+                                <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
+                                <p style="color: #555; font-size: 14px;">
+                                    Your win will be directly transferred to your account on Sorteo!
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+
 
     </AuthenticatedLayout>
 </template>
@@ -46,7 +206,9 @@ import { Head } from '@inertiajs/vue3';
 export default {
     data() {
         return {
-            logoUrl: '/assets/images/logo.png', // Path to your logo
+            logoUrl: '/assets/winners/a.jpeg', // Path to your logo
+            logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
+            logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
         };
     },
 };
@@ -223,3 +385,5 @@ button {
     font-style: italic;
 }
 </style>
+
+
