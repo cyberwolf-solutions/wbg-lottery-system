@@ -7,6 +7,7 @@ use App\Http\Controllers\PrizesController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LotteriesController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\NotificationsController;
 
 // Route::get('/', function () {
@@ -36,5 +37,7 @@ Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
 Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
 
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 require __DIR__.'/auth.php';
