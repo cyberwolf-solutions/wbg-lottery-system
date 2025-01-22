@@ -65,6 +65,21 @@ const fetchLotteryData = async (lotteryId) => {
                                     prizes
                                 </NavLink>
 
+                                <NavLink :href="route('winner.index')" :active="route().current('winner.index')">
+                                    Winners
+                                </NavLink>
+
+                                <NavLink :href="route('latest.index')" :active="route().current('latest.index')">
+                                    Latest results
+                                </NavLink>
+
+                                <NavLink :href="route('hiw.index')" :active="route().current('hiw.index')">
+                                    How It Works
+                                </NavLink>
+
+                                <NavLink :href="route('contact.index')" :active="route().current('contact.index')">
+                                    Contact 
+                                </NavLink>
                                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
                                     <div class="relative ms-3">
                                         <Dropdown align="right" width="48">
