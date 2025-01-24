@@ -115,7 +115,9 @@ import { Head } from '@inertiajs/vue3';
 
                         <div class="row">
                             <div class="col-6 d-flex justify-content-center align-items-center">
-                                <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;">
+                                <i class="bi bi-patch-question-fill" style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
+                            
+                                <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
                             </div>
                             <div class="col-6">
                                 <h1

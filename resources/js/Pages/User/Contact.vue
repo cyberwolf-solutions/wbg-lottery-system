@@ -15,7 +15,7 @@ import { Head } from '@inertiajs/vue3';
             </h2>
         </template>
 
-        <div class="container d-flex justify-content-center align-items-center">
+        <div class="container d-flex justify-content-center align-items-center" style="margin-bottom: 100px;">
             <div class="row contact-container" style="margin-top: 20px;margin-bottom: 30px;">
                 <!-- Left Section -->
                 <div class="col-md-6 contact-left">
@@ -54,20 +54,28 @@ import { Head } from '@inertiajs/vue3';
                     </form>
                 </div>
                 <!-- Right Section -->
-                <div class="col-md-6 contact-right">
-                    <h4 style="margin-bottom: 20px;margin-top: 20px;font-weight: bolder;font-size: 20px;">We Are
-                        Available</h4>
-                    <p>24 Hours A Day, 365 Days A Year</p>
-                    <hr style="border-color: rgba(255,255,255,0.2);margin-top: 30px;margin-bottom: 30px;" />
-                    <p style="margin-bottom: 20px;margin-top: 20px;font-weight: bolder;font-size: 20px;"><strong>Contact
-                            Us</strong></p>
-                    <p><i class="fas fa-phone-alt"></i> 012 345 6789</p>
-                    <p><i class="fas fa-envelope"></i> info@sorteo.com</p>
+                <div class="col-md-6 contact-right" style="position: relative;">
+                    <!-- Background Image -->
+                    <img :src="logoUrl3" alt="Backgroud" class="contact-bg" />
+
+                    <!-- Content -->
+                    <div class="contact-content">
+                        <h4 style="margin-bottom: 20px; margin-top: 20px; font-weight: bolder; font-size: 20px;">We Are
+                            Available</h4>
+                        <p>24 Hours A Day, 365 Days A Year</p>
+                        <hr style="border-color: rgba(255,255,255,0.2); margin-top: 30px; margin-bottom: 30px;" />
+                        <p style="margin-bottom: 20px; margin-top: 20px; font-weight: bolder; font-size: 20px;">
+                            <strong>Contact Us</strong>
+                        </p>
+                        <p><i class="fas fa-phone-alt"></i> 012 345 6789</p>
+                        <p><i class="fas fa-envelope"></i> info@sorteo.com</p>
+                    </div>
                 </div>
+
 
             </div>
 
-            
+
         </div>
 
 
@@ -81,6 +89,7 @@ export default {
             logoUrl: '/assets/winners/a.jpeg', // Path to your logo
             logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
+            logoUrl3: '/assets/images/con.jpg', // Path to your logo
         };
     },
 };
@@ -88,6 +97,31 @@ export default {
 
 
 <style>
+.contact-right {
+    position: relative; /* Ensures proper positioning for overlay */
+    color: white; /* Make text stand out on a dark background */
+    padding: 20px;
+    overflow: hidden; /* Ensures the image doesn't overflow the container */
+    border-radius: 10px; /* Optional: Rounded corners */
+}
+
+.contact-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the entire container */
+    filter: brightness(40%); /* Reduce brightness to darken the image */
+    z-index: 0; /* Sends the image behind the text */
+}
+
+.contact-content {
+    position: relative;
+    z-index: 1; /* Brings the text in front of the image */
+}
+
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f7faff;

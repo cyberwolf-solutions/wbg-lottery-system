@@ -97,7 +97,7 @@ import { Head } from '@inertiajs/vue3';
 
 
         <!-- ---------- -->
-        <div class="py-12">
+        <!-- <div class="py-12">
 
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
@@ -129,7 +129,7 @@ import { Head } from '@inertiajs/vue3';
                                     </div>
                                 </div>
 
-                                <!-- <h3 class="text-lg font-semibold titlelot mb-2 mt-2">Pick 5 Numbers</h3>
+                                <h3 class="text-lg font-semibold titlelot mb-2 mt-2">Pick 5 Numbers</h3>
 
                                 <div class="grid grid-cols-5 gap-6 mb-5">
                                     <div v-for="number in 10" :key="number"
@@ -143,7 +143,7 @@ import { Head } from '@inertiajs/vue3';
                                     <div class="text-sm font-medium">
                                         Selected Numbers: 9, 13, 20, 22, 29, 8
                                     </div>
-                                </div> -->
+                                </div>
 
                             </div>
                         </div>
@@ -175,7 +175,7 @@ import { Head } from '@inertiajs/vue3';
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
     </AuthenticatedLayout>
 </template>

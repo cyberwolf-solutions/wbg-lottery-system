@@ -29,97 +29,89 @@ import { Head } from '@inertiajs/vue3';
         <div class="row d-flex justify-content-center align-items-center mt-4">
             <div class="col-8">
                 <div class="row">
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 14rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 200px;">
-                            <div class="card-body" style="border-top-color: aqua;">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk
-                                    of the
-                                    card's content.</p>
+                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
+                        <div class="card" style="width: 13rem;border-style: none;">
+                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
+                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
+                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
+                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
                             </div>
                         </div>
                     </div>
@@ -158,7 +150,8 @@ import { Head } from '@inertiajs/vue3';
                             <!-- Win Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                <i class="bi bi-trophy-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
@@ -169,7 +162,9 @@ import { Head } from '@inertiajs/vue3';
                             <!-- Notification Section -->
                             <div
                             style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                <i class="bi bi-bell" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                        
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Receive an instant notification by email or SMS!
@@ -179,7 +174,8 @@ import { Head } from '@inertiajs/vue3';
                             <!-- Collect Prize Section -->
                             <div
                             style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;">
+                            <i class="bi bi-gift-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
                             <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
