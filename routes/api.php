@@ -1,10 +1,11 @@
 <?php
 
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\testController;
-use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\LotteriesController;
+use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Contracts\Foundation\Application;
 
 // Route::get('/user', function (Request $request) {
@@ -45,4 +46,9 @@ Route::middleware(['web'])->group(function () {
     Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+    Route::get('/adminDash', function(){
+        return Inertia::render('AdminDashboard/Dashboard');
+    });
+
 });
