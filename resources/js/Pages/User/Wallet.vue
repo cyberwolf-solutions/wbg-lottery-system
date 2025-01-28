@@ -83,40 +83,50 @@ const handleRequest = () => {
         </div>
 
         <!-- view card Modal -->
-       <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-lg shadow-lg">
-            <div class="modal-header border-0">
-                <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Account Number Input -->
-                <div class="mb-4">
-                    <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account Number</label>
-                    <input type="text" id="accountNumber" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="1002 9737 3822">
-                </div>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-lg shadow-lg">
+                    <div class="modal-header border-0">
+                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Account Number Input -->
+                        <div class="mb-4">
+                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account
+                                Number</label>
+                            <input type="text" id="accountNumber"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                disabled placeholder="1002 9737 3822">
+                        </div>
 
-                <!-- Account Name Input -->
-                <div class="mb-4">
-                    <label for="accountName" class="block text-sm font-medium text-gray-700">Account Name</label>
-                    <input type="text" id="accountName" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="5684">
-                </div>
+                        <!-- Account Name Input -->
+                        <div class="mb-4">
+                            <label for="accountName" class="block text-sm font-medium text-gray-700">Account
+                                Name</label>
+                            <input type="text" id="accountName"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                disabled placeholder="5684">
+                        </div>
 
-                <!-- Bank Name Input -->
-                <div class="mb-4">
-                    <label for="bankName" class="block text-sm font-medium text-gray-700">Bank</label>
-                    <input type="text" id="bankName" class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled placeholder="09/27">
+                        <!-- Bank Name Input -->
+                        <div class="mb-4">
+                            <label for="bankName" class="block text-sm font-medium text-gray-700">Bank</label>
+                            <input type="text" id="bankName"
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                disabled placeholder="09/27">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button"
+                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
-    </div>
-</div>
 
 
         <!-- edit card Modal -->
@@ -240,7 +250,7 @@ const handleRequest = () => {
                         <div class="card-body">
                             <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
                                 <table class="min-w-full table-auto">
-                                    <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                                    <thead class="text-white" style="background-color: #60c8f2;">
                                         <tr>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">

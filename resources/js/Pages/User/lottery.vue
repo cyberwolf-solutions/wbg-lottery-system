@@ -1,31 +1,58 @@
 <script setup>
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
+// Reactive variables
+const showModal = ref(true); // Show modal initially
+const selectedLottery = ref(''); // Track the selected lottery
 
-
-
-
+// Update the lottery and close the modal
+function selectLottery(lottery) {
+    selectedLottery.value = lottery;
+    showModal.value = false;
+}
 </script>
 
 <template>
 
-
-    <Head title="Lottery" />
+    <Head :title="selectedLottery ? selectedLottery : 'Lottery'" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Lotteries
+                {{ selectedLottery ? selectedLottery : 'Lotteries' }}
             </h2>
         </template>
 
-        <div class="py-12">
+        <!-- Modal -->
+        <div v-if="showModal" class="modal-overlay">
+            <div class="modal-container">
+                <h3 class="modal-title">Select a Lottery</h3>
+                <div class="button-row">
+                    <button @click="selectLottery('Lottery A')" class="lottery-button lottery-b">
+                        Lottery A
+                    </button>
+                    <button @click="selectLottery('Lottery B')" class="lottery-button lottery-b">
+                        Lottery B
+                    </button>
+                    <button @click="selectLottery('Lottery C')" class="lottery-button lottery-b">
+                        Lottery C
+                    </button>
+                </div>
+            </div>
+        </div>
 
+
+
+        <!-- Main Content -->
+        <div v-if="!showModal" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="text-left">
-                            <h1 class="text-2xl font-bold">US Powerball</h1>
+                            <h1 class="text-2xl font-bold">
+                                {{ selectedLottery }}
+                            </h1>
                             <p class="text-xl font-bold text-green-500">US $541,000,000 </p>
                             <div id="countdown" class="text-lg font-medium text-gray-700 mt-2">
                                 Next Draw In : <span id="days">00</span>d
@@ -34,7 +61,6 @@ import { Head } from '@inertiajs/vue3';
                                 <span id="seconds">00</span>s
                             </div>
                         </div>
-
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <div v-for="ticket in 4" :key="ticket" class="border rounded-lg p-4 relative">
                                 <h3 class="text-lg font-semibold titlelot mb-4">Pick 5 Numbers</h3>
@@ -93,14 +119,15 @@ import { Head } from '@inertiajs/vue3';
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
     </AuthenticatedLayout>
 </template>
+
+
+
 <script>
 export default {
     methods: {
@@ -141,6 +168,106 @@ setInterval(updateCountdown, 1000);
 </script>
 
 <style>
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent black */
+    z-index: 50;
+    border-style: none;
+}
+
+/* Modal Container */
+.modal-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Transparent white */
+    /* border: 2px solid #00ffff; */
+    /* Aqua border */
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 400px;
+}
+
+/* Modal Title */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Button Row */
+.button-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* Spacing between buttons */
+}
+
+/* Lottery Buttons */
+.lottery-button {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid transparent;
+    border-radius: 50px;
+    /* Fully rounded buttons */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover and Specific Styles for Buttons */
+.lottery-button:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.lottery-a {
+    color:#333;
+    /* Blue text */
+    border-color: rgb(96, 200, 242);
+    /* Blue border */
+}
+
+.lottery-a:hover {
+    background-color:rgb(96, 200, 242);
+}
+
+.lottery-b {
+    color: #333; /* Dark text */
+    border: 1px solid rgb(96, 200, 242); /* Thinner blue border */
+    border-radius: 50px; /* Maintain rounded corners */
+    padding: 0.75rem 1.5rem; /* Adjust padding to balance thinner border */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.lottery-b:hover {
+    background-color: rgb(96, 200, 242);
+}
+
+.lottery-c {
+    color:#333;
+    /* Red text */
+    border-color: rgb(96, 200, 242);
+    /* Red border */
+}
+
+.lottery-c:hover {
+    background-color:rgb(96, 200, 242);
+}
+
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -306,4 +433,4 @@ button {
     margin-right: auto;
     font-style: italic;
 }
-  </style>
+</style>

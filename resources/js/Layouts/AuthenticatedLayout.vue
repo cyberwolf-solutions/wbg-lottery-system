@@ -100,7 +100,8 @@ const fetchLotteryData = async (lotteryId) => {
                                             </template>
                                             <template #content>
                                                 <div v-for="lottery in lotteries" :key="lottery.id">
-                                                    <DropdownLink @click="fetchLotteryData(lottery.id)"
+                                                    <!-- <DropdownLink @click="fetchLotteryData(lottery.id)" -->
+                                                    <DropdownLink @click="fetchLotteryData(1)"
                                                         class="text-sm text-gray-700 hover:text-gray-900">
                                                         {{ lottery.name }}
                                                     </DropdownLink>
