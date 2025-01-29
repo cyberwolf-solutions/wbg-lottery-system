@@ -56,7 +56,7 @@ import { Head } from '@inertiajs/vue3';
                 <!-- Right Section -->
                 <div class="col-md-6 contact-right" style="position: relative;">
                     <!-- Background Image -->
-                    <img :src="logoUrl3" alt="Backgroud" class="contact-bg" />
+                    <!-- <img :src="logoUrl3" alt="Backgroud" class="contact-bg" /> -->
 
                     <!-- Content -->
                     <div class="contact-content">
@@ -90,7 +90,7 @@ export default {
             logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
 
-            logoUrl3: '/assets/images/com.jpg', // Path to your logo
+            // logoUrl3: '/assets/images/com.jpg', // Path to your logo
 
         };
     },
