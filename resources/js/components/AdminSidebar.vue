@@ -51,19 +51,16 @@ export default {
                     name: "Dashboard",
                     link: "#",
                     isOpen: false,
-                    subItems: [
-                        { id: 1, name: "Submenu 1", link: "#" },
-                        { id: 2, name: "Submenu 2", link: "#" },
-                    ],
+                    
                 },
                 {
                     id: 2,
-                    name: "Profile",
+                    name: "Lotteries",
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 3, name: "Submenu 3", link: "#" },
-                        { id: 4, name: "Submenu 4", link: "#" },
+                        { id: 3, name: "Lottery 1", link: "#" },
+                        { id: 4, name: "Lottery 2", link: "#" },
                     ],
                 },
                 {

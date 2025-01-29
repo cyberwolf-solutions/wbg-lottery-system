@@ -51,4 +51,10 @@ Route::middleware(['web'])->group(function () {
         return Inertia::render('AdminDashboard/Dashboard');
     });
 
+
+    Route::get('/adminLot', function(){
+        return Inertia::render('AdminDashboard/Lotteries');
+    });
+
+
 });
