@@ -73,7 +73,7 @@ const changePage = (page) => {
       <!-- Table -->
       <div class="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
         <table class="min-w-full table-auto">
-          <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+          <thead class="text-white" style="background-color: #60c8f2;">
             <tr>
               <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Lottery Name</th>
               <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Picked Numbers</th>
@@ -99,18 +99,20 @@ const changePage = (page) => {
 
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-4 px-4">
-  <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
-    :disabled="currentPage === 1" @click="changePage(currentPage - 1)">
-    Previous
-  </button>
-  <div class="text-sm text-gray-700 font-semibold">
-    Page {{ currentPage }} of {{ totalPages }}
-  </div>
-  <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
-    :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">
-    Next
-  </button>
-</div>
+        <button
+          class="px-6 py-3  text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
+          :disabled="currentPage === 1" @click="changePage(currentPage - 1)" style="background-color: #60c8f2;">
+          Previous
+        </button>
+        <div class="text-sm text-gray-700 font-semibold">
+          Page {{ currentPage }} of {{ totalPages }}
+        </div>
+        <button
+          class="px-6 py-3  text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200 ease-in-out"
+          :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)" style="background-color: #60c8f2;">
+          Next
+        </button>
+      </div>
 
     </div>
   </AuthenticatedLayout>
