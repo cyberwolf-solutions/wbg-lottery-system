@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import Footer from '@/Components/Footer.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -80,6 +81,9 @@ const fetchLotteryData = async (lotteryId) => {
                                 <NavLink :href="route('contact.index')" :active="route().current('contact.index')">
                                     Contact 
                                 </NavLink>
+                                <NavLink :href="route('affiliate.index')" :active="route().current('affiliate.index')">
+                                    Affiliate 
+                                </NavLink>
                                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
                                     <div class="relative ms-3">
                                         <Dropdown align="right" width="48">
@@ -109,6 +113,7 @@ const fetchLotteryData = async (lotteryId) => {
                                         </Dropdown>
                                     </div>
                                 </div>
+                                
                                 <!-- notofocation -->
                                 <!-- <NavLink :active="route().current('notification.index')" class=""
                                     data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
@@ -277,4 +282,6 @@ const fetchLotteryData = async (lotteryId) => {
             </main>
         </div>
     </div>
+    <!-- Footer component -->
+    <Footer />
 </template>
