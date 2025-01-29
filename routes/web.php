@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\Contact;
 use App\Http\Controllers\HowItWorks;
 use App\Http\Controllers\LatestResults;
@@ -43,6 +44,7 @@ Route::get('/HowItWorks', [HowItWorks::class, 'index'])->name('hiw.index');
 Route::get('/contact', [Contact::class, 'index'])->name('contact.index');
 Route::get('/latest', [LatestResults::class, 'index'])->name('latest.index');
 Route::get('/winners', [WinnerController::class, 'index'])->name('winner.index');
+Route::get('/affiliate', [AffiliateController::class, 'index'])->name('affiliate.index');
 
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);

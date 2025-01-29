@@ -89,7 +89,9 @@ export default {
             logoUrl: '/assets/winners/a.jpeg', // Path to your logo
             logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
-            logoUrl3: '/assets/images/con.jpg', // Path to your logo
+
+            logoUrl3: '/assets/images/com.jpg', // Path to your logo
+
         };
     },
 };

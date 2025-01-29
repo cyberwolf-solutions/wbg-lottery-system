@@ -1,17 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-use Inertia\Inertia;
 
-use Inertia\Inertia;
+use App\Models\Lottery;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class HowItWorks extends Controller
+class AffiliateController extends Controller
 {
     public function index()
     {
-        return Inertia::render('User/HowItWorks', [
+        
+
+        return Inertia::render('User/Affiliate', [
             'status' => session('status'),
         ]);
     }
 }
+
