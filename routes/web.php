@@ -47,6 +47,7 @@ Route::get('/latest', [LatestResults::class, 'index'])->name('latest.index');
 Route::get('/winners', [WinnerController::class, 'index'])->name('winner.index');
 Route::get('/affiliate', [AffiliateController::class, 'index'])->name('affiliate.index');
 Route::get('/landinglottery', [LangingPage::class, 'index'])->name('lottery');
+Route::get('/faq', [LangingPage::class, 'faq'])->name('faq');
 
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);

@@ -489,7 +489,7 @@
       <Latest />
       <How />
       <Contact />
-    
+    <Faq/>
   
     <!-- <div>
       <Nav />
@@ -522,6 +522,7 @@ import Prize from '@/Pages/User/Prize.vue';
 import Latest from '@/Pages/User/LatestResults.vue';
 import How from '@/Pages/User/HowItWorks.vue';
 import Contact from '@/Pages/User/Contact.vue';
+import Faq from '@/Pages/User/faq.vue';
 
 
 
@@ -564,7 +565,8 @@ export default {
     Prize,
     How,
     Contact,
-    Latest
+    Latest,
+    Faq
 
   },
 };
