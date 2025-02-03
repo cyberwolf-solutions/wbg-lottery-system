@@ -10,12 +10,13 @@ import { Head } from '@inertiajs/vue3';
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
-        <template #header>
+        <!-- <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
-        </template>
+        </template> -->
 
+        <div class="landing-page container-fluid px-0">
         <div class="d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Latest lottery results
@@ -304,6 +305,7 @@ import { Head } from '@inertiajs/vue3';
             </div>
         </div>
 
+</div>
 
 
 

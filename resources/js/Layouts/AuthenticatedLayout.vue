@@ -66,7 +66,7 @@ const fetchLotteryData = async (lotteryId) => {
                                     prizes
                                 </NavLink>
 
-                                <NavLink :href="route('winner.index')" :active="route().current('winner.index')">
+                                <!-- <NavLink :href="route('winner.index')" :active="route().current('winner.index')">
                                     Winners
                                 </NavLink>
 
@@ -80,7 +80,7 @@ const fetchLotteryData = async (lotteryId) => {
 
                                 <NavLink :href="route('contact.index')" :active="route().current('contact.index')">
                                     Contact 
-                                </NavLink>
+                                </NavLink> -->
                                 <NavLink :href="route('affiliate.index')" :active="route().current('affiliate.index')">
                                     Affiliate 
                                 </NavLink>

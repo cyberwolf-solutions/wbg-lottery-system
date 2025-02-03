@@ -35,7 +35,7 @@
                         <li class="nav-item mx-2  ">
                             <a class="nav-link " href="#">Home</a>
                         </li>
-                        <li class="nav-item mx-2">
+                        <!-- <li class="nav-item mx-2">
                             <a class="nav-link" href="#jackpot">Jackpot</a>
                         </li>
                         <li class="nav-item mx-2">
@@ -49,7 +49,7 @@
                         </li>
                         <li class="nav-item mx-2">
                             <a class="nav-link" href="#contact">Contact</a>
-                        </li>
+                        </li> -->
 
                         <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">

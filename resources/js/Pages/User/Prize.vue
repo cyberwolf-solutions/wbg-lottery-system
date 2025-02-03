@@ -67,7 +67,8 @@ const changePage = (page) => {
       <!-- Search Bar -->
       <div class="flex justify-between items-center mb-4">
         <input type="text" v-model="searchQuery" placeholder="Search..."
-          class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-1/3" />
+          class="px-4 py-2 border border-gray-300 rounded-lg 
+          shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-1/3" />
       </div>
 
       <!-- Table -->

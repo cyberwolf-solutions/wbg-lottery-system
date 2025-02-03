@@ -12,6 +12,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\LangingPage;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\WinnerController;
 
@@ -45,6 +46,7 @@ Route::get('/contact', [Contact::class, 'index'])->name('contact.index');
 Route::get('/latest', [LatestResults::class, 'index'])->name('latest.index');
 Route::get('/winners', [WinnerController::class, 'index'])->name('winner.index');
 Route::get('/affiliate', [AffiliateController::class, 'index'])->name('affiliate.index');
+Route::get('/landinglottery', [LangingPage::class, 'index'])->name('lottery');
 
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);

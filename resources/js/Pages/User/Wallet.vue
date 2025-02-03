@@ -32,11 +32,11 @@ const handleRequest = () => {
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Wallet
                 </h2>
-                <button
+                <!-- <button
                     class="ml-4 px-4 py-2 bg-blue-500 text-white font-semibold text-sm rounded shadow hover:bg-blue-600"
                     style="background-color: rgb(96, 200, 242);" @click="openModal">
                     Request
-                </button>
+                </button> -->
             </div>
 
 
@@ -49,17 +49,25 @@ const handleRequest = () => {
             <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
                 <h3 class="text-lg font-semibold mb-4">Request Credit</h3>
                 <div class="mb-4">
+                    <label for="Note" class="block text-sm font-medium text-gray-700">
+                     Admin Bank details
+                    </label>
+                    <input id="Note" type="text" placeholder="0986217671" disabled
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+
+                <div class="mb-4">
                     <label for="creditAmount" class="block text-sm font-medium text-gray-700">
-                        Credit Amount
+                        Deposit Amount
                     </label>
                     <input id="creditAmount" type="number" placeholder="Enter credit amount"
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Credit Amount
+                        Reference no.
                     </label>
-                    <input id="Note" type="text" placeholder="Add a note"
+                    <input id="Note" type="text" placeholder="Add a reference number."
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
                 <div class="mb-4">
@@ -95,29 +103,29 @@ const handleRequest = () => {
                     <div class="modal-body">
                         <!-- Account Number Input -->
                         <div class="mb-4">
-                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account
-                                Number</label>
+                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Available balance
+                                </label>
                             <input type="text" id="accountNumber"
                                 class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                disabled placeholder="1002 9737 3822">
+                                disabled placeholder="Rs. 19 288">
                         </div>
 
                         <!-- Account Name Input -->
                         <div class="mb-4">
-                            <label for="accountName" class="block text-sm font-medium text-gray-700">Account
-                                Name</label>
+                            <label for="accountName" class="block text-sm font-medium text-gray-700">Withdrawal amount
+                                </label>
                             <input type="text" id="accountName"
                                 class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                disabled placeholder="5684">
+                                 placeholder="enter">
                         </div>
 
                         <!-- Bank Name Input -->
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <label for="bankName" class="block text-sm font-medium text-gray-700">Bank</label>
                             <input type="text" id="bankName"
                                 class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 disabled placeholder="09/27">
-                        </div>
+                        </div> -->
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button"
@@ -198,25 +206,24 @@ const handleRequest = () => {
                             </div>
                             <!-- Credit Limit -->
                             <div class="text-center">
-                                <p class="mb-2 text-muted">Credit Limit</p>
-                                <h3 class="fw-bold text-info">$110,000.00</h3>
+                                <button class="custom-button mt-3" @click="openModal">Deposit</button>
                             </div>
                             <!-- My Goals -->
                             <div class="text-center">
-                                <p class="mb-2 text-muted">Request</p>
-                                <h3 class="fw-bold text-info">$2,177.00</h3>
+                                <button class="custom-button mt-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                style="transition: background-color 0.3s ease;">Withdrawal</button>
                             </div>
                             <!-- Saved -->
-                            <div class="text-center">
+                            <!-- <div class="text-center">
                                 <p class="mb-2 text-muted">Saved</p>
                                 <h3 class="fw-bold text-info">$15,125.00</h3>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Card Section -->
-                        <div class="p-4 my-4 bg-white rounded-xl shadow-lg">
+                        <!-- <div class="p-4 my-4 bg-white rounded-xl shadow-lg">
                             <div class="d-flex justify-content-between align-items-center">
-                                <!-- Card Info -->
+                               
                                 <div class="d-flex align-items-center">
                                     <div class="me-4 text-center">
                                         <h5 class="mb-0 text-primary">VISA</h5>
@@ -227,7 +234,7 @@ const handleRequest = () => {
                                         <small class="text-secondary">Exp: 02/26</small>
                                     </div>
                                 </div>
-                                <!-- Badge -->
+                               
                                 <div>
                                     <button class="btn-sm font-bold text-white rounded-circle ml-4"
                                         data-bs-toggle="modal" data-bs-target="#staticBackdrop"
@@ -242,11 +249,11 @@ const handleRequest = () => {
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
 
-                    <div class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4">
+                    <!-- <div class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4">
                         <div class="card-body">
                             <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
                                 <table class="min-w-full table-auto">
@@ -303,7 +310,7 @@ const handleRequest = () => {
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
 
 
@@ -315,11 +322,15 @@ const handleRequest = () => {
                         <div class="card-body">
                             <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
                                 <table class="min-w-full table-auto">
-                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
+                                    <thead class="" style="background-color: #60c8f2;">
                                         <tr>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Lottery Name</th>
+                                                <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Transaction type</th>
+
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Picked Numbers</th>
@@ -336,30 +347,35 @@ const handleRequest = () => {
                                     <tbody>
                                         <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">Paypal</td>
+                                            <td class="px-6 py-4 text-gray-800">Deposit</td>
                                             <td class="px-6 py-4 text-green-500 font-medium">$2,000.00</td>
                                             <td class="px-6 py-4 text-gray-600">20.02.2023</td>
                                             <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                         <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">Meta</td>
+                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
                                             <td class="px-6 py-4 text-red-500 font-medium">-$170.00</td>
                                             <td class="px-6 py-4 text-gray-600">20.02.2023</td>
                                             <td class="px-6 py-4 text-yellow-600">In Progress</td>
                                         </tr>
                                         <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">Apple</td>
+                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
                                             <td class="px-6 py-4 text-green-500 font-medium">$2,187.00</td>
                                             <td class="px-6 py-4 text-gray-600">18.02.2023</td>
                                             <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                         <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">Playstation</td>
+                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
                                             <td class="px-6 py-4 text-green-500 font-medium">$4,177.00</td>
                                             <td class="px-6 py-4 text-gray-600">16.02.2023</td>
                                             <td class="px-6 py-4 text-gray-800">Completed</td>
                                         </tr>
                                         <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">Amazon</td>
+                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
                                             <td class="px-6 py-4 text-red-500 font-medium">-$277.00</td>
                                             <td class="px-6 py-4 text-gray-600">15.02.2023</td>
                                             <td class="px-6 py-4 text-gray-800">Completed</td>
