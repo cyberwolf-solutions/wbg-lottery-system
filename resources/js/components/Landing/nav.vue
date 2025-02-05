@@ -2,22 +2,31 @@
     <div class="container-fluid px-0">
         <!-- Top Header -->
         <div class="top-header bg-light py-2 mb-1">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class=" mx-5">
-                    <a href="#" class="text-decoration-none text-secondary me-3">
-                        <i class="fas fa-globe me-1"></i> EN
-                    </a>
-                    <span class="text-secondary">|</span>
-                    <a href="#" class="text-decoration-none text-secondary ms-3"><i
-                            class="fas fa-headset me-1"></i>Support</a>
-                </div>
-                <div class="mx-5">
-                    <a href="mailto:example@gmai.com" class="text-decoration-none text-secondary">
-                        <i class="bi bi-envelope"></i> example@gmail.com
-                    </a>
-                </div>
-            </div>
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center mx-5">
+            <!-- Language Selector -->
+            <i class="fas fa-globe me-2"></i>
+            <select class="form-select form-select-sm text-secondary me-3" style="border: none; width: auto;" aria-label="Language select">
+                <option>EN</option>
+                <option value="si">සිංහල (Sinhala)</option>
+            </select>
+
+            <!-- Separator -->
+            <span class="text-secondary mx-2">|</span>
+
+            <!-- Support Link -->
+            <a href="#" class="text-decoration-none text-secondary"><i class="fas fa-headset me-1"></i> Support</a>
         </div>
+
+        <!-- Email Contact -->
+        <div class="mx-5">
+            <a href="mailto:example@gmail.com" class="text-decoration-none text-secondary">
+                <i class="bi bi-envelope"></i> example@gmail.com
+            </a>
+        </div>
+    </div>
+</div>
+
 
         <!-- Main Navigation -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
@@ -54,11 +63,8 @@
                         <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">
                             <template v-if="!$page.props.auth.user">
-                                <button
-                                    class="btn btn-primary text-white px-4 rounded-pill shadow"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#registerModal"
-                                >
+                                <button class="btn btn-primary text-white px-4 rounded-pill shadow"
+                                    data-bs-toggle="modal" data-bs-target="#registerModal">
                                     Join Us
                                 </button>
                             </template>
@@ -102,7 +108,7 @@
             </div>
         </div>
     </div> -->
-    
+
 </template>
 
 
@@ -122,7 +128,7 @@ export default {
     components: {
         RegisterForm,
         LoginForm
-  },
+    },
 };
 </script>
 

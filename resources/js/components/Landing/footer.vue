@@ -19,7 +19,7 @@
               <li><a href="#">Affiliate Program</a></li>
               <li><a href="#">Terms and Conditions</a></li>
               <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Sorteo Licenses</a></li>
+              <li><a href="#">FAQ</a></li>
             </ul>
           </div>
           <div class="col-md-4">

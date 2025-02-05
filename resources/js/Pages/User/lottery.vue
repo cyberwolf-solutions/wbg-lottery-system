@@ -42,6 +42,49 @@ function selectLottery(lottery) {
             </div>
         </div>
 
+        <!-- price -->
+
+        <!-- Button trigger modal -->
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Launch demo modal
+        </button> -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">
+                            ⚠ Insufficient Balance
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body text-center p-4">
+                        <i class="fas fa-exclamation-circle text-danger fs-1 mb-3"></i>
+                        <p class="fs-5 text-secondary">
+                            Your available balance is not enough to make this draw.
+                        </p>
+                        <p class="fw-bold text-dark">
+                            Please make a settlement to continue.
+                        </p>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer justify-content-center border-0 pb-4">
+                        <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-danger px-4 py-2 rounded-pill">
+                            Make a Settlement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
         <!-- Main Content -->
@@ -61,17 +104,39 @@ function selectLottery(lottery) {
                                 <span id="seconds">00</span>s
                             </div>
                         </div>
+
+
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <div v-for="ticket in 4" :key="ticket" class="border rounded-lg p-4 relative">
-                                <h3 class="text-lg font-semibold titlelot mb-4">Pick 5 Numbers</h3>
+                                <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
-                                <div class="button-container flex justify-between mt-4">
-                                    <button class="btn-clear">Clear</button>
-                                    <button class="btn-quick-pick">Quick Pick</button>
+                                <div class="info-container bg-light p-3 rounded shadow-sm">
+                                    <div class="button-container">
+                                        <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
+                                        <span style="font-size: 12px;">732832</span>
+                                    </div>
+
+                                    <div class="button-container">
+                                        <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
+                                        <span style="font-size: 12px;">02 Feb 2025</span>
+                                    </div>
+
+                                    <div class="button-container">
+                                        <span class="fw-bold" style="font-size: 12px;">Prize</span>
+                                        <span style="font-size: 12px;">$100,000</span>
+                                    </div>
+
+                                    <div id="countdown" class="countdown mt-3">
+                                        ⏳ <span id="days">00</span>d
+                                        <span id="hours">00</span>h
+                                        <span id="minutes">00</span>m
+                                        <span id="seconds">00</span>s
+                                    </div>
                                 </div>
 
                                 <div class="grid grid-cols-6 gap-3 mt-4">
-                                    <div v-for="number in 100" :key="number"
+                                    <div v-for="number in 100" :key="number" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
                                         class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-blue-500 hover:text-white text-sm">
                                         {{ formatNumber(number) }}
                                     </div>
@@ -181,6 +246,41 @@ setInterval(updateCountdown, 1000);
     border-style: none;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    /* Reduced font size */
+    color: #333;
+    /* Professional dark gray */
+    padding: 8px 12px;
+    /* Adjusted padding for a compact look */
+    border-bottom: 1px solid #ddd;
+    /* Subtle divider */
+}
+
+.button-container:last-child {
+    border-bottom: none;
+    /* Remove border from the last element */
+}
+
+.countdown {
+    font-size: 13px;
+    /* Smaller font size */
+    color: #007bff;
+    /* Professional blue shade */
+    font-weight: 500;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.countdown span {
+    font-weight: bold;
+    color: #dc3545;
+    /* Red to emphasize urgency */
+}
+
 /* Modal Container */
 .modal-container {
     background-color: rgba(255, 255, 255, 0.9);
@@ -229,21 +329,25 @@ setInterval(updateCountdown, 1000);
 }
 
 .lottery-a {
-    color:#333;
+    color: #333;
     /* Blue text */
     border-color: rgb(96, 200, 242);
     /* Blue border */
 }
 
 .lottery-a:hover {
-    background-color:rgb(96, 200, 242);
+    background-color: rgb(96, 200, 242);
 }
 
 .lottery-b {
-    color: #333; /* Dark text */
-    border: 1px solid rgb(96, 200, 242); /* Thinner blue border */
-    border-radius: 50px; /* Maintain rounded corners */
-    padding: 0.75rem 1.5rem; /* Adjust padding to balance thinner border */
+    color: #333;
+    /* Dark text */
+    border: 1px solid rgb(96, 200, 242);
+    /* Thinner blue border */
+    border-radius: 50px;
+    /* Maintain rounded corners */
+    padding: 0.75rem 1.5rem;
+    /* Adjust padding to balance thinner border */
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -256,14 +360,14 @@ setInterval(updateCountdown, 1000);
 }
 
 .lottery-c {
-    color:#333;
+    color: #333;
     /* Red text */
     border-color: rgb(96, 200, 242);
     /* Red border */
 }
 
 .lottery-c:hover {
-    background-color:rgb(96, 200, 242);
+    background-color: rgb(96, 200, 242);
 }
 
 
@@ -429,7 +533,7 @@ button {
 
 .titlelot {
     color: rgb(44, 186, 242);
-    margin-left: 25%;
+   
     margin-right: auto;
     font-style: italic;
 }

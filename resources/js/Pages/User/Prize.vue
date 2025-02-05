@@ -10,13 +10,13 @@ const itemsPerPage = 5;
 
 // Sample data
 const tableData = ref([
-  { name: 'Paypal', pickedNumbers: '$2,000.00', date: '20.02.2023', prize: 'Completed' },
-  { name: 'Meta', pickedNumbers: '-$170.00', date: '20.02.2023', prize: 'In Progress' },
-  { name: 'Apple', pickedNumbers: '$2,187.00', date: '18.02.2023', prize: 'Completed' },
-  { name: 'Playstation', pickedNumbers: '$4,177.00', date: '16.02.2023', prize: 'Completed' },
-  { name: 'Amazon', pickedNumbers: '-$277.00', date: '15.02.2023', prize: 'Completed' },
-  { name: 'Netflix', pickedNumbers: '$300.00', date: '14.02.2023', prize: 'Pending' },
-  { name: 'Spotify', pickedNumbers: '-$25.00', date: '13.02.2023', prize: 'Completed' },
+  { name: 'Paypal',type: '12', pickedNumbers: '$2,000.00', date: '20.02.2023', prize: 'Completed' },
+  { name: 'Meta', type: '12', pickedNumbers: '-$170.00', date: '20.02.2023', prize: 'In Progress' },
+  { name: 'Apple',type: '12',  pickedNumbers: '$2,187.00', date: '18.02.2023', prize: 'Completed' },
+  { name: 'Playstation',type: '12',  pickedNumbers: '$4,177.00', date: '16.02.2023', prize: 'Completed' },
+  { name: 'Amazon', type: '12', pickedNumbers: '-$277.00', date: '15.02.2023', prize: 'Completed' },
+  { name: 'Netflix',type: '12',  pickedNumbers: '$300.00', date: '14.02.2023', prize: 'Pending' },
+  { name: 'Spotify', type: '12', pickedNumbers: '-$25.00', date: '13.02.2023', prize: 'Completed' },
 ]);
 
 const openModal = () => {
@@ -77,15 +77,17 @@ const changePage = (page) => {
           <thead class="text-white" style="background-color: #60c8f2;">
             <tr>
               <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Lottery Name</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Picked Numbers</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Board Type</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Board Price</th>
               <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Date</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Prize</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Winning Prize</th>
             </tr>
           </thead>
           <tbody class="bg-white">
             <tr v-for="(item, index) in paginatedData" :key="index"
               class="hover:bg-gray-50 transition-all duration-200 ease-in-out">
               <td class="px-6 py-4 text-gray-800 font-medium">{{ item.name }}</td>
+              <td class="px-6 py-4 text-gray-800 font-medium">{{ item.type }}</td>
               <td class="px-6 py-4 text-green-600 font-medium">{{ item.pickedNumbers }}</td>
               <td class="px-6 py-4 text-gray-700">{{ item.date }}</td>
               <td class="px-6 py-4 text-gray-800 font-semibold">{{ item.prize }}</td>
