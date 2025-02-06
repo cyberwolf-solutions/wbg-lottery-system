@@ -1,9 +1,10 @@
-<!-- <script setup>
+<script setup>
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 
-</script> -->
+</script>
 
 <template>
 
@@ -18,7 +19,7 @@ import { Head } from '@inertiajs/vue3';
 
         <div class="d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
-            <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">List of lottery winners</p>
+            <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Terms and conditions</p>
             <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won lottery jackpots
                 and million dollar prizes. Read their storie below.
             </p>
@@ -26,101 +27,6 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-        <div class="row d-flex justify-content-center align-items-center mt-4">
-            <div class="col-8">
-                <div class="row">
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-        </div>
 
         <!-- ------ -->
 

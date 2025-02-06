@@ -10,12 +10,13 @@ import { Head } from '@inertiajs/vue3';
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
-        <template #header>
+        <!-- <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
             </h2>
-        </template>
+        </template> -->
 
+        <div class="landing-page container-fluid px-0">
         <div class="d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Latest lottery results
@@ -77,13 +78,10 @@ import { Head } from '@inertiajs/vue3';
                             </div>
                         </div>
                         <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
+                        <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
+                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                            <p style="font-size: 14px; color: #fff; margin: 0;">
+                                <i class="fas fa-clock"></i> 3 days left
                             </p>
                         </div>
                     </div>
@@ -133,13 +131,10 @@ import { Head } from '@inertiajs/vue3';
                             </div>
                         </div>
                         <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
+                        <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
+                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                            <p style="font-size: 14px; color: #fff; margin: 0;">
+                                <i class="fas fa-clock"></i> 3 days left
                             </p>
                         </div>
                     </div>
@@ -189,13 +184,10 @@ import { Head } from '@inertiajs/vue3';
                             </div>
                         </div>
                         <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
+                        <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
+                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                            <p style="font-size: 14px; color: #fff; margin: 0;">
+                                <i class="fas fa-clock"></i> 3 days left
                             </p>
                         </div>
                     </div>
@@ -245,13 +237,10 @@ import { Head } from '@inertiajs/vue3';
                             </div>
                         </div>
                         <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
+                        <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
+                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                            <p style="font-size: 14px; color: #fff; margin: 0;">
+                                <i class="fas fa-clock"></i> 3 days left
                             </p>
                         </div>
                     </div>
@@ -277,8 +266,7 @@ import { Head } from '@inertiajs/vue3';
 
                         <div class="row">
                             <div class="col-6 d-flex justify-content-center align-items-center">
-                                <i class="bi bi-patch-question-fill"
-                                    style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
+                                <i class="bi bi-patch-question-fill" style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
                                 <!-- <i class="bi bi-patch-question-fil" ></i> -->
 
                                 <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
@@ -317,6 +305,7 @@ import { Head } from '@inertiajs/vue3';
             </div>
         </div>
 
+</div>
 
 
 
@@ -342,36 +331,6 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f8f9fa;
-}
-
-.draw-info {
-    background: linear-gradient(135deg, #4a90e2, #60c8f2);
-    /* Smooth gradient */
-    padding: 12px;
-    text-align: center;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    color: #fff;
-    font-weight: 500;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    /* Soft shadow */
-}
-
-.draw-info p {
-    font-size: 14px;
-    margin: 0;
-    line-height: 1.6;
-}
-
-.draw-info span {
-    font-weight: bold;
-    font-size: 15px;
-    letter-spacing: 0.5px;
-}
-
-.draw-icon {
-    margin-right: 5px;
-    font-size: 16px;
 }
 
 a:hover {
