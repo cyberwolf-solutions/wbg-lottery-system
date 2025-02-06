@@ -42,24 +42,27 @@
                 <div class="navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item mx-2  ">
-                            <a class="nav-link " href="#">Home</a>
+                            <a :href="route('landing')" :active="route().current('landing')" class="nav-link " href="#">Home</a>
                         </li>
+                        <li class="nav-item mx-2">
+                            <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link" >How it works</a>
+                        </li>
+                  
                         <!-- <li class="nav-item mx-2">
-                            <a class="nav-link" href="#jackpot">Jackpot</a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#Results">Results</a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#WhyChoose">Why Choose Us</a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#buy">Lotteries</a>
-                        </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link" href="#contact">Contact</a>
+                            <a :href="route('prize.index')" :active="route().current('prize.index')" class="nav-link" >Prize</a>
                         </li> -->
 
+                        <li class="nav-item mx-2">
+                            <a :href="route('latest.index')" :active="route().current('latest.index')" class="nav-link" >Latest results</a>
+                        </li>
+
+                        <li class="nav-item mx-2">
+                            <a :href="route('contact.index')" :active="route().current('contact.index')" class="nav-link" >Contact</a>
+                        </li>
+
+                        <li class="nav-item mx-2">
+                            <a :href="route('winner.index')" :active="route().current('winner.index')" class="nav-link" >Winners</a>
+                        </li>
                         <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">
                             <template v-if="!$page.props.auth.user">

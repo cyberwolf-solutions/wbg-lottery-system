@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/vue3';
 
 <template>
 
-
+<Nav />
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -106,11 +106,13 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-
+    <Footer />
     </AuthenticatedLayout>
 </template>
 
 <script>
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
 export default {
     data() {
         return {
@@ -118,6 +120,12 @@ export default {
             logoUrl1: '/assets/images/2.png', // Path to your logo
             logoUrl2: '/assets/images/3.png', // Path to your logo
         };
+    },
+    name: "faq",
+    components: {
+        Footer,
+        Nav,
+
     },
 };
 </script>

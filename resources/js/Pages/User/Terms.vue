@@ -1,13 +1,14 @@
-<script setup>
+<!-- <script setup>
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 
-</script>
+</script> -->
 
 <template>
 
+    <Nav />
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -20,7 +21,9 @@ import { Head } from '@inertiajs/vue3';
         <div class="d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Terms and conditions</p>
-            <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won lottery jackpots
+            <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won
+                lottery
+                jackpots
                 and million dollar prizes. Read their storie below.
             </p>
         </div>
@@ -30,7 +33,8 @@ import { Head } from '@inertiajs/vue3';
 
         <!-- ------ -->
 
-        <div class="row d-flex justify-content-center align-items-center" style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
+        <div class="row d-flex justify-content-center align-items-center"
+            style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
                 <div class="row d-flex justify-content-center align-items-center mt-4">
@@ -51,13 +55,15 @@ import { Head } from '@inertiajs/vue3';
                             </p>
                         </div>
 
-                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
+                        <div
+                            style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
 
                             <!-- Win Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                                <i class="bi bi-trophy-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                                <i class="bi bi-trophy-fill"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
@@ -67,10 +73,11 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Notification Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                                <i class="bi bi-bell" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                        
+                                <i class="bi bi-bell"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Receive an instant notification by email or SMS!
@@ -79,10 +86,11 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Collect Prize Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <i class="bi bi-gift-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="bi bi-gift-fill"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Your win will be directly transferred to your account on Sorteo!
@@ -100,11 +108,13 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-
+        <Footer />
     </AuthenticatedLayout>
 </template>
 
 <script>
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
 export default {
     data() {
         return {
@@ -112,6 +122,12 @@ export default {
             logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
         };
+    },
+    name: "terms",
+    components: {
+        Footer,
+        Nav,
+
     },
 };
 </script>
@@ -287,5 +303,3 @@ button {
     font-style: italic;
 }
 </style>
-
-

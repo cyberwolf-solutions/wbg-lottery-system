@@ -28,7 +28,8 @@ use App\Http\Controllers\WinnerController;
 
 Route::get('/', function () {
     return Inertia::render('LandingPage');
-});
+})->name('landing');
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

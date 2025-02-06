@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+// import { ref, computed } from 'vue';
+// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+// import { Head } from '@inertiajs/vue3';
 
 const isModalOpen = ref(false);
 const searchQuery = ref('');

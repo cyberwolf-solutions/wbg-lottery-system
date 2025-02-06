@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/vue3';
 </script> -->
 
 <template>
-
+    <Nav />
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -27,10 +27,6 @@ import { Head } from '@inertiajs/vue3';
             </p>
         </div>
 
-
-
-
-
         <div class="container py-5">
             <div class="row g-4 d-flex justify-content-center align-items-center">
 
@@ -39,14 +35,15 @@ import { Head } from '@inertiajs/vue3';
             </div>
         </div>
 
-        <div class="row d-flex justify-content-center align-items-center" style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
+        <div class="row d-flex justify-content-center align-items-center"
+            style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
                 <div class="row d-flex justify-content-center align-items-center mt-4">
                     <div class="col-10 text-center">
                         <h1
                             style="margin-top: 50px;color: #333; margin-bottom: 20px;font-size: 30px;font-weight: bold;">
-                           Lucky rewards</h1>
+                            Lucky rewards</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
                                 Winners updated weekly. Prize value listed as won may not reflect actual net claims
@@ -59,13 +56,15 @@ import { Head } from '@inertiajs/vue3';
                             </p>
                         </div>
 
-                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
+                        <div
+                            style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
 
                             <!-- Win Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <i class="bi bi-calculator" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
-                              
+                                <i class="bi bi-calculator"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
+
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
                                     Win any prize while playing your favourite lotteries online at Sorteo.
@@ -74,10 +73,11 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Notification Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <i class="bi bi-boxes" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
-                              
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="bi bi-boxes"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
+
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Receive an instant notification by email or SMS!
@@ -86,11 +86,12 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Collect Prize Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <i class="bi bi-browser-edge" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
-                          
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="bi bi-browser-edge"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;font-size: 60px;color:rgb(96, 200, 242);"></i>
+
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Your win will be directly transferred to your account on Sorteo!
@@ -115,8 +116,9 @@ import { Head } from '@inertiajs/vue3';
 
                         <div class="row">
                             <div class="col-6 d-flex justify-content-center align-items-center">
-                                <i class="bi bi-patch-question-fill" style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
-                            
+                                <i class="bi bi-patch-question-fill"
+                                    style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
+
                                 <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
                             </div>
                             <div class="col-6">
@@ -156,11 +158,14 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-
+        <Footer />
     </AuthenticatedLayout>
 </template>
 
 <script>
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
+
 export default {
     data() {
         return {
@@ -168,6 +173,12 @@ export default {
             logoUrl1: '/assets/images/2.png', // Path to your logo
             logoUrl2: '/assets/images/3.png', // Path to your logo
         };
+    },
+    name: "hom",
+    components: {
+        Footer,
+        Nav,
+
     },
 };
 </script>
