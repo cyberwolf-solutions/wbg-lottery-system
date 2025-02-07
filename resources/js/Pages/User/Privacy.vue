@@ -1,13 +1,14 @@
-<script setup>
+<!-- <script setup>
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 
-</script>
+</script> -->
 
 <template>
 
+    <Nav />
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -20,9 +21,77 @@ import { Head } from '@inertiajs/vue3';
         <div class="d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Privacy policy</p>
-            <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won lottery jackpots
-                and million dollar prizes. Read their storie below.
-            </p>
+
+
+
+
+
+
+        </div>
+
+        <div class="container">
+            <!-- <h1>Privacy Policy</h1> -->
+            <p style="color:silver;">At WinBoard Game, your privacy is important to us. This Privacy Policy outlines how
+                we
+                collect, use,
+                and
+                protect your personal information.</p>
+
+            <h2>1. Information We Collect</h2>
+            <ul>
+                <li><strong>Personal Information:</strong> Name, email, phone number, and payment details (USDT
+                    wallet
+                    information).</li>
+                <li><strong>Usage Information:</strong> Game activity, preferences, and interactions.</li>
+                <li><strong>Device Information:</strong> Device type, operating system, and IP address.</li>
+            </ul>
+
+            <h2>2. How We Use Your Information</h2>
+            <ul>
+                <li><strong>To Provide Services:</strong> Manage account, process bookings, and facilitate
+                    transactions.
+                </li>
+                <li><strong>To Improve Our Services:</strong> Analyze usage patterns and enhance user experience.
+                </li>
+                <li><strong>To Communicate with You:</strong> Send updates, promotions, and important
+                    account-related
+                    messages.</li>
+                <li><strong>For Security and Fraud Prevention:</strong> Prevent unauthorized access and fraudulent
+                    activities.</li>
+            </ul>
+
+            <h2>3. Sharing Your Information</h2>
+            <ul>
+                <li><strong>We Do Not Sell Your Data:</strong> We do not trade or rent your personal information.
+                </li>
+                <li><strong>Service Providers:</strong> Third-party vendors assisting in operations (e.g., payment
+                    processors).</li>
+                <li><strong>Legal Requirements:</strong> Compliance with legal obligations if necessary.</li>
+            </ul>
+
+            <h2>4. Data Security</h2>
+            <p>We implement encryption, secure servers, and access controls to protect your data.</p>
+
+            <h2>5. Your Rights</h2>
+            <ul>
+                <li><strong>Access and Correction:</strong> Update your personal details via account settings.</li>
+                <li><strong>Deletion:</strong> Request deletion of data, subject to legal obligations.</li>
+                <li><strong>Opt-Out:</strong> Unsubscribe from promotional communications.</li>
+            </ul>
+
+            <h2>6. Cookies and Tracking Technologies</h2>
+            <p>We use cookies to enhance your experience, personalize content, and improve our services.</p>
+
+            <h2>7. Children's Privacy</h2>
+            <p>WinBoard Game is not intended for children under 18, and we do not knowingly collect their data.</p>
+
+            <h2>8. Changes to This Privacy Policy</h2>
+            <p>We may update this Privacy Policy periodically. Changes will be posted with an updated effective
+                date.</p>
+
+            <h2>9. Contact Us</h2>
+            <p class="contact">If you have any questions, please contact us at <a
+                    href="mailto:info@winboardgame.com">info@winboardgame.com</a>.</p>
         </div>
 
 
@@ -30,7 +99,8 @@ import { Head } from '@inertiajs/vue3';
 
         <!-- ------ -->
 
-        <div class="row d-flex justify-content-center align-items-center" style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
+        <div class="row d-flex justify-content-center align-items-center"
+            style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
                 <div class="row d-flex justify-content-center align-items-center mt-4">
@@ -51,13 +121,15 @@ import { Head } from '@inertiajs/vue3';
                             </p>
                         </div>
 
-                        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
+                        <div
+                            style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
 
                             <!-- Win Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                                <i class="bi bi-trophy-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                                <i class="bi bi-trophy-fill"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
@@ -67,10 +139,11 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Notification Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                                <i class="bi bi-bell" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                        
+                                <i class="bi bi-bell"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Receive an instant notification by email or SMS!
@@ -79,10 +152,11 @@ import { Head } from '@inertiajs/vue3';
 
                             <!-- Collect Prize Section -->
                             <div
-                            style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <i class="bi bi-gift-fill" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                            <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
+                                style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <i class="bi bi-gift-fill"
+                                    style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
+                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Your win will be directly transferred to your account on Sorteo!
@@ -100,11 +174,13 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-
+        <Footer />
     </AuthenticatedLayout>
 </template>
 
 <script>
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
 export default {
     data() {
         return {
@@ -113,10 +189,53 @@ export default {
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
         };
     },
+    name: "pr",
+    components: {
+        Footer,
+        Nav,
+
+    },
 };
 </script>
 
 <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2 {
+    color: #000000;
+    font-weight: bold;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.contact {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -287,5 +406,3 @@ button {
     font-style: italic;
 }
 </style>
-
-

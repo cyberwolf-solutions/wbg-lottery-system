@@ -448,66 +448,6 @@
       </div>
     </section>
 
-    <!-- <section class="contact py-5" id="contact">
-      <div class="container text-center">
-        <div class="row">
-          <div class="col-lg-4 mx-auto mt-4">
-            <h4 class="mb-3">We answer all of your questions</h4>
-            <h2 class="mb-4 fw-bold">CONTACT US</h2>
-            <p class="mb-5">
-              If you have any questions or queries our helpful support team will be more than happy to assist.
-            </p>
-            <form>
-              <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Full Name" />
-              </div>
-              <div class="mb-3">
-                <input type="email" class="form-control" placeholder="Email Address" />
-              </div>
-              <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Phone No" />
-              </div>
-              <div class="mb-3">
-                <textarea class="form-control" rows="4" placeholder="Message"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary w-100">SEND MESSAGE</button>
-            </form>
-          </div>
-
-          <div class="col-md-4 mt-4">
-            <img :src="image6" style="height: auto; max-width: 100%;" alt="Lottery" class="img-fluid" />
-          </div>
-        </div>
-
-      
-      </div>
-    </section> -->
-
-  
-      <Winners />
-      <!-- <Prize /> -->
-      <Latest />
-      <How />
-      <Contact />
-    <Faq/>
-  
-    <!-- <div>
-      <Nav />
-      <div class="container text-center mt-5">
-        <h1>Landing Page</h1>
-        <div v-if="Object.keys(landingPageData).length === 0">Loading...</div>
-        <ul v-else class="list-group">
-          <li class="list-group-item">Can Login: {{ landingPageData.canLogin }}</li>
-          <li class="list-group-item">Can Register: {{ landingPageData.canRegister }}</li>
-          <li class="list-group-item">Laravel Version: {{ landingPageData.laravelVersion }}</li>
-          <li class="list-group-item">PHP Version: {{ landingPageData.phpVersion }}</li>
-        </ul>
-      </div>
-      <Footer />
-    </div> -->
-
-
-
     <Footer />
   </div>
 </template>

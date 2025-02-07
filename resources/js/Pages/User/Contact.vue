@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/vue3';
 </script> -->
 
 <template>
-
+<Nav />
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -56,7 +56,7 @@ import { Head } from '@inertiajs/vue3';
                 <!-- Right Section -->
                 <div class="col-md-6 contact-right" style="position: relative;">
                     <!-- Background Image -->
-                    <!-- <img :src="logoUrl3" alt="Backgroud" class="contact-bg" /> -->
+                    <img :src="logoUrl3" alt="Backgroud" class="contact-bg" />
 
                     <!-- Content -->
                     <div class="contact-content">
@@ -78,11 +78,13 @@ import { Head } from '@inertiajs/vue3';
 
         </div>
 
-
+        <Footer />
     </AuthenticatedLayout>
 </template>
 
 <script>
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
 export default {
     data() {
         return {
@@ -90,9 +92,15 @@ export default {
             logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
             logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
 
-            // logoUrl3: '/assets/images/com.jpg', // Path to your logo
+            logoUrl3: '/assets/images/contact.jpg', // Path to your logo
 
         };
+    },
+    name: "contact",
+    components: {
+        Footer,
+        Nav,
+
     },
 };
 </script>
