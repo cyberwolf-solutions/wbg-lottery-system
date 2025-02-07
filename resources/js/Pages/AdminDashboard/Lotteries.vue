@@ -1,202 +1,273 @@
 <template>
-    <div id="app" class="d-flex dark-theme">
-      <Sidebar @sidebar-toggle="handleSidebarToggle" />
-      <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }] " class="flex-fill">
-        <!-- Dashboard Widgets -->
-        <div class="dashboard-banner">
-          <!-- Top Navbar Section -->
-          <div class="navbar">
-            <h2 class="lottery-name fw-bold text-danger">Misco</h2>
-            <button @click="openModal" class="btn btn-primary">Create a Dashboard</button>
+  <div id="app" class="d-flex dark-theme">
+    <Sidebar @sidebar-toggle="handleSidebarToggle" />
+    <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
+      <!-- Dashboard Widgets -->
+      <div class="dashboard-banner">
+        <!-- Top Navbar Section -->
+        <div class="navbar">
+          <h2 class="lottery-name fw-bold text-danger">Misco</h2>
+          <button @click="openModal" class="btn btn-primary">Create a Dashboard</button>
+        </div>
+
+        <!-- Lottery Table Section -->
+        <div class="lottery-table">
+          <h3 class="mt-4">Lottery Details:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Dashboard</th>
+                <th>Price</th>
+                <th>Actions</th> <!-- New header for actions -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(dashboard, index) in dashboards" :key="index">
+                <td><a href="#">{{ dashboard.name }}</a></td>
+                <td>{{ dashboard.price }}</td>
+                <td>
+                  <!-- Edit Button -->
+                  <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
+                    <i class="fa fa-edit"></i>
+                  </button>
+
+                  <!-- Delete Button -->
+                  <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Modal for Creating a Dashboard -->
+        <div v-if="isModalOpen" class="modal-overlay">
+          <div class="modal-content">
+            <h3>Create a New Dashboard</h3>
+            <form @submit.prevent="createDashboard">
+              <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" v-model="newDashboard.price" id="price" required />
+              </div>
+              <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" v-model="newDashboard.date" id="date" required />
+              </div>
+              <div class="form-group">
+                <label for="draw">Draw:</label>
+                <input type="text" v-model="newDashboard.draw" id="draw" required />
+              </div>
+              <div class="form-group">
+                <label for="draw-number">Draw Number:</label>
+                <input type="number" v-model="newDashboard.drawNumber" id="draw-number" required />
+              </div>
+              <button type="submit" class="btn btn-success mx-3">Create Dashboard</button>
+              <button type="button" @click="closeModal" class="btn btn-danger mx-4">Cancel</button>
+            </form>
           </div>
-  
-          <!-- Lottery Table Section -->
-          <div class="lottery-table">
-            <h3 class="mt-4">Lottery Details:</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Dashboard</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">Dashboard 1</a></td>
-                  <td>$10</td>
-                </tr>
-                <tr>
-                  <td><a href="#">Dashboard 2</a></td>
-                  <td>$20</td>
-                </tr>
-                <tr>
-                  <td><a href="#">Dashboard 3</a></td>
-                  <td>$50</td>
-                </tr>
-              </tbody>
-            </table>
+        </div>
+
+        <!-- Modal for Editing a Dashboard -->
+        <div v-if="isEditModalOpen" class="modal-overlay">
+          <div class="modal-content">
+            <h3>Edit Dashboard</h3>
+            <form @submit.prevent="updateDashboard">
+              <div class="form-group">
+                <label for="edit-price">Price:</label>
+                <input type="number" v-model="editingDashboard.price" id="edit-price" required />
+              </div>
+              <div class="form-group">
+                <label for="edit-date">Date:</label>
+                <input type="date" v-model="editingDashboard.date" id="edit-date" required />
+              </div>
+              <div class="form-group">
+                <label for="edit-draw">Draw:</label>
+                <input type="text" v-model="editingDashboard.draw" id="edit-draw" required />
+              </div>
+              <div class="form-group">
+                <label for="edit-draw-number">Draw Number:</label>
+                <input type="number" v-model="editingDashboard.drawNumber" id="edit-draw-number" required />
+              </div>
+              <button type="submit" class="btn btn-success mx-3">Update Dashboard</button>
+              <button type="button" @click="closeEditModal" class="btn btn-danger mx-4">Cancel</button>
+            </form>
           </div>
-  
-          <!-- Modal for Creating a Dashboard -->
-          <div v-if="isModalOpen" class="modal-overlay">
-            <div class="modal-content">
-              <h3>Create a New Dashboard</h3>
-              <form @submit.prevent="createDashboard">
-                <div class="form-group">
-                  <label for="price">Price:</label>
-                  <input type="number" v-model="newDashboard.price" id="price" required />
-                </div>
-                <div class="form-group">
-                  <label for="date">Date:</label>
-                  <input type="date" v-model="newDashboard.date" id="date" required />
-                </div>
-                <div class="form-group">
-                  <label for="draw">Draw:</label>
-                  <input type="text" v-model="newDashboard.draw" id="draw" required />
-                </div>
-                <div class="form-group">
-                  <label for="draw-number">Draw Number:</label>
-                  <input type="number" v-model="newDashboard.drawNumber" id="draw-number" required />
-                </div>
-                <button type="submit" class="btn btn-success mx-3">Create Dashboard</button>
-                <button type="button" @click="closeModal" class="btn btn-danger mx-4 ">Cancel</button>
-              </form>
+        </div>
+
+        <!-- Confirmation Modal for Deleting -->
+        <div v-if="isDeleteModalOpen" class="modal-overlay">
+          <div class="modal-content">
+            <h3>Are you sure you want to delete this dashboard?</h3>
+            <div class="row align-items-center justify-content-center">
+              <button @click="deleteDashboard" class=" btn btn-danger mx-2 col-5">Yes, Delete</button>
+              <button @click="closeDeleteModal" class="btn btn-secondary col-5">Cancel</button>
             </div>
+           
           </div>
-  
         </div>
       </div>
-  
-      <router-view />
     </div>
-  </template>
-  
 
-  <script>
-  import Sidebar from '@/components/AdminSidebar.vue';
-  
-  export default {
-    components: {
-      Sidebar,
+    <router-view />
+  </div>
+</template>
+
+<script>
+import Sidebar from '@/components/AdminSidebar.vue';
+
+export default {
+  components: {
+    Sidebar,
+  },
+  data() {
+    return {
+      isSidebarVisible: true,
+      isModalOpen: false,
+      isEditModalOpen: false,
+      isDeleteModalOpen: false,
+      dashboards: [
+        { id: 1, name: 'Dashboard 1', price: '$10', date: '2025-02-05', draw: '1', drawNumber: '001' },
+        { id: 2, name: 'Dashboard 2', price: '$20', date: '2025-02-05', draw: '2', drawNumber: '002' },
+        { id: 3, name: 'Dashboard 3', price: '$50', date: '2025-02-05', draw: '3', drawNumber: '003' },
+      ],
+      newDashboard: {
+        price: '',
+        date: '',
+        draw: '',
+        drawNumber: '',
+      },
+      editingDashboard: {},
+    };
+  },
+  methods: {
+    handleSidebarToggle(isVisible) {
+      this.isSidebarVisible = isVisible;
     },
-    data() {
-      return {
-        isSidebarVisible: true,
-        isModalOpen: false,
-        newDashboard: {
-          price: '',
-          date: '',
-          draw: '',
-          drawNumber: '',
-        },
-      };
+    openModal() {
+      this.isModalOpen = true;
     },
-    methods: {
-      handleSidebarToggle(isVisible) {
-        this.isSidebarVisible = isVisible;
-      },
-      openModal() {
-        this.isModalOpen = true;
-      },
-      closeModal() {
-        this.isModalOpen = false;
-      },
-      createDashboard() {
-        // Handle the creation logic here (e.g., sending data to an API or storing locally)
-        console.log('New Dashboard:', this.newDashboard);
-  
-        // After creating, close the modal
-        this.closeModal();
-      },
+    closeModal() {
+      this.isModalOpen = false;
     },
-  };
-  </script>
-  
+    createDashboard() {
+      this.dashboards.push({ ...this.newDashboard, id: this.dashboards.length + 1 });
+      this.closeModal();
+    },
+    editDashboard(dashboard) {
+      this.editingDashboard = { ...dashboard };
+      this.isEditModalOpen = true;
+    },
+    closeEditModal() {
+      this.isEditModalOpen = false;
+    },
+    updateDashboard() {
+      const index = this.dashboards.findIndex(d => d.id === this.editingDashboard.id);
+      if (index !== -1) {
+        this.dashboards.splice(index, 1, this.editingDashboard);
+      }
+      this.closeEditModal();
+    },
+    confirmDelete(dashboard) {
+      this.editingDashboard = dashboard;
+      this.isDeleteModalOpen = true;
+    },
+    closeDeleteModal() {
+      this.isDeleteModalOpen = false;
+    },
+    deleteDashboard() {
+      this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
+      this.closeDeleteModal();
+    },
+  },
+};
+</script>
+
 <style scoped>
 #app.dark-theme {
-    background-color: #121212;
-    color: #e0e0e0;
-    font-family: 'Arial', sans-serif;
-    min-height: 100vh;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
 }
 
 .main-content {
-    margin-left: 250px;
-    padding: 20px;
-    background-color: #1e1e1e;
-    transition: margin-left 0.3s ease;
+  margin-left: 250px;
+  padding: 20px;
+  background-color: #1e1e1e;
+  transition: margin-left 0.3s ease;
 }
 
 .main-content.sidebar-hidden {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .dashboard-banner {
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    height: auto;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  height: auto;
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #444;
 }
 
 .lottery-name {
-    font-size: 24px;
-    color: #e0e0e0;
+  font-size: 24px;
+  color: #e0e0e0;
 }
 
 .create-dashboard-btn {
-    background-color: #5a5a5a;
-    color: #e0e0e0;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
+  background-color: #5a5a5a;
+  color: #e0e0e0;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 .create-dashboard-btn:hover {
-    background-color: #777;
+  background-color: #777;
 }
 
 .lottery-prices,
 .dashboards {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .lottery-prices h3,
 .dashboards h3 {
-    color: #e0e0e0;
-    font-size: 20px;
+  color: #e0e0e0;
+  font-size: 20px;
 }
 
 .lottery-prices ul,
 .dashboards ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .lottery-prices li,
 .dashboards li {
-    color: #b0b0b0;
-    font-size: 16px;
+  color: #b0b0b0;
+  font-size: 16px;
 }
 
 .dashboards a {
-    color: #1e90ff;
-    text-decoration: none;
+  color: #1e90ff;
+  text-decoration: none;
 }
 
 .dashboards a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 #app.dark-theme {
@@ -240,7 +311,8 @@ table {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
   color: #e0e0e0;
@@ -263,10 +335,8 @@ td a:hover {
 tbody tr:hover {
   background-color: #444;
 }
-
-
-
-</style><style scoped>
+</style>
+<style scoped>
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;
