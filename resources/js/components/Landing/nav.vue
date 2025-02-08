@@ -2,30 +2,34 @@
     <div class="container-fluid px-0">
         <!-- Top Header -->
         <div class="top-header bg-light py-2 mb-1">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center mx-5">
-            <!-- Language Selector -->
-            <i class="fas fa-globe me-2"></i>
-            <select class="form-select form-select-sm text-secondary me-3" style="border: none; width: auto;" aria-label="Language select">
-                <option>EN</option>
-                <option value="si">සිංහල (Sinhala)</option>
-            </select>
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Section: Language and Support -->
+                    <div class="col-md-6 col-12 text-center text-md-start mb-2 mb-md-0">
+                        <i class="fas fa-globe me-2"></i>
+                        <select class="form-select form-select-sm text-secondary me-2 d-inline-block"
+                            style="border: none; width: auto;" aria-label="Language select">
+                            <option>EN</option>
+                            <option value="si">සිංහල (Sinhala)</option>
+                        </select>
 
-            <!-- Separator -->
-            <span class="text-secondary mx-2">|</span>
+                        <span class="text-secondary mx-2 d-none d-md-inline">|</span>
 
-            <!-- Support Link -->
-            <a href="#" class="text-decoration-none text-secondary"><i class="fas fa-headset me-1"></i> Support</a>
+                        <a href="#" class="text-decoration-none text-secondary d-inline-block">
+                            <i class="fas fa-headset me-1"></i> Support
+                        </a>
+                    </div>
+
+                    <!-- Right Section: Email -->
+                    <div class="col-md-6 col-12 text-center text-md-end">
+                        <a href="mailto:example@gmail.com" class="text-decoration-none text-secondary">
+                            <i class="bi bi-envelope"></i> example@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Email Contact -->
-        <div class="mx-5">
-            <a href="mailto:example@gmail.com" class="text-decoration-none text-secondary">
-                <i class="bi bi-envelope"></i> example@gmail.com
-            </a>
-        </div>
-    </div>
-</div>
 
 
         <!-- Main Navigation -->
@@ -42,26 +46,31 @@
                 <div class="navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item mx-2  ">
-                            <a :href="route('landing')" :active="route().current('landing')" class="nav-link " href="#">Home</a>
+                            <a :href="route('landing')" :active="route().current('landing')" class="nav-link "
+                                href="#">Home</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link" >How it works</a>
+                            <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link">How it
+                                works</a>
                         </li>
-                  
+
                         <!-- <li class="nav-item mx-2">
                             <a :href="route('prize.index')" :active="route().current('prize.index')" class="nav-link" >Prize</a>
                         </li> -->
 
                         <li class="nav-item mx-2">
-                            <a :href="route('latest.index')" :active="route().current('latest.index')" class="nav-link" >Latest results</a>
+                            <a :href="route('latest.index')" :active="route().current('latest.index')"
+                                class="nav-link">Latest results</a>
                         </li>
 
                         <li class="nav-item mx-2">
-                            <a :href="route('contact.index')" :active="route().current('contact.index')" class="nav-link" >Contact</a>
+                            <a :href="route('contact.index')" :active="route().current('contact.index')"
+                                class="nav-link">Contact</a>
                         </li>
 
                         <li class="nav-item mx-2">
-                            <a :href="route('winner.index')" :active="route().current('winner.index')" class="nav-link" >Winners</a>
+                            <a :href="route('winner.index')" :active="route().current('winner.index')"
+                                class="nav-link">Winners</a>
                         </li>
                         <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">
