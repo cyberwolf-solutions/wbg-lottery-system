@@ -11,7 +11,7 @@
             Sorteo is an online lottery platform inspired by a few sorteo <br> lover's fantasy
             of the ultimate lottery platform.
           </p>
-          <button class="custom-button mt-3">About us</button>
+          <button class="custom-button mt-3">BUY TICKET NOW!</button>
         </div>
         <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
           <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
@@ -55,9 +55,9 @@
 
         <div class="col-12 col-md-3 mt-3">
           <div class="mt-4 align-content-center text-center">
-            <!-- <a class="nav-link fw-bold text-secondary" href="#">Home</a> -->
-            <!-- <a class="nav-link mt-2 text-secondary text-decoration-underline" href="#">View All Offers</a> -->
-          <button class="custom-button mt-3">Book your lucky number</button>
+            <!-- <a class="nav-link fw-bold text-secondary" href="#">Home</a>
+            <a class="nav-link mt-2 text-secondary text-decoration-underline" href="#">View All Offers</a> -->
+            <button class="custom-button mt-3">Book your lucky number</button>
           </div>
         </div>
       </div>
@@ -80,8 +80,8 @@
                   style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">Power Ball</h3>
-                    <p class="card-title title mb-2">Draw number : 34</p>
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
                     <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
@@ -92,8 +92,8 @@
                   style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">Cancer charity</h3>
-                    <p class="card-title title mb-2">Draw number : 89</p>
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
                     <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
@@ -103,8 +103,8 @@
                   style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">Euro jaclpot</h3>
-                    <p class="card-title title mb-2">Draw number : 03</p>
+                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
+                    <p class="card-title title mb-2">US Powerball</p>
                     <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
@@ -145,7 +145,6 @@
                             <tr>
                               <th>Lottery</th>
                               <th>Draw Date</th>
-                              <th>Draw No</th>
                               <th>Winning Numbers</th>
                             </tr>
                           </thead>
@@ -155,7 +154,6 @@
                                 <i class="bi bi-heart-fill text-danger me-2"></i> Cancer Charity
                               </td>
                               <td>30/05/2018</td>
-                              <td>890</td>
                               <td>
 
                                 <span class="badge badgecol2 border ">19</span>
@@ -171,7 +169,6 @@
                                 <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
                               </td>
                               <td>30/05/2018</td>
-                              <td>890</td>
                               <td>
                                 <span class="badge badgecol1 border">19</span>
                                 <span class="badge badgecol3 border">31</span>
@@ -185,7 +182,6 @@
                                 <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
                               </td>
                               <td>30/05/2018</td>
-                              <td>890</td>
                               <td>
                                 <span class="badge badgecol1 border">19</span>
                                 <span class="badge badgecol1 border">31</span>
@@ -242,12 +238,12 @@
 
             </div>
             <div class="text-center mt-5 mb-5">
-          <button class="custom-button mt-3">All results</button>
+                            <button class="custom-button mt-3">All results</button>
 
-          <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
+                            <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
 
-              <!-- <a href="#" class="text-primary text-decoration-none text-decoration-underline">See All Results</a> -->
-            </div>
+                            <!-- <a href="#" class="text-primary text-decoration-none text-decoration-underline">See All Results</a> -->
+                        </div>
           </div>
 
         </section>
@@ -350,8 +346,7 @@
                   <thead class="bg-light align-middle" style="height: 70px;">
                     <tr>
                       <th>Lottery</th>
-                      <th>Draw no.</th>
-                      <th>Date</th>
+                      <th>Jackpot</th>
                       <th>Price</th>
                       <th>Time to Draw</th>
                       <th>Sold</th>
@@ -364,8 +359,7 @@
                         <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
                         Cancer Charity
                       </td>
-                      <td>678</td>
-                      <td>67.30.2020</td>
+                      <td>€53,000,000</td>
                       <td>€3.9</td>
                       <td>
                         <div class="d-flex justify-content-center">
@@ -401,8 +395,7 @@
                         <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
                         US Powerball
                       </td>
-                      <td>678</td>
-                      <td>67.30.2020</td>
+                      <td>€13,000,000</td>
                       <td>€3.9</td>
                       <td>
                         <div class="d-flex justify-content-center">
@@ -448,6 +441,25 @@
       </div>
     </section>
 
+   
+
+    <!-- <div>
+      <Nav />
+      <div class="container text-center mt-5">
+        <h1>Landing Page</h1>
+        <div v-if="Object.keys(landingPageData).length === 0">Loading...</div>
+        <ul v-else class="list-group">
+          <li class="list-group-item">Can Login: {{ landingPageData.canLogin }}</li>
+          <li class="list-group-item">Can Register: {{ landingPageData.canRegister }}</li>
+          <li class="list-group-item">Laravel Version: {{ landingPageData.laravelVersion }}</li>
+          <li class="list-group-item">PHP Version: {{ landingPageData.phpVersion }}</li>
+        </ul>
+      </div>
+      <Footer />
+    </div> -->
+
+
+
     <Footer />
   </div>
 </template>
@@ -457,12 +469,6 @@
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
 import axios from 'axios';
-import Winners from '@/Pages/User/Winners.vue';
-import Prize from '@/Pages/User/Prize.vue';
-import Latest from '@/Pages/User/LatestResults.vue';
-import How from '@/Pages/User/HowItWorks.vue';
-import Contact from '@/Pages/User/Contact.vue';
-import Faq from '@/Pages/User/faq.vue';
 
 
 
@@ -500,15 +506,13 @@ export default {
   name: "Home",
   components: {
     Footer,
-    Nav,
-    Winners,
-    Prize,
-    How,
-    Contact,
-    Latest,
-    Faq
-
+    Nav
   },
+
+
+
+
+
 };
 
 
