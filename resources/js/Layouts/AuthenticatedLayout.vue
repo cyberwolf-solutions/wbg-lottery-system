@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -7,30 +7,43 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Footer from '@/Components/Footer.vue';
+import axios from 'axios';
 
 const showingNavigationDropdown = ref(false);
 
 
 
-const lotteries = ref([
-    { id: 1, name: "Lottery 1" },
-    { id: 2, name: "Lottery 2" },
-    { id: 3, name: "Lottery 3" },
-]);
+const lotteries = ref([]);
+
+
+const fetchLotteries = async () => {
+    try {
+        const response = await axios.get('/api/lotteriesdropdown'); // Adjust the API endpoint if needed
+        lotteries.value = response.data; // Assuming response.data is an array of lotteries
+    } catch (error) {
+        console.error("Error fetching lotteries:", error);
+    }
+};
+
+
 
 const fetchLotteryData = async (lotteryId) => {
+    // console.log("Fetching data for lottery ID:", lotteryId); // Debugging line
     try {
-        // const response = await axios.get(`/api/lottery/${lotteryId}`);
-        const response = await axios.get(`/api/lottery/${lotteryId}`);
-        // This will navigate to the lottery view and pass the lottery data
-        this.$inertia.visit(`/lottery/${lotteryId}`, {
-            method: 'get', // specify the HTTP method if needed
-            data: { lotteryData: response.data },
-        });
+        // Making the API call without processing the response
+        await axios.get(`/api/lottery/${lotteryId}`);
+        // Optionally, alert or log that the call was made
+        console.log(`API called for lottery ID: ${lotteryId}`);
     } catch (error) {
         console.error("Error fetching lottery data:", error);
     }
 };
+
+
+
+
+
+onMounted(fetchLotteries);
 
 </script>
 
@@ -66,12 +79,12 @@ const fetchLotteryData = async (lotteryId) => {
                                     prizes
                                 </NavLink>
 
-                               <NavLink :href="route('terms')" :active="route().current('terms')">
+                                <NavLink :href="route('terms')" :active="route().current('terms')">
                                     Terms & conditions
                                 </NavLink>
 
                                 <NavLink :href="route('privacy')" :active="route().current('privacy')">
-                                   Privacy
+                                    Privacy
                                 </NavLink>
 
                                 <!--  <NavLink :href="route('latest.index')" :active="route().current('latest.index')">
@@ -86,7 +99,7 @@ const fetchLotteryData = async (lotteryId) => {
                                     Contact 
                                 </NavLink> -->
                                 <NavLink :href="route('affiliate.index')" :active="route().current('affiliate.index')">
-                                    Affiliate 
+                                    Affiliate
                                 </NavLink>
                                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
                                     <div class="relative ms-3">
@@ -94,7 +107,7 @@ const fetchLotteryData = async (lotteryId) => {
                                             <template #trigger>
                                                 <span class="inline-flex rounded-md">
                                                     <button type="button"
-                                                        class="inline-flex items-center rounded-md  bg-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
+                                                        class="inline-flex items-center rounded-md bg-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
                                                         Lotteries
                                                         <svg class="-me-0.5 ms-2 h-4 w-4"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -108,17 +121,18 @@ const fetchLotteryData = async (lotteryId) => {
                                             </template>
                                             <template #content>
                                                 <div v-for="lottery in lotteries" :key="lottery.id">
-                                                    <!-- <DropdownLink @click="fetchLotteryData(lottery.id)" -->
-                                                    <DropdownLink @click="fetchLotteryData(1)"
+                                                    
+                                                    <DropdownLink @click.prevent="fetchLotteryData(lottery.id)"
                                                         class="text-sm text-gray-700 hover:text-gray-900">
                                                         {{ lottery.name }}
                                                     </DropdownLink>
+
                                                 </div>
                                             </template>
                                         </Dropdown>
                                     </div>
                                 </div>
-                                
+
                                 <!-- notofocation -->
                                 <!-- <NavLink :active="route().current('notification.index')" class=""
                                     data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"

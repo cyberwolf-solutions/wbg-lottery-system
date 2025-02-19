@@ -6,38 +6,44 @@
       <div class="dashboard-banner">
         <!-- Top Navbar Section -->
         <div class="navbar">
-          <h2 class="lottery-name fw-bold text-danger">Misco</h2>
-          <button @click="openModal" class="btn btn-primary">Create a Dashboard</button>
+          <h2 class="lottery-name fw-bold text-danger">{{lotteries.name}}</h2>
+          <button @click="openModal(lotteries)" class="btn btn-primary">Create a Dashboard</button>
+
         </div>
 
         <!-- Lottery Table Section -->
         <div class="lottery-table">
-          <h3 class="mt-4">Lottery Details:</h3>
+          <h3 class="mt-4">{{lotteries.name}} Dashboard Details</h3>
           <table>
             <thead>
               <tr>
                 <th>Dashboard</th>
                 <th>Price</th>
-                <th>Actions</th> <!-- New header for actions -->
+                <th>Draw Date</th>
+                <th>Draw Number</th>
+                <th>Actions</th>
+
               </tr>
             </thead>
+
             <tbody>
-              <tr v-for="(dashboard, index) in dashboards" :key="index">
-                <td><a href="#">{{ dashboard.name }}</a></td>
+              <tr v-for="dashboard in dashboards" :key="dashboard.id">
+                <td><a href="#">{{ dashboard.dashboard }}</a></td>
                 <td>{{ dashboard.price }}</td>
+                <td>{{ dashboard.date }}</td>
+                <td>{{ dashboard.draw_number }}</td>
                 <td>
-                  <!-- Edit Button -->
                   <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
                     <i class="fa fa-edit"></i>
                   </button>
-
-                  <!-- Delete Button -->
                   <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
                     <i class="fa fa-trash"></i>
                   </button>
                 </td>
               </tr>
             </tbody>
+
+
           </table>
         </div>
 
@@ -46,27 +52,47 @@
           <div class="modal-content">
             <h3>Create a New Dashboard</h3>
             <form @submit.prevent="createDashboard">
+
+
+              <div class="form-group">
+                <label for="lottery">Lottery Name:</label>
+                <input type="text" :value="lotteries.name" id="lottery_name" readonly />
+                <input type="text" v-model="newDashboard.lottery_id" id="id" readonly />
+
+
+              </div>
+
+              <div class="form-group">
+                <label for="dashboard">Dashboard Name:</label>
+                <input type="text" v-model="newDashboard.dashboard" id="dashboard" required />
+              </div>
+
               <div class="form-group">
                 <label for="price">Price:</label>
                 <input type="number" v-model="newDashboard.price" id="price" required />
               </div>
+
               <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" v-model="newDashboard.date" id="date" required />
               </div>
+
               <div class="form-group">
                 <label for="draw">Draw:</label>
                 <input type="text" v-model="newDashboard.draw" id="draw" required />
               </div>
+
               <div class="form-group">
                 <label for="draw-number">Draw Number:</label>
                 <input type="number" v-model="newDashboard.drawNumber" id="draw-number" required />
               </div>
+
               <button type="submit" class="btn btn-success mx-3">Create Dashboard</button>
               <button type="button" @click="closeModal" class="btn btn-danger mx-4">Cancel</button>
             </form>
           </div>
         </div>
+
 
         <!-- Modal for Editing a Dashboard -->
         <div v-if="isEditModalOpen" class="modal-overlay">
@@ -103,7 +129,7 @@
               <button @click="deleteDashboard" class=" btn btn-danger mx-2 col-5">Yes, Delete</button>
               <button @click="closeDeleteModal" class="btn btn-secondary col-5">Cancel</button>
             </div>
-           
+
           </div>
         </div>
       </div>
@@ -120,40 +146,52 @@ export default {
   components: {
     Sidebar,
   },
+  props: ["lotteries", "dashboards"],
+
   data() {
     return {
+      // lotteries: [],
+      lotteries: this.lotteries || [],
+      dashboards: this.dashboards || [],
       isSidebarVisible: true,
       isModalOpen: false,
       isEditModalOpen: false,
       isDeleteModalOpen: false,
-      dashboards: [
-        { id: 1, name: 'Dashboard 1', price: '$10', date: '2025-02-05', draw: '1', drawNumber: '001' },
-        { id: 2, name: 'Dashboard 2', price: '$20', date: '2025-02-05', draw: '2', drawNumber: '002' },
-        { id: 3, name: 'Dashboard 3', price: '$50', date: '2025-02-05', draw: '3', drawNumber: '003' },
-      ],
+
       newDashboard: {
+        dashbard: '',
         price: '',
         date: '',
         draw: '',
-        drawNumber: '',
+        draw_number: '',
+        lottery_id: '',
+        id: '',
+
       },
       editingDashboard: {},
     };
   },
+  mounted() {
+    console.log("Lotteries received:", this.lotteries);
+    console.log("Dashboards:", this.dashboards);
+  }
+  ,
+
   methods: {
     handleSidebarToggle(isVisible) {
       this.isSidebarVisible = isVisible;
     },
-    openModal() {
+    openModal(lottery) {
+      if (lottery) {
+        this.newDashboard.lottery_id = lottery.id;
+      }
       this.isModalOpen = true;
-    },
+    }
+    ,
     closeModal() {
       this.isModalOpen = false;
     },
-    createDashboard() {
-      this.dashboards.push({ ...this.newDashboard, id: this.dashboards.length + 1 });
-      this.closeModal();
-    },
+
     editDashboard(dashboard) {
       this.editingDashboard = { ...dashboard };
       this.isEditModalOpen = true;
@@ -179,6 +217,22 @@ export default {
       this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
       this.closeDeleteModal();
     },
+
+    async createDashboard() {
+      try {
+        alert(this.newDashboard.lottery_id);
+
+        const response = await axios.post('http://127.0.0.1:8000/api/admin/dashboard/create', this.newDashboard);
+        this.dashboards.push(response.data); // Add the newly created dashboard
+        this.closeModal();
+        window.location.reload();
+      } catch (error) {
+        console.error("Error creating dashboard: ", error);
+      }
+    }
+
+
+
   },
 };
 </script>
