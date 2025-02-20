@@ -8,10 +8,12 @@
           class="py-5 col-12 col-md-6 align-content-center d-flex flex-column justify-content-center align-items-center align-items-md-start">
           <h1 class="hero-title text-center text-md-start">Take the chance to <br> change your life</h1>
           <p class="hero-subtitle text-center text-md-start">
-            Sorteo is an online lottery platform inspired by a few sorteo <br> lover's fantasy
-            of the ultimate lottery platform.
+            Get ready to experience the thrill of winning with <b>WinBoard Game</b>, the ultimate lottery system
+            where your lucky numbers can turn into big rewards!
+            BOOK YOUR NUMBER NOW
+
           </p>
-          <button class="custom-button mt-3">BUY TICKET NOW!</button>
+          <button class="custom-button mt-3">BOOK YOUR NUMBER NOW!</button>
         </div>
         <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
           <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
@@ -26,9 +28,10 @@
         <div class="col-12 col-md-4 px-md-5 mt-3">
           <h4 class="mb-4 fw-bold text-dark text-center text-md-start mt-3">Buy Lottery Tickets Online</h4>
           <p class="mb-4 text-center text-md-start">
-            Buy lottery tickets online to the biggest lotteries <br>
-            in the world offering huge jackpot prizes that you<br>
-            can win when you play online lottery.
+            Book your lucky number online
+            Pick and book your favorite first or last two digits (00–99).
+            Match your numbers with Sri Lanka’s official Lottery board’s draw.
+            Win <b>70 times</b> your booking price if your numbers hit!
           </p>
         </div>
 
@@ -70,9 +73,12 @@
           <div class="team-boxed">
             <div class="container ">
               <div class="intro mt-4">
-                <h2 class="text-center">Lottery Jackpots </h2>
-                <p class="text-center">Choose from the Powerball , Mega , Lotto or lucky Day <br> Lotto and
-                  try for a chance to win a big cash prize.</p>
+                <h2 class="text-center">Winboard Lottery selection </h2>
+                <p class="text-center">Think you’ve got the lucky number? Here’s your chance to turn your predictions
+                  into BIG
+                  rewards while earning extra with referrals! Choose your lottery and winboard to book your
+                  number.
+                </p>
               </div>
               <div class="row people align-items-center justify-content-center">
 
@@ -238,12 +244,12 @@
 
             </div>
             <div class="text-center mt-5 mb-5">
-                            <button class="custom-button mt-3">All results</button>
+              <button class="custom-button mt-3">All results</button>
 
-                            <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
+              <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
 
-                            <!-- <a href="#" class="text-primary text-decoration-none text-decoration-underline">See All Results</a> -->
-                        </div>
+              <!-- <a href="#" class="text-primary text-decoration-none text-decoration-underline">See All Results</a> -->
+            </div>
           </div>
 
         </section>
@@ -441,7 +447,7 @@
       </div>
     </section>
 
-   
+
 
     <!-- <div>
       <Nav />
