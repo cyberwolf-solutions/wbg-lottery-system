@@ -35,13 +35,13 @@ import { Head } from '@inertiajs/vue3';
                         <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                             <input
                                 style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                type="text" class="form-control" placeholder="Full Name" />
+                                type="text" class="form-control" placeholder="Contact number " />
                         </div>
 
                         <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                             <input
                                 style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                type="text" class="form-control" placeholder="Full Name" />
+                                type="text" class="form-control" placeholder="Email" />
                         </div>
                         <div class="form-group">
                             <textarea

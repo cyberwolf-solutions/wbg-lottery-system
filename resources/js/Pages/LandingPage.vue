@@ -130,9 +130,9 @@
               <div class="col-12 col-md-12">
                 <div class="intro mt-5">
                   <h2 class="text-center fw-bold">Latest Lotttery Results </h2>
-                  <p class="text-center text-secondary">Check your lotto results online, find all the lotto winning
-                    numbers
-                    <br> and see if you won the latest lotto jackpots!
+                  <p class="text-center text-secondary">Lottery results will be updated as per the official web sites of lottery boards.<br/>find the latest
+                    winning numbers and see if you won the particular winboard prize.
+                    <br> 
                   </p>
                 </div>
               </div>
@@ -142,7 +142,7 @@
                 <div class="col-md-6 mt-4 d-flex">
                   <div class="card shadow flex-fill">
                     <div class="card-header bg-white">
-                      <h5 class="fw-bold">Lottery Winning Numbers</h5>
+                      <h5 class="fw-bold">This area will update as per new development</h5>
                     </div>
                     <div class="card-body">
                       <div style="overflow-x: auto; white-space: nowrap;">
@@ -208,7 +208,7 @@
                 <div class="col-md-4 mt-4 d-flex">
                   <div class="card shadow flex-fill">
                     <div class="card-header bg-white">
-                      <h5 class="fw-bold">Our Winners</h5>
+                      <h5 class="fw-bold">Win board details and amounts</h5>
                     </div>
                     <div class="card-body">
                       <ul class="list-group list-group-flush">
@@ -264,9 +264,9 @@
         <div class="row align-content-center justify-content-center">
           <div class="col-12">
             <div class="intro mt-4 mb-3">
-              <h2 class="text-center fw-bold">Why Choose Us?</h2>
+              <h2 class="text-center fw-bold">Why Choose WinBoard Game?</h2>
               <p class="text-center text-secondary">
-                Sorteo makes playing the world's largest lotteries easy and fun.
+                we believe in creating a fun, secure, and rewarding gaming experience for everyone
               </p>
             </div>
           </div>
@@ -279,40 +279,39 @@
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-trophy text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">Biggest lottery jackpots</p>
+                  <p class="fw-bold mt-2">:Biggest Rewards</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-coin text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">No commission on Winnings</p>
+                  <p class="fw-bold mt-2">Fair & Transparent</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3" style="background-color: #63b5f6;">
                   <p class="text-light">
-                    One of the core advantages of playing an online lotto is that it is
-                    both safe and secure. So, there is no need for you to go, queue, or
-                    visit a retail store, to get tickets.
+                    Community-Based: Built and managed by a team of dedicated individuals from various
+backgrounds.
                   </p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-cash-stack text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">Instant payout system</p>
+                  <p class="fw-bold mt-2">Secure & Reliable wallet system</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-star text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">Performance Bonuses</p>
+                  <p class="fw-bold mt-2">Exciting Referral Reward</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-headset text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">Dedicated Support</p>
+                  <p class="fw-bold mt-2">Instant support and assistance</p>
                 </div>
               </div>
             </div>
@@ -337,8 +336,8 @@
             <div class="intro mt-5">
               <h2 class="text-center fw-bold">Buy Lottery Tickets Online.</h2>
               <p class="text-center text-secondary mt-3">
-                Play the lottery online safely and securely at the Lotter , the leading lottery <br>
-                ticket purchasing service in the world.
+                Book your lucky number online
+Play Smart. Win Big. Be Part of the Community!
               </p>
             </div>
           </div>
@@ -352,7 +351,7 @@
                   <thead class="bg-light align-middle" style="height: 70px;">
                     <tr>
                       <th>Lottery</th>
-                      <th>Jackpot</th>
+                      <th> </th>
                       <th>Price</th>
                       <th>Time to Draw</th>
                       <th>Sold</th>

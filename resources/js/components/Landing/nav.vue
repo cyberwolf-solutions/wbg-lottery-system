@@ -22,8 +22,8 @@
 
                     <!-- Right Section: Email -->
                     <div class="col-md-6 col-12 text-center text-md-end">
-                        <a href="mailto:example@gmail.com" class="text-decoration-none text-secondary">
-                            <i class="bi bi-envelope"></i> example@gmail.com
+                        <a href="mailto:Info@wbglottery.com" class="text-decoration-none text-secondary">
+                            <i class="bi bi-envelope"></i> Info@wbglottery.com
                         </a>
                     </div>
                 </div>
