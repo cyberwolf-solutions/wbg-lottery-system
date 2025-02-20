@@ -68,14 +68,18 @@ export default {
                     ],
                 },
                 {
-                    id: 3,
+                    id: 8,
                     name: "Lotteries",
+                    link: "http://127.0.0.1:8000/api/admin/list",
+                    isOpen: false,
+
+                },
+                {
+                    id: 3,
+                    name: "Lottery Dashboards",
                     link: "#",
                     isOpen: false,
-                    subItems: [
-                        { id: 3, name: "Lottery 1", link: "http://127.0.0.1:8000/api/adminLot" },
-                        { id: 4, name: "Lottery 2", link: "http://127.0.0.1:8000/api/adminLot" },
-                    ],
+                    subItems: [],  // Empty initially
                 },
                 {
                     id: 4,
@@ -114,7 +118,7 @@ export default {
                     isOpen: false,
                     subItems: [
                         { id: 7, name: "Transaction History", link: "http://127.0.0.1:8000/api/walletHistory" },
-                        
+
                     ],
                 },
             ],
@@ -134,7 +138,31 @@ export default {
             this.isSidebarVisible = !this.isSidebarVisible;
             this.$emit("sidebar-toggle", this.isSidebarVisible); // Emit event to update the main content layout
         },
+        async fetchLotteryData() {
+            try {
+                const response = await axios.get("http://127.0.0.1:8000/api/admin/sidebar/lotteries");  // Your API endpoint for fetching lotteries
+                const lotteries = response.data;  // Assuming the response is an array of lottery objects
+
+                // Update the 'Lottery Dashboards' menu with fetched data
+                const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
+                lotteryDashboard.subItems = lotteries.map(lottery => ({
+                    id: lottery.id,
+                    name: lottery.name,
+                    link: `http://127.0.0.1:8000/api/admin/lottery/dashboard/${lottery.id}`,
+                }));
+            } catch (error) {
+                console.error("Error fetching lottery data:", error);
+            }
+        },
+       
+
     },
+    // Fetch lottery data when component is mounted
+    mounted() {
+        this.fetchLotteryData();
+    },
+
+
 };
 </script>
 

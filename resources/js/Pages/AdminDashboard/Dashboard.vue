@@ -1,7 +1,8 @@
 <template>
   <div id="app" class="d-flex dark-theme">
     <Sidebar @sidebar-toggle="handleSidebarToggle" />
-    <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }] " class="flex-fill"><!-- Adjusted main content class -->
+    <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
+      <!-- Adjusted main content class -->
       <!-- Dashboard Widgets -->
       <div class="dashboard-banner">
         <div class="banner-content">
@@ -20,39 +21,39 @@
 
 
       <div class="dashboard-cards">
-                <div class="card">
-                    <img src="/path/to/image1.jpg" alt="Eurojackpot" class="card-image" />
-                    <div class="card-content">
-                        <h3>Eurojackpot</h3>
-                        <p class="prize">€7,930,000</p>
-                        <button class="play-now">Visit</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="/path/to/image2.jpg" alt="Powerball" class="card-image" />
-                    <div class="card-content">
-                        <h3>Powerball</h3>
-                        <p class="prize">€7,930,000</p>
-                        <button class="play-now">Visit</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="/path/to/image3.jpg" alt="Megamillions" class="card-image" />
-                    <div class="card-content">
-                        <h3>Megamillions</h3>
-                        <p class="prize">€7,930,000</p>
-                        <button class="play-now">Visit</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="/path/to/image4.jpg" alt="UK Lotto" class="card-image" />
-                    <div class="card-content">
-                        <h3>UK Lotto</h3>
-                        <p class="prize">€7,930,000</p>
-                        <button class="play-now">Visit</button>
-                    </div>
-                </div>
-            </div>
+        <div class="card">
+          <img src="/path/to/image1.jpg" alt="Eurojackpot" class="card-image" />
+          <div class="card-content">
+            <h3>Eurojackpot</h3>
+            <p class="prize">€7,930,000</p>
+            <button class="play-now">Visit</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="/path/to/image2.jpg" alt="Powerball" class="card-image" />
+          <div class="card-content">
+            <h3>Powerball</h3>
+            <p class="prize">€7,930,000</p>
+            <button class="play-now">Visit</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="/path/to/image3.jpg" alt="Megamillions" class="card-image" />
+          <div class="card-content">
+            <h3>Megamillions</h3>
+            <p class="prize">€7,930,000</p>
+            <button class="play-now">Visit</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="/path/to/image4.jpg" alt="UK Lotto" class="card-image" />
+          <div class="card-content">
+            <h3>UK Lotto</h3>
+            <p class="prize">€7,930,000</p>
+            <button class="play-now">Visit</button>
+          </div>
+        </div>
+      </div>
       <router-view />
     </div>
   </div>
@@ -64,6 +65,12 @@ import Sidebar from '@/components/AdminSidebar.vue';
 export default {
   components: {
     Sidebar,
+  },
+  mounted() {
+    // Check if there is no token in localStorage or cookies
+    if (!localStorage.getItem('admin-token') && !document.cookie.includes('admin_token')) {
+      window.location.href = "/api/admin/login/index"; // Redirect to login page
+    }
   },
   data() {
     return {
@@ -179,28 +186,34 @@ export default {
 
 .dashboard-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+  grid-template-columns: repeat(4, 1fr);
+  /* 4 cards per row */
   gap: 20px;
   margin-bottom: 20px;
 }
 
 .card {
-  background-color: #2c2c2c; /* Darker background for cards */
+  background-color: #2c2c2c;
+  /* Darker background for cards */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Subtle shadow for depth */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px); /* Slight lift effect */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
+  transform: translateY(-5px);
+  /* Slight lift effect */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  /* Enhanced shadow on hover */
 }
 
 .card-image {
   width: 100%;
   height: 150px;
-  object-fit: cover; /* Ensure image covers the area proportionally */
+  object-fit: cover;
+  /* Ensure image covers the area proportionally */
 }
 
 .card-content {
@@ -209,18 +222,21 @@ export default {
 }
 
 .card-content h3 {
-  color: #f1f1f1; /* Light color for card titles */
+  color: #f1f1f1;
+  /* Light color for card titles */
   margin: 0;
 }
 
 .card-content .prize {
-  color: #ffb400; /* Gold-like color for prize */
+  color: #ffb400;
+  /* Gold-like color for prize */
   font-size: 1.2em;
   margin: 10px 0;
 }
 
 .card-content .play-now {
-  background-color: #d32f2f; /* Red button */
+  background-color: #d32f2f;
+  /* Red button */
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -231,7 +247,7 @@ export default {
 }
 
 .card-content .play-now:hover {
-  background-color: #b71c1c; /* Darker red on hover */
+  background-color: #b71c1c;
+  /* Darker red on hover */
 }
-
 </style>

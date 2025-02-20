@@ -129,10 +129,12 @@
 import { Link } from '@inertiajs/vue3';
 import RegisterForm from '@/Pages/Auth/Register.vue';
 import LoginForm from '@/Pages/Auth/Login.vue';
+import axios from 'axios';
 
 export default {
     data() {
         return {
+            lotteries:[],
             logoUrl: '/assets/images/logo.png', // Path to your logo
         };
     },
@@ -141,6 +143,19 @@ export default {
         RegisterForm,
         LoginForm
     },
+    mounted(){
+        this.fetchLotteries();
+    },
+    mthods:{
+        async fetchLotteries(){
+            try { const response = await axios.get();
+                this.lotteries = response.data;
+                
+            } catch (error) {
+                console.error('error fetching lotteries:' , error);
+            }
+        }
+    }
 };
 </script>
 

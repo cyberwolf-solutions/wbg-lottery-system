@@ -2,25 +2,103 @@
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-// Reactive variables
-const showModal = ref(true); // Show modal initially
-const selectedLottery = ref(''); // Track the selected lottery
+const props = defineProps({
+    lotterie: Object,
+    lotterydashboards: Array
+});
 
-// Update the lottery and close the modal
-function selectLottery(lottery) {
-    selectedLottery.value = lottery;
+const showModal = ref(true);
+const selectedLottery = ref(props.lottery?.name || '');
+const selectedLotteryDetails = ref([]);
+// const countdownTimer = ref('');
+const countdowns = ref({});
+
+const selectedDashboardCount = computed(() => selectedLotteryDetails.value.length);
+
+
+function selectLottery(dashboard) {
+    selectedLottery.value = dashboard.dashboard;
+    selectedLotteryDetails.value = props.lotterydashboards.filter(d => d.dashboard === dashboard.dashboard);
     showModal.value = false;
+    startCountdown();
 }
+
+
+// alert(props.lotterie.name);
+
+
+
+const uniqueDashboards = computed(() => {
+    const seen = new Set();
+    return props.lotterydashboards.filter(dashboard => {
+        if (!seen.has(dashboard.dashboard)) {
+            seen.add(dashboard.dashboard);
+            return true;
+        }
+        return false;
+    });
+});
+
+function startCountdown() {
+    selectedLotteryDetails.value.forEach(ticket => {
+        const targetDate = new Date(ticket.date).getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = targetDate - now;
+
+            if (timeLeft > 0) {
+                countdowns.value[ticket.draw_number] = {
+                    days: Math.floor(timeLeft / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minutes: Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)),
+                    seconds: Math.floor((timeLeft % (1000 * 60)) / 1000),
+                };
+            } else {
+                countdowns.value[ticket.draw_number] = { expired: true };
+            }
+        }
+
+        // Start countdown update every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
+}
+
+
+// Format number (ensure two-digit format)
+const formatNumber = (num) => num.toString().padStart(2, '0');
+
+// Compute winning numbers dynamically based on each draw number
+const winningNumbers = computed(() => {
+    let numbersMap = {};
+    selectedLotteryDetails.value.forEach(ticket => {
+        if (ticket.winning_numbers) {
+            numbersMap[ticket.draw_number] =
+                Array.isArray(ticket.winning_numbers) ? ticket.winning_numbers :
+                    typeof ticket.winning_numbers === 'string' ? JSON.parse(ticket.winning_numbers) : [];
+        } else {
+            numbersMap[ticket.draw_number] = [];
+        }
+    });
+    return numbersMap;
+});
+
+
+
+
+
 </script>
 
 <template>
 
-    <Head :title="selectedLottery ? selectedLottery : 'Lottery'" />
+    <Head :title="props ? props.lotterie.name : 'Lottery'" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                {{ selectedLottery ? selectedLottery : 'Lotteries' }}
+                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }}
             </h2>
         </template>
 
@@ -29,25 +107,15 @@ function selectLottery(lottery) {
             <div class="modal-container">
                 <h3 class="modal-title">Select a Lottery</h3>
                 <div class="button-row">
-                    <button @click="selectLottery('Lottery A')" class="lottery-button lottery-b">
-                        Lottery A
+                    <button v-for="dashboard in uniqueDashboards" :key="dashboard.dashboard"
+                        @click="selectLottery(dashboard)" class="lottery-button lottery-b">
+                        {{ dashboard.dashboard }}
                     </button>
-                    <button @click="selectLottery('Lottery B')" class="lottery-button lottery-b">
-                        Lottery B
-                    </button>
-                    <button @click="selectLottery('Lottery C')" class="lottery-button lottery-b">
-                        Lottery C
-                    </button>
+
                 </div>
             </div>
         </div>
 
-        <!-- price -->
-
-        <!-- Button trigger modal -->
-        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Launch demo modal
-        </button> -->
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -94,69 +162,61 @@ function selectLottery(lottery) {
                     <div class="p-6">
                         <div class="text-left">
                             <h1 class="text-2xl font-bold">
-                                {{ selectedLottery }}
+                                {{ props.lotterie.name }}
                             </h1>
-                            <p class="text-xl font-bold text-green-500">US $541,000,000 </p>
-                            <div id="countdown" class="text-lg font-medium text-gray-700 mt-2">
-                                Next Draw In : <span id="days">00</span>d
-                                <span id="hours">00</span>h
-                                <span id="minutes">00</span>m
-                                <span id="seconds">00</span>s
-                            </div>
+                            
                         </div>
 
 
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                            <div v-for="ticket in 4" :key="ticket" class="border rounded-lg p-4 relative">
+                            <div v-for="ticket in selectedLotteryDetails" :key="ticket"
+                                class="border rounded-lg p-4 relative">
                                 <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
                                 <div class="info-container bg-light p-3 rounded shadow-sm">
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
-                                        <span style="font-size: 12px;">732832</span>
+                                        <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
                                     </div>
 
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
-                                        <span style="font-size: 12px;">02 Feb 2025</span>
+                                        <span style="font-size: 12px;">{{ ticket.date }}</span>
                                     </div>
 
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Prize</span>
-                                        <span style="font-size: 12px;">$100,000</span>
+                                        <span style="font-size: 12px;">{{ ticket.price }}</span>
                                     </div>
 
                                     <div id="countdown" class="countdown mt-3">
-                                        ⏳ <span id="days">00</span>d
-                                        <span id="hours">00</span>h
-                                        <span id="minutes">00</span>m
-                                        <span id="seconds">00</span>s
+                                        ⏳
+                                        <span v-if="!countdowns[ticket.draw_number]?.expired">
+                                            <span>{{ countdowns[ticket.draw_number]?.days || '00' }}</span>d
+                                            <span>{{ countdowns[ticket.draw_number]?.hours || '00' }}</span>h
+                                            <span>{{ countdowns[ticket.draw_number]?.minutes || '00' }}</span>m
+                                            <span>{{ countdowns[ticket.draw_number]?.seconds || '00' }}</span>s
+                                        </span>
+                                        <span v-else class="text-red-500">Time's up!</span>
+                                    </div>
+
+                                </div>
+
+                              <!-- Correct loop for winning numbers -->
+                              <div class="mt-4">
+                                    <h3 class="text-sm font-semibold">Winning Numbers</h3>
+                                    <div class="grid grid-cols-6 gap-3 mt-4">
+                                        <!-- Loop through winning numbers for this specific ticket -->
+                                        <div v-for="number in winningNumbers[ticket.draw_number]" :key="number"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-gray-300">
+                                            {{ number }}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-6 gap-3 mt-4">
-                                    <div v-for="number in 100" :key="number" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal"
-                                        class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-blue-500 hover:text-white text-sm">
-                                        {{ formatNumber(number) }}
-                                    </div>
-                                </div>
 
-                                <!-- <h3 class="text-lg font-semibold titlelot mb-2 mt-2">Pick 5 Numbers</h3>
 
-                                <div class="grid grid-cols-5 gap-6 mb-5">
-                                    <div v-for="number in 10" :key="number"
-                                        class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-blue-500 hover:text-white">
-                                        {{ number }}
-                                    </div>
-                                </div>
 
-                                <div class="absolute left-0 mt-4 bottom-0 w-full text-white text-center py-3 rounded-b-lg"
-                                    style="background-color: rgb(44, 186, 242);">
-                                    <div class="text-sm font-medium">
-                                        Selected Numbers: 9, 13, 20, 22, 29, 8
-                                    </div>
-                                </div> -->
 
                             </div>
                         </div>
@@ -193,44 +253,6 @@ function selectLottery(lottery) {
 
 
 
-<script>
-export default {
-    methods: {
-        formatNumber(number) {
-            // Format numbers as 01, 02, ..., 99, and 00 for 100
-            return number === 100 ? "00" : String(number).padStart(2, "0");
-        },
-    },
-};
-// Set the target date and time
-const targetDate = new Date("2025-01-20T00:00:00").getTime();
-
-function updateCountdown() {
-    const now = new Date().getTime();
-    const timeLeft = targetDate - now;
-
-    if (timeLeft > 0) {
-        // Calculate days, hours, minutes, and seconds
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-        // Update the HTML
-        document.getElementById("days").textContent = days.toString().padStart(2, "0");
-        document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
-        document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
-        document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
-    } else {
-        // If the countdown is over
-        document.getElementById("countdown").textContent = "Time's up!";
-    }
-}
-
-// Update the countdown every second
-setInterval(updateCountdown, 1000);
-
-</script>
 
 <style>
 /* Modal Overlay */
@@ -533,7 +555,7 @@ button {
 
 .titlelot {
     color: rgb(44, 186, 242);
-   
+
     margin-right: auto;
     font-style: italic;
 }
