@@ -141,6 +141,10 @@ const loginForm = useForm({
 
 const submit = () => {
     form.post(route('register'), {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
         onFinish: () => form.reset('password', 'password_confirmation'),
         onError: (errors) => {
             console.error('Registration failed:', errors);
@@ -156,6 +160,11 @@ const submit = () => {
 
 const submitLogin = () => {
     loginForm.post(route('login'), {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+
         onFinish: () => loginForm.reset('password'),
         onError: (errors) => {
             console.error('Login failed:', errors);
