@@ -14,7 +14,17 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 
-axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// Fetch and set CSRF token from Laravel
+axios.get('/sanctum/csrf-cookie').then(() => {
+    console.log("CSRF token set.");
+});
+
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

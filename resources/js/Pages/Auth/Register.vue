@@ -139,12 +139,20 @@ const loginForm = useForm({
     remember: false,
 });
 
+
+// headers: {
+//     'Content-Type': 'application/x-www-form-urlencoded',
+//         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+//         },
+
 const submit = () => {
     form.post(route('register'), {
+
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         },
+
         onFinish: () => form.reset('password', 'password_confirmation'),
         onError: (errors) => {
             console.error('Registration failed:', errors);
@@ -160,10 +168,7 @@ const submit = () => {
 
 const submitLogin = () => {
     loginForm.post(route('login'), {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
+
 
         onFinish: () => loginForm.reset('password'),
         onError: (errors) => {
@@ -177,6 +182,21 @@ const submitLogin = () => {
         },
     });
 };
+
+// const submitLogin = () => {
+//     axios.post('/api/login', {
+//         email: loginForm.email,
+//         password: loginForm.password,
+//     }).then(response => {
+//         console.log('Login successful', response.data);
+//         window.location.href = '/dashboard'; // Redirect after login
+//     }).catch(error => {
+//         console.error('Login failed:', error.response?.data || error.message);
+//     });
+// };
+
+
+
 
 
 const submitPasswordRequest = () => {
