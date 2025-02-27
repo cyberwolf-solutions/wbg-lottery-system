@@ -120,9 +120,9 @@
               <div class="col-12 col-md-12">
                 <div class="intro mt-5">
                   <h2 class="text-center fw-bold">Latest Lotttery Results </h2>
-                  <p class="text-center text-secondary">Check your lotto results online, find all the lotto winning
-                    numbers
-                    <br> and see if you won the latest lotto jackpots!
+                  <p class="text-center text-secondary">Lottery results will be updated as per the official web sites of lottery boards.find the latest
+                    winning numbers and see if you won the particular winboard prize.
+                    <br> 
                   </p>
                 </div>
               </div>

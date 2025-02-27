@@ -8,7 +8,7 @@
             <li><a href="#">About us</a></li>
             <li><a :href="route('hiw.index')" :active="route().current('hiw.index')">How it works</a></li>
             <li><a href="#">Our services</a></li>
-            <li><a href="#">Blog</a></li>
+            <!-- <li><a href="#">Blog</a></li> -->
             <li><a :href="route('contact.index')" :active="route().current('contact.index')">Contact us</a></li>
           </ul>
         </div>
@@ -37,8 +37,10 @@
         </div>
       </div>
       <div class="row mt-4 text-left">
+
         <div class="col-md-6" >
           <p style="font-size: 12px;">© 2025 WinBoardGame - All Rights Reserved.</p>
+
         </div>
         <div class="col-md-6 text-center text-md-end">
           <div class="social-icons">
