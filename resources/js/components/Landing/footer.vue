@@ -3,7 +3,7 @@
     <div class="" style="background-color: transparent;border-style: none;padding-left: 150px;padding-right: 150px;">
       <div class="row text-center text-md-start">
         <div class="col-md-4">
-          <h5 style="font-weight: bold;">About Sorteo</h5>
+          <h5 style="font-weight: bold;">About Win Board Game</h5>
           <ul class="list-unstyled">
             <li><a href="#">About us</a></li>
             <li><a :href="route('hiw.index')" :active="route().current('hiw.index')">How it works</a></li>
@@ -37,8 +37,10 @@
         </div>
       </div>
       <div class="row mt-4 text-left">
-        <div class="col-md-6" style="margin-top: 30px;">
-          <p style="font-size: 12px;">© 2025 cyberwolf solutions - All Rights Reserved.</p>
+
+        <div class="col-md-6" >
+          <p style="font-size: 12px;">© 2025 WinBoardGame - All Rights Reserved.</p>
+
         </div>
         <div class="col-md-6 text-center text-md-end">
           <div class="social-icons">
@@ -79,8 +81,8 @@ export default {
 
 
 .footer {
-  background-color: #f8f9fa;
-  padding: 40px 0;
+  background-color: #ffffff;
+  /* padding: 40px 0; */
 }
 
 .footer h5 {

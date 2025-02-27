@@ -23,6 +23,8 @@
         "@coreui/vue": "^5.4.1",
         "bootstrap": "^5.3.3",
         "chart.js": "^4.4.7",
+        "laravel-echo": "^2.0.2",
+        "pusher-js": "^8.4.0",
         "swiper": "^11.2.1",
         "vue": "^3.5.13"
     }

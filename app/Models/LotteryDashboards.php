@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\PickedNumber;
 use Illuminate\Support\Lottery;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LotteryDashboards extends Model
@@ -33,5 +34,9 @@ class LotteryDashboards extends Model
     public function lottery()
     {
         return $this->belongsTo(Lotteries::class, 'lottery_id');
+    }
+
+    public function pickedNumbers(){
+        return $this->hasMany(PickedNumber::class);
     }
 }

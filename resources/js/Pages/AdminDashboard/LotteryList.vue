@@ -6,8 +6,8 @@
             <div class="dashboard-banner">
                 <!-- Top Navbar Section -->
                 <div class="navbar">
-                    <h2 class="lottery-name fw-bold text-danger">Misco</h2>
-                    <button @click="openModal" class="btn btn-primary">Create a Dashboard</button>
+                    <h2 class="lottery-name fw-bold text-danger">Win Board Game</h2>
+                    <button @click="openModal" class="btn btn-primary">Create a Lottery</button>
                 </div>
 
                 <!-- Lottery Table Section -->
@@ -16,6 +16,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Image</th>
@@ -25,6 +26,7 @@
                         <tbody>
                             <tr v-for="(lottery, index) in lottery" :key="index">
                                 <td><a href="#">{{ lottery.id }}</a></td>
+                                <td><a href="#">{{ lottery.name }}</a></td>
                                 <td>{{ lottery.description }}</td>
                                 <td> <img :src="`public/${lottery.image}`" alt="Lottery Image" width="50" height="50" />
                                 </td>
@@ -56,9 +58,11 @@
                                 <input type="text" v-model="newLottery.name" id="name" required />
                             </div>
                             <div class="form-group">
-                                <label for="description">Description:</label>
-                                <textarea v-model="newLottery.description" id="description" required></textarea>
+                                <label for="description" class="font-weight-bold ">Description:</label>
+                                <textarea v-model="newLottery.description" id="description" class="form-control"
+                                    rows="4" placeholder="Enter description here..." required></textarea>
                             </div>
+
                             <div class="form-group">
                                 <label for="image">Lottery Image:</label>
                                 <input type="file" @change="handleImageUpload" id="image" accept="image/*" required />
@@ -82,7 +86,7 @@
                                 <input type="text" v-model="editingLottery.name" id="name" required />
                                 <!-- Display validation error if name is missing -->
                                 <span v-if="validationErrors.name" class="text-danger">{{ validationErrors.name[0]
-                                }}</span>
+                                    }}</span>
                             </div>
                             <div class="form-group">
                                 <label for="edescription">Description:</label>
@@ -186,7 +190,7 @@ export default {
                 formData.append('name', this.newLottery.name);
                 formData.append('description', this.newLottery.description);
                 formData.append('image', this.newLottery.image);
-                formData.append('price', this.newLottery.price);
+                //formData.append('price', this.newLottery.price);
 
                 // Check for null or undefined values and alert if any are found
                 if (!this.newLottery.name) {
@@ -204,10 +208,10 @@ export default {
                     return;
                 }
 
-                if (!this.newLottery.price) {
-                    alert("Price is null or undefined");
-                    return;
-                }
+                // if (!this.newLottery.price) {
+                //     alert("Price is null or undefined");
+                //     return;
+                // }
 
                 // Get the CSRF token directly from the meta tag (document object)
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

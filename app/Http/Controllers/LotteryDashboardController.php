@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Lotteries;
-use App\Models\LotteryDashboards;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Lotteries;
+use App\Jobs\PickNumberJob;
+use App\Models\PickedNumber;
+use Illuminate\Http\Request;
+use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class LotteryDashboardController extends Controller
 {
@@ -15,18 +18,17 @@ class LotteryDashboardController extends Controller
     public function index($id)
     {
         $lottery = Lotteries::find($id);
-        
+
         // dd($lotteries);
         $lot = $lottery->toArray();
         $dashboard = LotteryDashboards::where('lottery_id', $id)->get();
 
         // dd($dashboard);
-        
+
         return Inertia::render('AdminDashboard/Lotteries', [
-            'lotteries' => $lottery ,
+            'lotteries' => $lottery,
             'dashboards' => $dashboard,
         ]);
-        
     }
     public function store(Request $request)
     {
@@ -40,7 +42,7 @@ class LotteryDashboardController extends Controller
                 'draw' => 'required|string',
                 'drawNumber' => 'required|numeric',
                 'lottery_id' => 'required|exists:lotteries,id',
-                'dashboard'=> 'required|string',
+                'dashboard' => 'required|string',
             ]);
 
             // Generate the winning numbers (00, 01, 02, ..., 99)
@@ -52,9 +54,9 @@ class LotteryDashboardController extends Controller
                 'date' => $validated['date'],
                 'draw' => $validated['draw'],
                 'draw_number' => str_pad($validated['drawNumber'], 3, '0', STR_PAD_LEFT),
-                'winning_numbers' => json_encode($winningNumbers), 
-                'lottery_id'=>$validated['lottery_id'],
-                'dashboard'=> $validated['dashboard']
+                'winning_numbers' => json_encode($winningNumbers),
+                'lottery_id' => $validated['lottery_id'],
+                'dashboard' => $validated['dashboard']
             ]);
 
             // Return the response
@@ -85,5 +87,48 @@ class LotteryDashboardController extends Controller
             $numbers[] = str_pad($i, 2, '0', STR_PAD_LEFT);
         }
         return $numbers;
+    }
+
+
+    // public function pickNumber(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'number' => 'required',
+    //         'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
+    //     ]);
+
+    //     //check the numbers already picked
+    //     $exists = PickedNumber::where('lottery_dashboard_id', $validated['lottery_dashboard_id'])
+    //         ->where('number', $validated['number'])
+    //         ->exists();
+
+    //     if ($exists) {
+    //         return response()->json(['message' => "Number Already picked"]);
+    //     }
+
+    //     //assign the number to the logged user
+    //     $pickedNumber = PickedNumber::create([
+    //         'user_id' => Auth::id(),
+    //         'picked_number' => $validated['number'],
+    //         'lottery_dashboard_id' => $validated['lottery_dashboard_id'],
+    //     ]);
+
+    //     //broadcast the picked number
+    //     broadcast(new \App\Events\NumberPicked($pickedNumber))->toOthers();
+
+    //     return response()->json(['message' => 'Number picked successfully', 'data' => $pickedNumber]);
+    // }
+
+    public function pickNumber(Request $request)
+    {
+        $validated = $request->validate([
+            'number' => 'required',
+            'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
+        ]);
+
+        // Dispatch the job to handle the logic in the background
+        PickNumberJob::dispatch($validated['number'], $validated['lottery_dashboard_id']);
+
+        return response()->json(['message' => 'Number picked successfully']);
     }
 }
