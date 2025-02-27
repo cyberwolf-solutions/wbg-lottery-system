@@ -57,7 +57,7 @@
               <div class="form-group">
                 <label for="lottery">Lottery Name:</label>
                 <input type="text" :value="lotteries.name" id="lottery_name" readonly />
-                <input type="text" v-model="newDashboard.lottery_id" id="id" readonly />
+                <input type="text" v-model="newDashboard.lottery_id" id="id" readonly  hidden/>
 
 
               </div>
@@ -220,7 +220,7 @@ export default {
 
     async createDashboard() {
       try {
-        alert(this.newDashboard.lottery_id);
+        // alert(this.newDashboard.lottery_id);
 
         const response = await axios.post('http://127.0.0.1:8000/api/admin/dashboard/create', this.newDashboard);
         this.dashboards.push(response.data); // Add the newly created dashboard

@@ -50,7 +50,7 @@ Route::middleware('guest')->group(function () {
 
 
 
-
+Route::middleware('auth:sanctum')->post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 
 
 Route::middleware(['web'])->group(function () {

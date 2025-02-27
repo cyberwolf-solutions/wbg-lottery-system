@@ -266,7 +266,7 @@
             <div class="intro mt-4 mb-3">
               <h2 class="text-center fw-bold">Why Choose Us?</h2>
               <p class="text-center text-secondary">
-                Sorteo makes playing the world's largest lotteries easy and fun.
+                Reliable, secure, exciting odds, fast payouts, and top-notch customer service.
               </p>
             </div>
           </div>
@@ -449,20 +449,7 @@
 
 
 
-    <!-- <div>
-      <Nav />
-      <div class="container text-center mt-5">
-        <h1>Landing Page</h1>
-        <div v-if="Object.keys(landingPageData).length === 0">Loading...</div>
-        <ul v-else class="list-group">
-          <li class="list-group-item">Can Login: {{ landingPageData.canLogin }}</li>
-          <li class="list-group-item">Can Register: {{ landingPageData.canRegister }}</li>
-          <li class="list-group-item">Laravel Version: {{ landingPageData.laravelVersion }}</li>
-          <li class="list-group-item">PHP Version: {{ landingPageData.phpVersion }}</li>
-        </ul>
-      </div>
-      <Footer />
-    </div> -->
+    
 
 
 
