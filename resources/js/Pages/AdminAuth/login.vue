@@ -14,9 +14,13 @@ const errorMessage = ref('');
 const isLoading = ref(false);
 
 // Redirect to dashboard if the user is already authenticated (via cookie)
-axios.get('/api/admin/check-auth')
-    .then(() => window.location.href = "/admin/dashboard")
-    .catch(() => { /* Do nothing, allow login */ });
+// axios.get('/api/admin/check-auth')
+//     .then(() => window.location.href = "/api/admin/dashboard")
+//     .catch(() => { /* Do nothing, allow login */ });
+// axios.get('/api/admin/check-auth', { withCredentials: true })
+//     .then(() => window.location.href = "/api/admin/dashboard")
+//     .catch(() => { /* Do nothing, allow login */ });
+
 
 const submit = async () => {
     errorMessage.value = '';

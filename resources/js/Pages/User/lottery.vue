@@ -23,20 +23,34 @@ const pickedNumbers = ref([]);
 // Listen for a number being picked through the Pusher event
 window.Echo.channel('lottery')
     .listen('NumberPicked', (event) => {
+        console.log("Number Picked Event Received:", event);
         pickedNumbers.value.push(event.pickedNumber.picked_number);
     });
 
+
 function pickNumber(number, dashboardId) {
     // Send a POST request to mark the number as picked in the database
+    // alert(JSON.stringify(selectedLotteryDetails.value[0]?.id , 2));
+
+
+
     axios.post('/api/pick-number', {
         number: number,
-        lottery_dashboard_id: ticket.id
+        lottery_dashboard_id: selectedLotteryDetails.value[0]?.id,
+    }, {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+        }
     }).then(response => {
-        pickedNumbers.value.push(response.data.data.number);  // Add the number to the picked list
+        pickedNumbers.value.push(response.data.data.number);
     }).catch(error => {
         alert(error.response.data.message);
     });
+
 }
+
+
 
 
 const props = defineProps({
@@ -179,7 +193,7 @@ const selectedNumber = ref(null); // Stores the number user selects
                     <div class="p-6">
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <div v-for="ticket in selectedLotteryDetails" :key="ticket.draw_number"
-                                 class="border rounded-lg p-4 relative">
+                                class="border rounded-lg p-4 relative">
                                 <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
                                 <div class="info-container bg-light p-3 rounded shadow-sm">
@@ -187,7 +201,7 @@ const selectedNumber = ref(null); // Stores the number user selects
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
-                                        
+
                                     </div>
 
                                     <div class="button-container">
@@ -216,14 +230,13 @@ const selectedNumber = ref(null); // Stores the number user selects
                                 <div class="mt-4">
                                     <h3 class="text-sm font-semibold">Pick a Number</h3>
                                     <div class="grid grid-cols-6 gap-3 mt-4">
-                                        <div v-for="number in Array.from({ length: 100 }, (_, i) => i + 1)" 
-                                             :key="number"
-                                             :class="{
-                                                 'bg-gray-100': !pickedNumbers.includes(number),
-                                                 'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
-                                             }"
-                                             @click="!pickedNumbers.includes(number) && pickNumber(number, ticket.dashboard_id)"
-                                             class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
+                                        <div v-for="number in Array.from({ length: 100 }, (_, i) => i + 1)"
+                                            :key="number" :class="{
+                                                'bg-gray-100': !pickedNumbers.includes(number),
+                                                'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
+                                            }"
+                                            @click="!pickedNumbers.includes(number) && pickNumber(number, ticket.dashboard_id)"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
                                             {{ formatNumber(number) }}
                                         </div>
                                     </div>
