@@ -3,33 +3,58 @@ import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import axios from 'axios';
+
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+Pusher.logToConsole = true;
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: 'your_pusher_key',
+    cluster: 'mt1',
+    forceTLS: true
+});
+
+// Store the picked numbers (those that are disabled)
+const pickedNumbers = ref([]);
+
+// Listen for a number being picked through the Pusher event
+window.Echo.channel('lottery')
+    .listen('NumberPicked', (event) => {
+        pickedNumbers.value.push(event.pickedNumber.picked_number);
+    });
+
+function pickNumber(number, dashboardId) {
+    // Send a POST request to mark the number as picked in the database
+    axios.post('/api/pick-number', {
+        number: number,
+        lottery_dashboard_id: ticket.id
+    }).then(response => {
+        pickedNumbers.value.push(response.data.data.number);  // Add the number to the picked list
+    }).catch(error => {
+        alert(error.response.data.message);
+    });
+}
+
 
 const props = defineProps({
     lotterie: Object,
     lotterydashboards: Array
 });
-
 const showModal = ref(true);
 const selectedLottery = ref(props.lottery?.name || '');
 const selectedLotteryDetails = ref([]);
 // const countdownTimer = ref('');
 const countdowns = ref({});
-
 const selectedDashboardCount = computed(() => selectedLotteryDetails.value.length);
-
-
 function selectLottery(dashboard) {
     selectedLottery.value = dashboard.dashboard;
     selectedLotteryDetails.value = props.lotterydashboards.filter(d => d.dashboard === dashboard.dashboard);
     showModal.value = false;
     startCountdown();
 }
-
-
-// alert(props.lotterie.name);
-
-
-
 const uniqueDashboards = computed(() => {
     const seen = new Set();
     return props.lotterydashboards.filter(dashboard => {
@@ -40,7 +65,6 @@ const uniqueDashboards = computed(() => {
         return false;
     });
 });
-
 function startCountdown() {
     selectedLotteryDetails.value.forEach(ticket => {
         const targetDate = new Date(ticket.date).getTime();
@@ -66,11 +90,8 @@ function startCountdown() {
         setInterval(updateCountdown, 1000);
     });
 }
-
-
 // Format number (ensure two-digit format)
 const formatNumber = (num) => num.toString().padStart(2, '0');
-
 // Compute winning numbers dynamically based on each draw number
 const winningNumbers = computed(() => {
     let numbersMap = {};
@@ -86,12 +107,12 @@ const winningNumbers = computed(() => {
     return numbersMap;
 });
 
-
+// const pickedNumbers = ref([]); // Stores picked numbers
+const selectedNumber = ref(null); // Stores the number user selects
 
 
 
 </script>
-
 <template>
 
     <Head :title="props ? props.lotterie.name : 'Lottery'" />
@@ -115,8 +136,6 @@ const winningNumbers = computed(() => {
                 </div>
             </div>
         </div>
-
-
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -153,30 +172,22 @@ const winningNumbers = computed(() => {
                 </div>
             </div>
         </div>
-
-
         <!-- Main Content -->
         <div v-if="!showModal" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div class="text-left">
-                            <h1 class="text-2xl font-bold">
-                                {{ props.lotterie.name }}
-                            </h1>
-                            
-                        </div>
-
-
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                            <div v-for="ticket in selectedLotteryDetails" :key="ticket"
-                                class="border rounded-lg p-4 relative">
+                            <div v-for="ticket in selectedLotteryDetails" :key="ticket.draw_number"
+                                 class="border rounded-lg p-4 relative">
                                 <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
                                 <div class="info-container bg-light p-3 rounded shadow-sm">
+                                    <!-- Additional ticket details -->
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
+                                        
                                     </div>
 
                                     <div class="button-container">
@@ -199,48 +210,23 @@ const winningNumbers = computed(() => {
                                         </span>
                                         <span v-else class="text-red-500">Time's up!</span>
                                     </div>
-
                                 </div>
 
-                              <!-- Correct loop for winning numbers -->
-                              <div class="mt-4">
-                                    <h3 class="text-sm font-semibold">Winning Numbers</h3>
+                                <!-- Number Buttons -->
+                                <div class="mt-4">
+                                    <h3 class="text-sm font-semibold">Pick a Number</h3>
                                     <div class="grid grid-cols-6 gap-3 mt-4">
-                                        <!-- Loop through winning numbers for this specific ticket -->
-                                        <div v-for="number in winningNumbers[ticket.draw_number]" :key="number"
-                                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer hover:bg-gray-300">
-                                            {{ number }}
+                                        <div v-for="number in Array.from({ length: 100 }, (_, i) => i + 1)" 
+                                             :key="number"
+                                             :class="{
+                                                 'bg-gray-100': !pickedNumbers.includes(number),
+                                                 'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
+                                             }"
+                                             @click="!pickedNumbers.includes(number) && pickNumber(number, ticket.dashboard_id)"
+                                             class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
+                                            {{ formatNumber(number) }}
                                         </div>
                                     </div>
-                                </div>
-
-
-
-
-
-                            </div>
-                        </div>
-
-                        <div
-                            class="mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Winning Chances</p>
-                                <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
-                                    <div class="absolute top-0 left-0 h-full "
-                                        style="width: 54%;background-color: rgb(44, 186, 242);"></div>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 sm:mt-0 text-left">
-                                <div>
-                                    <p class="text-sm text-gray-500">1 draw with 2 tickets @ 2 × €3.50</p>
-                                    <p class="text-sm text-gray-500">Total Discount: <span
-                                            class="text-blue-500">-€0.00</span>
-                                    </p>
-                                </div>
-                                <div class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
-                                    <span class="text-lg font-bold text-white"> $9.99 </span>
-                                    <button class="font-bold text-white rounded-lg ml-4">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -248,11 +234,17 @@ const winningNumbers = computed(() => {
                 </div>
             </div>
         </div>
+
+
+        <div v-if="pickedNumbers.length > 0">
+            <h3 class="text-lg font-bold">Picked Numbers</h3>
+            <ul>
+                <li v-for="number in pickedNumbers" :key="number">{{ number }}</li>
+            </ul>
+        </div>
+
     </AuthenticatedLayout>
 </template>
-
-
-
 
 <style>
 /* Modal Overlay */
