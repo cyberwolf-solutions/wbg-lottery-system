@@ -45,12 +45,20 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Route::post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 });
 
 
+// Route::middleware('auth:sanctum')->post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 
+// Route::post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
+// Route::middleware('auth')->post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 
-Route::middleware('auth:sanctum')->post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 
 
 Route::middleware(['web'])->group(function () {
@@ -120,92 +128,95 @@ Route::middleware(['web'])->group(function () {
 
     //fetch lotteries to nav
     // Route::get('/lotteriesdropdown' ,[PublicController::class , 'index'] );
-    Route::get('/lotteriesdropdown', function(){
+    Route::get('/lotteriesdropdown', function () {
         return Lotteries::all();
     });
 
-    
+
 
 
 
     Route::prefix('admin')->group(function () {
-        
+
         Route::get('/login/index', [AdminAuthController::class, 'index']);
-        
+
         Route::post('/login', [AdminAuthController::class, 'login']);
-        
+
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AdminAuthController::class, 'logout']);
             Route::get('/me', [AdminAuthController::class, 'me']);
-            
         });
 
 
 
+        Route::get('/check-auth', [AdminAuthController::class, 'checkAuth']);
+
+
+
+
         //sidebar
-        Route::get('/sidebar/lotteries', function(){
+        Route::get('/sidebar/lotteries', function () {
             return Lotteries::all();
         });
 
         //lotteies 
         Route::post('/lottery/create', [LotteryListController::class, 'store']);
-        Route::get('/list' ,[LotteryListController::class ,  'index']);
+        Route::get('/list', [LotteryListController::class,  'index']);
         Route::put('/lottery/update/{id}', [LotteryListController::class, 'update']);
         Route::delete('/lottery/delete/{id}', [LotteryListController::class, 'destroy']);
 
-        
-        
+
+
 
 
         //dashboards
-        Route::get('/lottery/dashboard/{id}',  [LotteryDashboardController::class, 'index']);    
+        Route::get('/lottery/dashboard/{id}',  [LotteryDashboardController::class, 'index']);
         Route::post('/dashboard/create', [LotteryDashboardController::class, 'store']);
 
 
         Route::get('/dashboard', function () {
             return Inertia::render('AdminDashboard/Dashboard');
         });
-    
-    
+
+
         Route::get('/adminLot', function () {
             return Inertia::render('AdminDashboard/Lotteries');
         });
-    
+
         Route::get('/adminWin', function () {
             return Inertia::render("AdminDashboard/Winners");
         });
-    
+
         Route::get('/creditReq', function () {
             return Inertia::render("AdminDashboard/Credit");
         });
-    
+
         Route::get('/transactions', function () {
             return Inertia::render("AdminDashboard/Transactions");
         });
-    
+
         Route::get('/purchase', function () {
             return Inertia::render("AdminDashboard/Purchase");
         });
-    
+
         Route::get('/walletHistory', function () {
             return Inertia::render("AdminDashboard/WalletHistory");
         });
-    
+
         Route::get("/customers", function () {
             return Inertia::render("AdminDashboard/Customers");
         });
-    
+
         Route::get("/users", function () {
             return Inertia::render("AdminDashboard/Users");
         });
-    
+
         Route::get("/Roles", function () {
             return Inertia::render("AdminDashboard/Roles");
         });
-    
+
         Route::get("/Roles/Add", function () {
             return Inertia::render("AdminDashboard/CreateRole");
         });
-    
     });
 });
