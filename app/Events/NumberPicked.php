@@ -33,7 +33,7 @@ class NumberPicked implements ShouldBroadcast
         return [
             'user_id' => $this->pickedNumber->user_id,
             'lottery_dashboard_id' => $this->pickedNumber->lottery_dashboard_id,
-            'number'=> $this->pickedNumber->number,
+            'picked_number'=> $this->pickedNumber->number,
         ];
     }
 

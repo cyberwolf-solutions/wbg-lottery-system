@@ -21,6 +21,44 @@ class AdminAuthController extends Controller
     }
     // Admin Login
     // Admin Login
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required'
+    //     ]);
+
+    //     $admin = Admin::where('email', $request->email)->first();
+
+    //     if (!$admin || !Hash::check($request->password, $admin->password)) {
+    //         // Log the error
+    //         Log::error('Login failed for email: ' . $request->email);
+
+    //         throw ValidationException::withMessages([
+    //             'email' => ['The provided credentials are incorrect.'],
+    //         ]);
+    //     }
+
+    //     // Generate a token with remember me functionality
+    //     $token = $admin->createToken('admin-token', ['admin'])->plainTextToken;
+
+    //     if ($request->remember_me) {
+
+    //         $cookie = cookie('admin_token', $token, 43200); 
+    //         return response()->json([
+    //             'admin' => $admin,
+    //             'token' => $token
+    //         ], 200)->cookie($cookie); 
+    //     }
+
+    //     // Default case without remember me
+    //     return response()->json([
+    //         'admin' => $admin,
+    //         'token' => $token
+    //     ], 200);
+    // }
+
+
     public function login(Request $request)
     {
         $request->validate([
@@ -31,7 +69,6 @@ class AdminAuthController extends Controller
         $admin = Admin::where('email', $request->email)->first();
 
         if (!$admin || !Hash::check($request->password, $admin->password)) {
-            // Log the error
             Log::error('Login failed for email: ' . $request->email);
 
             throw ValidationException::withMessages([
@@ -39,24 +76,48 @@ class AdminAuthController extends Controller
             ]);
         }
 
-        // Generate a token with remember me functionality
+        // Generate a token for authentication
         $token = $admin->createToken('admin-token', ['admin'])->plainTextToken;
 
+        // Save remember token if "Remember Me" is checked
         if ($request->remember_me) {
-            
-            $cookie = cookie('admin_token', $token, 43200); 
+            $admin->remember_token = $token;
+            $admin->save();
+
+            // Set token in a long-lived cookie
+            $cookie = cookie('admin_token', $token, 43200); // 30 days
             return response()->json([
                 'admin' => $admin,
                 'token' => $token
-            ], 200)->cookie($cookie); 
+            ], 200)->cookie($cookie);
         }
 
-        // Default case without remember me
         return response()->json([
             'admin' => $admin,
             'token' => $token
         ], 200);
     }
+
+
+
+    public function checkAuth(Request $request)
+{
+    $token = $request->cookie('admin_token');
+    Log::info("Checking auth, received token: " . ($token ?? 'No token'));
+
+    if (!$token) {
+        return response()->json(['message' => 'Not authenticated'], 401);
+    }
+
+    $admin = Admin::where('remember_token', $token)->first();
+
+    if ($admin) {
+        return response()->json(['authenticated' => true]);
+    } else {
+        return response()->json(['message' => 'Invalid token'], 401);
+    }
+}
+
 
 
     // Admin Logout

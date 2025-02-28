@@ -90,35 +90,6 @@ class LotteryDashboardController extends Controller
     }
 
 
-    // public function pickNumber(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'number' => 'required',
-    //         'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
-    //     ]);
-
-    //     //check the numbers already picked
-    //     $exists = PickedNumber::where('lottery_dashboard_id', $validated['lottery_dashboard_id'])
-    //         ->where('number', $validated['number'])
-    //         ->exists();
-
-    //     if ($exists) {
-    //         return response()->json(['message' => "Number Already picked"]);
-    //     }
-
-    //     //assign the number to the logged user
-    //     $pickedNumber = PickedNumber::create([
-    //         'user_id' => Auth::id(),
-    //         'picked_number' => $validated['number'],
-    //         'lottery_dashboard_id' => $validated['lottery_dashboard_id'],
-    //     ]);
-
-    //     //broadcast the picked number
-    //     broadcast(new \App\Events\NumberPicked($pickedNumber))->toOthers();
-
-    //     return response()->json(['message' => 'Number picked successfully', 'data' => $pickedNumber]);
-    // }
-
     public function pickNumber(Request $request)
     {
         $validated = $request->validate([
@@ -126,9 +97,17 @@ class LotteryDashboardController extends Controller
             'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
         ]);
 
-        // Dispatch the job to handle the logic in the background
-        PickNumberJob::dispatch($validated['number'], $validated['lottery_dashboard_id']);
+
+        Log::info("Dispatching PickNumberJob: Number = {$validated['number']}, Lottery ID = {$validated['lottery_dashboard_id']}, User ID = " . Auth::id());
+       
+        
+        PickNumberJob::dispatch($validated['number'], $validated['lottery_dashboard_id'] ,Auth::id());
+
+
+
+        
 
         return response()->json(['message' => 'Number picked successfully']);
     }
+    
 }
