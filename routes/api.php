@@ -135,88 +135,89 @@ Route::middleware(['web'])->group(function () {
 
 
 
-
     Route::prefix('admin')->group(function () {
 
-        Route::get('/login/index', [AdminAuthController::class, 'index']);
+        Route::get('/login', [AdminAuthController::class, 'index']);
 
         Route::post('/login', [AdminAuthController::class, 'login']);
+        Route::middleware('admin')->group(function () {
 
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('/logout', [AdminAuthController::class, 'logout']);
-            Route::get('/me', [AdminAuthController::class, 'me']);
-        });
-
-
-
-        Route::get('/check-auth', [AdminAuthController::class, 'checkAuth']);
+            Route::middleware('auth:sanctum')->group(function () {
+                Route::post('/logout', [AdminAuthController::class, 'logout']);
+                Route::get('/me', [AdminAuthController::class, 'me']);
+            });
 
 
 
-
-        //sidebar
-        Route::get('/sidebar/lotteries', function () {
-            return Lotteries::all();
-        });
-
-        //lotteies 
-        Route::post('/lottery/create', [LotteryListController::class, 'store']);
-        Route::get('/list', [LotteryListController::class,  'index']);
-        Route::put('/lottery/update/{id}', [LotteryListController::class, 'update']);
-        Route::delete('/lottery/delete/{id}', [LotteryListController::class, 'destroy']);
+            Route::get('/check-auth', [AdminAuthController::class, 'checkAuth']);
 
 
 
 
+            //sidebar
+            Route::get('/sidebar/lotteries', function () {
+                return Lotteries::all();
+            });
 
-        //dashboards
-        Route::get('/lottery/dashboard/{id}',  [LotteryDashboardController::class, 'index']);
-        Route::post('/dashboard/create', [LotteryDashboardController::class, 'store']);
+            //lotteies 
+            Route::post('/lottery/create', [LotteryListController::class, 'store']);
+            Route::get('/list', [LotteryListController::class,  'index']);
+            Route::put('/lottery/update/{id}', [LotteryListController::class, 'update']);
+            Route::delete('/lottery/delete/{id}', [LotteryListController::class, 'destroy']);
 
 
-        Route::get('/dashboard', function () {
-            return Inertia::render('AdminDashboard/Dashboard');
-        });
 
 
-        Route::get('/adminLot', function () {
-            return Inertia::render('AdminDashboard/Lotteries');
-        });
 
-        Route::get('/adminWin', function () {
-            return Inertia::render("AdminDashboard/Winners");
-        });
+            //dashboards
+            Route::get('/lottery/dashboard/{id}',  [LotteryDashboardController::class, 'index']);
+            Route::post('/dashboard/create', [LotteryDashboardController::class, 'store']);
 
-        Route::get('/creditReq', function () {
-            return Inertia::render("AdminDashboard/Credit");
-        });
 
-        Route::get('/transactions', function () {
-            return Inertia::render("AdminDashboard/Transactions");
-        });
+            Route::get('/dashboard', function () {
+                return Inertia::render('AdminDashboard/Dashboard');
+            });
 
-        Route::get('/purchase', function () {
-            return Inertia::render("AdminDashboard/Purchase");
-        });
 
-        Route::get('/walletHistory', function () {
-            return Inertia::render("AdminDashboard/WalletHistory");
-        });
+            Route::get('/adminLot', function () {
+                return Inertia::render('AdminDashboard/Lotteries');
+            });
 
-        Route::get("/customers", function () {
-            return Inertia::render("AdminDashboard/Customers");
-        });
+            Route::get('/adminWin', function () {
+                return Inertia::render("AdminDashboard/Winners");
+            });
 
-        Route::get("/users", function () {
-            return Inertia::render("AdminDashboard/Users");
-        });
+            Route::get('/creditReq', function () {
+                return Inertia::render("AdminDashboard/Credit");
+            });
 
-        Route::get("/Roles", function () {
-            return Inertia::render("AdminDashboard/Roles");
-        });
+            Route::get('/transactions', function () {
+                return Inertia::render("AdminDashboard/Transactions");
+            });
 
-        Route::get("/Roles/Add", function () {
-            return Inertia::render("AdminDashboard/CreateRole");
+            Route::get('/purchase', function () {
+                return Inertia::render("AdminDashboard/Purchase");
+            });
+
+            Route::get('/walletHistory', function () {
+                return Inertia::render("AdminDashboard/WalletHistory");
+            });
+
+            Route::get("/customers", function () {
+                return Inertia::render("AdminDashboard/Customers");
+            });
+
+            Route::get("/users", function () {
+                return Inertia::render("AdminDashboard/Users");
+            });
+
+            Route::get("/Roles", function () {
+                return Inertia::render("AdminDashboard/Roles");
+            });
+
+            Route::get("/Roles/Add", function () {
+                return Inertia::render("AdminDashboard/CreateRole");
+            });
         });
     });
 });
