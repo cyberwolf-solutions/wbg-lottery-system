@@ -222,7 +222,7 @@ export default {
       try {
         // alert(this.newDashboard.lottery_id);
 
-        const response = await axios.post('http://127.0.0.1:8000/api/admin/dashboard/create', this.newDashboard);
+        const response = await axios.post('/api/admin/dashboard/create', this.newDashboard);
         this.dashboards.push(response.data); // Add the newly created dashboard
         this.closeModal();
         window.location.reload();
