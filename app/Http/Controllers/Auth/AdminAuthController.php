@@ -161,7 +161,7 @@ class AdminAuthController extends Controller {
 
 
     // Get Admin Info
-    public function me(Request $request) {
-        return response()->json($request->user());
-    }
+    // public function me(Request $request) {
+    //     return response()->json($request->user());
+    // }
 }

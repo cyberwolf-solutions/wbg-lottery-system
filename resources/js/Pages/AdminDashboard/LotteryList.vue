@@ -220,7 +220,7 @@ export default {
                 console.log(csrfToken);  // Log to verify if CSRF token exists
                 console.log(document.cookie);  // Log cookies to check if CSRF token is stored there
 
-                const response = await axios.post('http://127.0.0.1:8000/api/admin/lottery/create', formData, {
+                const response = await axios.post('/api/admin/lottery/create', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,  // Passing the CSRF token directly from the meta tag

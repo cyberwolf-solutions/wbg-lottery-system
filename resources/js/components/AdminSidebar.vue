@@ -52,7 +52,7 @@ export default {
                 {
                     id: 1,
                     name: "Dashboard",
-                    link: "http://127.0.0.1:8000/api/adminDash",
+                    link: "/api/adminDash",
                     isOpen: false,
 
                 },
@@ -62,15 +62,15 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 3, name: "Users", link: "http://127.0.0.1:8000/api/users" },
-                        { id: 4, name: "Roles", link: "http://127.0.0.1:8000/api/Roles" },
-                        { id: 5, name: "Customers", link: "http://127.0.0.1:8000/api/customers" }
+                        { id: 3, name: "Users", link: "/api/users" },
+                        { id: 4, name: "Roles", link: "/api/Roles" },
+                        { id: 5, name: "Customers", link: "/api/customers" }
                     ],
                 },
                 {
                     id: 8,
                     name: "Lotteries",
-                    link: "http://127.0.0.1:8000/api/admin/list",
+                    link: "/api/admin/list",
                     isOpen: false,
 
                 },
@@ -87,8 +87,8 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 5, name: "Lottery 1", link: "http://127.0.0.1:8000/api/adminWin" },
-                        { id: 6, name: "Lottery 2", link: "http://127.0.0.1:8000/api/adminWin" },
+                        { id: 5, name: "Lottery 1", link: "/api/adminWin" },
+                        { id: 6, name: "Lottery 2", link: "/api/adminWin" },
                     ],
                 },
                 {
@@ -97,8 +97,8 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 7, name: "Requests", link: "http://127.0.0.1:8000/api/creditReq" },
-                        { id: 8, name: "Transactions", link: "http://127.0.0.1:8000/api/transactions" },
+                        { id: 7, name: "Requests", link: "/api/creditReq" },
+                        { id: 8, name: "Transactions", link: "/api/transactions" },
                     ],
                 },
                 {
@@ -107,8 +107,8 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 7, name: "Lottery 1", link: "http://127.0.0.1:8000/api/purchase" },
-                        { id: 8, name: "Lottery 2", link: "http://127.0.0.1:8000/api/purchase" },
+                        { id: 7, name: "Lottery 1", link: "/api/purchase" },
+                        { id: 8, name: "Lottery 2", link: "/api/purchase" },
                     ],
                 },
                 {
@@ -117,7 +117,7 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 7, name: "Transaction History", link: "http://127.0.0.1:8000/api/walletHistory" },
+                        { id: 7, name: "Transaction History", link: "/api/walletHistory" },
 
                     ],
                 },
@@ -140,15 +140,15 @@ export default {
         },
         async fetchLotteryData() {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/admin/sidebar/lotteries");  // Your API endpoint for fetching lotteries
-                const lotteries = response.data;  // Assuming the response is an array of lottery objects
+                const response = await axios.get("/api/admin/sidebar/lotteries");  
+                const lotteries = response.data;  
 
                 // Update the 'Lottery Dashboards' menu with fetched data
                 const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
                 lotteryDashboard.subItems = lotteries.map(lottery => ({
                     id: lottery.id,
                     name: lottery.name,
-                    link: `http://127.0.0.1:8000/api/admin/lottery/dashboard/${lottery.id}`,
+                    link: `/api/admin/lottery/dashboard/${lottery.id}`,
                 }));
             } catch (error) {
                 console.error("Error fetching lottery data:", error);
