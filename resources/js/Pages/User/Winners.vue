@@ -7,7 +7,8 @@ import { Head } from '@inertiajs/vue3';
 
 <template>
 
-<Nav />
+    <Nav />
+
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -21,9 +22,8 @@ import { Head } from '@inertiajs/vue3';
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">List of lottery winners
             </p>
             <p style="font-size: smaller; color: gray; margin-top: 0;margin-bottom: 50px;">Our biggest winners have won
-                lottery
-                jackpots
-                and million dollar prizes. Read their storie below.
+                70 times
+                of the initial board booking value.. Read their story below.
             </p>
         </div>
 
@@ -139,13 +139,11 @@ import { Head } from '@inertiajs/vue3';
                             Collect Your Wins</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
-                                Winners updated weekly. Prize value listed as won may not reflect actual net claims
-                                payment
-                                amount
-                                in photo
-                                due to combined prize claim amounts and other adjustments. Purchase location shown where
-                                applicable.
-                                All Prizes are 100% commission-FREE.
+                                How to be a winner from every board
+                                Simple & Exciting: Easy to play, with massive winning potential!
+                                Refer & Earn: Invite friends and earn 10% of their winnings!
+                                Example: If your friend wins 70,000, you earn 7,000!
+                                Secure Payments: All transactions are in USDT for fast and secure deposits/withdrawals.
                             </p>
                         </div>
 
@@ -161,7 +159,7 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
-                                    Win any prize while playing your favourite lotteries online at Sorteo.
+                                    :Help your friends to join and win
                                 </p>
                             </div>
 
@@ -187,7 +185,7 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    Your win will be directly transferred to your account on Sorteo!
+                                    .Earn 10% of their prize if they win!
                                 </p>
                             </div>
 

@@ -66,12 +66,6 @@ export default {
   components: {
     Sidebar,
   },
-  mounted() {
-    // Check if there is no token in localStorage or cookies
-    if (!localStorage.getItem('admin-token') && !document.cookie.includes('admin_token')) {
-      window.location.href = "/api/admin/login/index"; // Redirect to login page
-    }
-  },
   data() {
     return {
       isSidebarVisible: true,

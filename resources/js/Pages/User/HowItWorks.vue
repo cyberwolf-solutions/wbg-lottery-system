@@ -20,10 +20,8 @@ import { Head } from '@inertiajs/vue3';
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">How it works
             </p>
-            <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Our biggest winners have won
-                lottery
-                jackpots
-                and million dollar prizes. Read their storie below.
+            <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Start booking your numbers today and invite friends to multiply the fun and
+                rewards!
             </p>
         </div>
 
@@ -46,13 +44,8 @@ import { Head } from '@inertiajs/vue3';
                             Lucky rewards</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
-                                Winners updated weekly. Prize value listed as won may not reflect actual net claims
-                                payment
-                                amount
-                                in photo
-                                due to combined prize claim amounts and other adjustments. Purchase location shown where
-                                applicable.
-                                All Prizes are 100% commission-FREE.
+                                Winners updated daily.Prize value is 70 times of the initial value of that selected board Purchase
+                                user id shown where applicable. All Prizes are 100% commission-FREE.
                             </p>
                         </div>
 
@@ -67,7 +60,7 @@ import { Head } from '@inertiajs/vue3';
 
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
-                                    Win any prize while playing your favourite lotteries online at Sorteo.
+                                    Win 70 times your booking price if your numbers hit
                                 </p>
                             </div>
 
@@ -80,7 +73,7 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    Receive an instant notification by email or SMS!
+                                    Receive Notification to your mail and USDT to your winboard wallet.
                                 </p>
                             </div>
 
@@ -94,7 +87,7 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    Your win will be directly transferred to your account on Sorteo!
+                                    Your win will be directly transferred to your winboard wallet and withdraw from it anytime
                                 </p>
                             </div>
 
@@ -127,15 +120,9 @@ import { Head } from '@inertiajs/vue3';
                                     If you have any questions</h1>
                                 <div style="width: 50%;margin-left: auto;margin-right: auto;align-items: left;">
                                     <p style="color: #555; font-size: 14px; margin-bottom: 40px;text-align: left;">
-                                        Winners updated weekly. Prize value listed as won may not reflect actual net
-                                        claims
-                                        payment
-                                        amount
-                                        in photo
-                                        due to combined prize claim amounts and other adjustments. Purchase location
-                                        shown where
-                                        applicable.
-                                        All Prizes are 100% commission-FREE.
+                                        Start booking your numbers today and invite friends to multiply the fun and rewards!
+Stay tuned here for updates, winner announcements, and special offers!
+Contact us for any questions.
                                     </p>
 
                                     <div class="text-center mt-4" style="margin-bottom: 30px;">
