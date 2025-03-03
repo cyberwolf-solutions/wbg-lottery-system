@@ -87,7 +87,7 @@ export default {
             this.isSidebarVisible = isVisible;
         },
         openAddRolePage() {
-            window.location.href = "http://127.0.0.1:8000/api/Roles/Add";
+            window.location.href = "/api/Roles/Add";
         }
 
     },
