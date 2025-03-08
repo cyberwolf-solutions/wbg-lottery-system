@@ -56,7 +56,8 @@ class LotteryDashboardController extends Controller
                 'draw_number' => str_pad($validated['drawNumber'], 3, '0', STR_PAD_LEFT),
                 'winning_numbers' => json_encode($winningNumbers),
                 'lottery_id' => $validated['lottery_id'],
-                'dashboard' => $validated['dashboard']
+                'dashboard' => $validated['dashboard'],
+                'status' => 'active',
             ]);
 
             // Return the response
@@ -90,24 +91,6 @@ class LotteryDashboardController extends Controller
     }
 
 
-    public function pickNumber(Request $request)
-    {
-        $validated = $request->validate([
-            'number' => 'required',
-            'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
-        ]);
-
-
-        Log::info("Dispatching PickNumberJob: Number = {$validated['number']}, Lottery ID = {$validated['lottery_dashboard_id']}, User ID = " . Auth::id());
-       
-        
-        PickNumberJob::dispatch($validated['number'], $validated['lottery_dashboard_id'] ,Auth::id());
-
-
-
-        
-
-        return response()->json(['message' => 'Number picked successfully']);
-    }
+    
     
 }

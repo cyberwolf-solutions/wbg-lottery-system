@@ -13,34 +13,45 @@ class LotteriesController extends Controller
 {
 
 
-    public function index(){
+    public function index()
+    {
         return Inertia::render();
     }
 
-    
+
     public function show($id)
     {
-        
+
 
         $lotteries = Lotteries::find($id);
 
-        Log::info( $lotteries);
+        Log::info($lotteries);
 
-        // if(!$lotteries){
-        //     return redirect()->back()->with('error' , 'Lottery not found');
-        // }
 
-        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)->get();
 
-        // dd($lotterydashboards);
-        
+        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)
+            ->where('status', 'active')
+            ->get();
 
         // Pass the lottery data to the Inertia page
         return Inertia::render('User/lottery', [
             'lotterie' => $lotteries,
-             'lotterydashboards' => $lotterydashboards,
+            'lotterydashboards' => $lotterydashboards,
             'status' => session('status'),
         ]);
     }
-}
 
+    public function deactivate(Request $request)
+    {
+        $dashboard = LotteryDashboards::where('id', $request->dashboard_id)->first();
+
+        if (!$dashboard) {
+            return response()->json(['error' => 'Dashboard not found'], 404);
+        }
+
+        $dashboard->status = 'deactive';
+        $dashboard->save();
+
+        return response()->json(['message' => 'Dashboard deactivated successfully']);
+    }
+}

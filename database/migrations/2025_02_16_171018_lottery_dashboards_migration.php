@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('draw'); // Draw type (could be like 'first', 'second', etc.)
             $table->string('draw_number'); // Draw number or code
             $table->json('winning_numbers'); // Winning numbers stored as JSON (e.g., ["00", "01", "02", ..., "99"])
+            $table->string('status')->default('active');
             $table->softDeletes(); // Enable soft delete
             $table->timestamps(); // Created at and updated at
         });

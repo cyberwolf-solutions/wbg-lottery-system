@@ -7,32 +7,36 @@
                     <h2 class="lottery-name fw-bold text-danger">Lottery Purchases</h2>
                 </div>
                 <div class="lottery-table">
-                    <h3 class="mt-4">Purchase Details</h3>
+                    <h3 class="mt-4">{{ lottery[0]?.lottery?.name }} Purchase Details</h3>
+
                     <table>
                         <thead>
                             <tr>
-                                <th>Draw Date</th>
-                                <th>Date</th>
+                                <th>Dashboard ID</th>
+                                <th>Dashboard</th>
                                 <th>Draw Number</th>
+                                <th>Draw Date</th>
                                 <th>Percentage</th>
                                 <th>View</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
+                            <tr v-for="(dashboard, index) in lottery" :key="index">
+                                <td>{{ dashboard.id }}</td>
+                                <td>{{ dashboard.dashboard }}</td>
+                                <td>{{ dashboard.draw_number }}</td>
                                 <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.draw }}</td>
-                                <td>{{ calculatePercentage(dashboard.price) }}%</td>
+                                <td>{{ calculatePercentage() }}%</td> <!-- Displaying calculated percentage -->
                                 <td>
                                     <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
                                         <i class="bi bi-eye"></i>
                                     </button>
-
                                 </td>
                                 <td>
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                    <button @click="confirmDelete(dashboard)" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -41,12 +45,18 @@
             </div>
         </div>
 
-        <div v-if="isDeleteModalOpen" class="modal-overlay">
+        <!-- Number Picker Modal -->
+        <div v-if="isPickerOpen" class="modal-overlay">
             <div class="modal-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this transaction?</p>
-                <button @click="deleteTransaction" class="btn btn-danger">Delete</button>
-                <button @click="isDeleteModalOpen = false" class="btn btn-secondary">Cancel</button>
+                <button @click="isPickerOpen = false" class="close-button">×</button>
+                <h3>Picked Numbers</h3>
+                <div class="number-grid">
+                    <button v-for="num in numberOptions" :key="num"
+                        :class="['number-button', { 'selected': selectedNumber === num, 'highlighted': isNumberPicked(num) }]"
+                        @click="selectNumber(num)">
+                        {{ num }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -59,40 +69,43 @@ export default {
     components: {
         Sidebar,
     },
+    props: {
+        lottery: Array,
+        pickedNumbers: Array, // Accept pickedNumbers as a prop
+    },
     data() {
         return {
             isSidebarVisible: true,
-            isDeleteModalOpen: false,
-            selectedDashboard: null,
-            dashboards: [
-                { id: 1, name: 'User 1', price: 10, date: '2025-02-05', draw: '1' },
-                { id: 2, name: 'User 2', price: 20, date: '2025-02-05', draw: '2' },
-                { id: 3, name: 'User 3', price: 50, date: '2025-02-05', draw: '3' },
-            ],
+            isPickerOpen: false,
+            selectedNumber: null,
+            numberOptions: Array.from({ length: 100 }, (_, i) => String(i).padStart(2, "0")),
         };
     },
     methods: {
-        calculatePercentage(price) {
-            const total = this.dashboards.reduce((sum, item) => sum + item.price, 0);
-            return total ? ((price / total) * 100).toFixed(2) : 0;
+        calculatePercentage() {
+            const totalNumbers = this.numberOptions.length;
+            const pickedCount = this.pickedNumbers.length;
+
+            // Calculate the percentage of picked numbers
+            return ((pickedCount / totalNumbers) * 100).toFixed(1);
         },
         viewDetails(dashboard) {
-            alert(`Viewing details for: ${dashboard.name}`);
+            this.isPickerOpen = true;
         },
-        confirmDelete(dashboard) {
-            this.selectedDashboard = dashboard;
-            this.isDeleteModalOpen = true;
+        selectNumber(num) {
+            this.selectedNumber = num;
         },
-        deleteTransaction() {
-            this.dashboards = this.dashboards.filter(d => d.id !== this.selectedDashboard.id);
-            this.isDeleteModalOpen = false;
+        confirmSelection() {
+            alert(`Selected Number: ${this.selectedNumber}`);
+            this.isPickerOpen = false;
         },
-        handleSidebarToggle(isVisible) {
-      this.isSidebarVisible = isVisible;
-    },
-    },
+        isNumberPicked(num) {
+            return this.pickedNumbers.includes(num); // Check if the number is in pickedNumbers
+        }
+    }
 };
 </script>
+
 
 <style scoped>
 #app.dark-theme {
@@ -316,4 +329,87 @@ button.btn-danger {
 button:hover {
     opacity: 0.9;
 }
+
+/* Modal Overlay */
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+/* Modal Content */
+.modal-content {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+    position: relative;
+    max-height: 80vh; /* Limit the height of the modal */
+    overflow: hidden; /* Hide any overflow outside the modal */
+}
+
+/* Number Picker Grid */
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 8px;
+    padding: 15px;
+    max-height: 60vh; /* Set a specific height for the grid */
+    overflow-y: auto; /* Enable scrolling within the grid if there are many numbers */
+}
+
+/* Adjusting the overflow behavior of the modal itself */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: auto; /* Allow overflow to be handled properly */
+}
+
+/* Number Button */
+.number-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover & Active Effects */
+.number-button:hover {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+.number-button.highlighted {
+    background-color: green;
+    color: white;
+}
+
+
 </style>

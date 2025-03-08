@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -8,8 +8,10 @@ import axios from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-Pusher.logToConsole = true;
+const authToken = localStorage.getItem('auth_token');
+console.log('Auth Token:', authToken);
 
+Pusher.logToConsole = true;
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'your_pusher_key',
@@ -17,39 +19,43 @@ window.Echo = new Echo({
     forceTLS: true
 });
 
-// Store the picked numbers (those that are disabled)
 const pickedNumbers = ref([]);
-
-// Listen for a number being picked through the Pusher event
-window.Echo.channel('lottery')
-    .listen('NumberPicked', (event) => {
-        console.log("Number Picked Event Received:", event);
-        pickedNumbers.value.push(event.pickedNumber.picked_number);
-    });
+const showConfirmModal = ref(false);
+const numberToPick = ref(null);
+const dashboardIdToPick = ref(null);
 
 
-function pickNumber(number, dashboardId) {
-    // Send a POST request to mark the number as picked in the database
-    // alert(JSON.stringify(selectedLotteryDetails.value[0]?.id , 2));
+onMounted(() => {
+    window.Echo.channel('lottery')
+        .listen('NumberPicked', (event) => {
+            console.log("Number Picked Event Received:", event);
+            pickedNumbers.value.push(event.pickedNumber.picked_number);
+        });
+});
 
+const storedNumbers = ref([...Array(100).keys()].map(n => n.toString().padStart(2, '0')));
 
+function confirmPickNumber(number, dashboardId) {
+    numberToPick.value = number;
+    dashboardIdToPick.value = dashboardId;
+    showConfirmModal.value = true;
+}
 
+function pickNumberConfirmed() {
     axios.post('/api/pick-number', {
-        number: number,
+        number: numberToPick.value,
         lottery_dashboard_id: selectedLotteryDetails.value[0]?.id,
-    }, {
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
+        lottery_id: props.lotterie.id,
     }).then(response => {
         pickedNumbers.value.push(response.data.data.number);
     }).catch(error => {
         alert(error.response.data.message);
+    }).finally(() => {
+        showConfirmModal.value = false;
+        numberToPick.value = null;
+        dashboardIdToPick.value = null;
     });
-
 }
-
 
 
 
@@ -57,18 +63,20 @@ const props = defineProps({
     lotterie: Object,
     lotterydashboards: Array
 });
+
 const showModal = ref(true);
 const selectedLottery = ref(props.lottery?.name || '');
 const selectedLotteryDetails = ref([]);
-// const countdownTimer = ref('');
 const countdowns = ref({});
 const selectedDashboardCount = computed(() => selectedLotteryDetails.value.length);
+
 function selectLottery(dashboard) {
     selectedLottery.value = dashboard.dashboard;
     selectedLotteryDetails.value = props.lotterydashboards.filter(d => d.dashboard === dashboard.dashboard);
     showModal.value = false;
     startCountdown();
 }
+
 const uniqueDashboards = computed(() => {
     const seen = new Set();
     return props.lotterydashboards.filter(dashboard => {
@@ -79,9 +87,17 @@ const uniqueDashboards = computed(() => {
         return false;
     });
 });
+
+let countdownIntervals = {}; // Store countdown intervals
+
 function startCountdown() {
     selectedLotteryDetails.value.forEach(ticket => {
-        const targetDate = new Date(ticket.date).getTime();
+        const targetDate = new Date(ticket.date);
+        targetDate.setHours(20, 0, 0, 0); // Set time to 8:00 PM (20:00)
+
+        if (countdownIntervals[ticket.draw_number]) {
+            clearInterval(countdownIntervals[ticket.draw_number]); // Clear existing interval
+        }
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -96,17 +112,31 @@ function startCountdown() {
                 };
             } else {
                 countdowns.value[ticket.draw_number] = { expired: true };
+                clearInterval(countdownIntervals[ticket.draw_number]); // Stop countdown
+                deactivateDashboard(ticket.dashboard_id);
             }
+            console.log("Time left:", timeLeft, countdowns.value[ticket.draw_number]);
         }
 
-        // Start countdown update every second
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        countdownIntervals[ticket.draw_number] = setInterval(updateCountdown, 1000);
     });
 }
-// Format number (ensure two-digit format)
+
+// Function to send API request to deactivate dashboard
+function deactivateDashboard(dashboardId) {
+    axios.post('/api/deactivate-dashboard', { dashboard_id: dashboardId })
+        .then(response => {
+            console.log('Dashboard deactivated:', response.data);
+        })
+        .catch(error => {
+            console.error('Error deactivating dashboard:', error.response?.data || error);
+        });
+}
+
+
 const formatNumber = (num) => num.toString().padStart(2, '0');
-// Compute winning numbers dynamically based on each draw number
+
 const winningNumbers = computed(() => {
     let numbersMap = {};
     selectedLotteryDetails.value.forEach(ticket => {
@@ -121,12 +151,9 @@ const winningNumbers = computed(() => {
     return numbersMap;
 });
 
-// const pickedNumbers = ref([]); // Stores picked numbers
-const selectedNumber = ref(null); // Stores the number user selects
-
-
-
+const selectedNumber = ref(null);
 </script>
+
 <template>
 
     <Head :title="props ? props.lotterie.name : 'Lottery'" />
@@ -136,7 +163,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                 Price {{ selectedLottery ? selectedLottery : 'Lotteries' }}
             </h2>
         </template>
-
         <!-- Modal -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-container">
@@ -145,8 +171,8 @@ const selectedNumber = ref(null); // Stores the number user selects
                     <button v-for="dashboard in uniqueDashboards" :key="dashboard.dashboard"
                         @click="selectLottery(dashboard)" class="lottery-button lottery-b">
                         {{ dashboard.dashboard }}
+                        <!-- {{ dashboard.id }} -->
                     </button>
-
                 </div>
             </div>
         </div>
@@ -162,7 +188,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-
                     <!-- Modal Body -->
                     <div class="modal-body text-center p-4">
                         <i class="fas fa-exclamation-circle text-danger fs-1 mb-3"></i>
@@ -173,7 +198,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                             Please make a settlement to continue.
                         </p>
                     </div>
-
                     <!-- Modal Footer -->
                     <div class="modal-footer justify-content-center border-0 pb-4">
                         <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
@@ -203,7 +227,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
 
                                     </div>
-
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
                                         <span style="font-size: 12px;">{{ ticket.date }}</span>
@@ -213,7 +236,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                                         <span class="fw-bold" style="font-size: 12px;">Prize</span>
                                         <span style="font-size: 12px;">{{ ticket.price }}</span>
                                     </div>
-
                                     <div id="countdown" class="countdown mt-3">
                                         ⏳
                                         <span v-if="!countdowns[ticket.draw_number]?.expired">
@@ -225,40 +247,67 @@ const selectedNumber = ref(null); // Stores the number user selects
                                         <span v-else class="text-red-500">Time's up!</span>
                                     </div>
                                 </div>
-
                                 <!-- Number Buttons -->
                                 <div class="mt-4">
                                     <h3 class="text-sm font-semibold">Pick a Number</h3>
                                     <div class="grid grid-cols-6 gap-3 mt-4">
-                                        <div v-for="number in Array.from({ length: 100 }, (_, i) => i + 1)"
-                                            :key="number" :class="{
-                                                'bg-gray-100': !pickedNumbers.includes(number),
-                                                'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
-                                            }"
-                                            @click="!pickedNumbers.includes(number) && pickNumber(number, ticket.dashboard_id)"
+                                        <div v-for="number in storedNumbers" :key="number" :class="{
+                                            'bg-gray-100': !pickedNumbers.includes(number),
+                                            'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
+                                        }" @click="!pickedNumbers.includes(number) && confirmPickNumber(number, ticket.dashboard_id)"
                                             class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
-                                            {{ formatNumber(number) }}
+                                            {{ number }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Confirmation Modal -->
+                    <div v-if="showConfirmModal" class="modal-overlay">
+                        <div class="modal-container">
+                            <h3 class="modal-title">Confirm Number Pick</h3>
+                            <p>Are you sure you want to pick number {{ numberToPick }}?</p>
+                            <div class="button-row">
+                                <button @click="showConfirmModal = false" class="cancel-button">Cancel</button>
+                                <button @click="pickNumberConfirmed" class="confirm-button">Yes, Pick</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Winning Chances</p>
+                            <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
+                                <div class="absolute top-0 left-0 h-full "
+                                    style="width: 54%;background-color: rgb(44, 186, 242);"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 sm:mt-0 text-left">
+                            <div>
+                                <p class="text-sm text-gray-500">1 draw with 2 tickets @ 2 × €3.50</p>
+                                <p class="text-sm text-gray-500">Total Discount: <span
+                                        class="text-blue-500">-€0.00</span>
+                                </p>
+                            </div>
+                            <div class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
+                                <span class="text-lg font-bold text-white"> $9.99 </span>
+                                <button class="font-bold text-white rounded-lg ml-4">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-
         <div v-if="pickedNumbers.length > 0">
             <h3 class="text-lg font-bold">Picked Numbers</h3>
             <ul>
                 <li v-for="number in pickedNumbers" :key="number">{{ number }}</li>
             </ul>
         </div>
-
     </AuthenticatedLayout>
 </template>
-
 <style>
 /* Modal Overlay */
 .modal-overlay {
