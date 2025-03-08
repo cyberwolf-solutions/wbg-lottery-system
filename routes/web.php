@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+
 Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
 Route::get('/HowItWorks', [HowItWorks::class, 'index'])->name('hiw.index');
 Route::get('/contact', [Contact::class, 'index'])->name('contact.index');

@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\BroadcastServiceProvider;
+
 return [
 
     /*
@@ -104,6 +106,8 @@ return [
             explode(',', env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
+    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -123,6 +127,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    
+
 
 ];

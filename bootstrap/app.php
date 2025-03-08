@@ -28,8 +28,9 @@
 //         //
 //     })->create();
 
-use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -59,4 +60,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->booted(function (Application $app) {
+        $schedule = $app->make(Schedule::class);
+        $schedule->command('lottery:deactivate')->everyMinute();
+
+        $schedule->command('lottery:check-participation')->hourly();
+    })
+    
+    ->create();

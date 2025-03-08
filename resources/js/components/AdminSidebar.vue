@@ -97,8 +97,8 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 7, name: "Requests", link: "/api/creditReq" },
-                        { id: 8, name: "Transactions", link: "/api/transactions" },
+                        { id: 7, name: "Credit Requests", link: "/api/admin/creditReq" },
+                        { id: 8, name: "Withdrawal Requests", link: "/api/admin/transactions" },
                     ],
                 },
                 {
@@ -108,7 +108,7 @@ export default {
                     isOpen: false,
                     subItems: [
                         { id: 7, name: "Lottery 1", link: "/api/purchase" },
-                        { id: 8, name: "Lottery 2", link: "/api/purchase" },
+
                     ],
                 },
                 {
@@ -138,10 +138,26 @@ export default {
             this.isSidebarVisible = !this.isSidebarVisible;
             this.$emit("sidebar-toggle", this.isSidebarVisible); // Emit event to update the main content layout
         },
+        // async fetchLotteryData() {
+        //     try {
+        //         const response = await axios.get("/api/admin/sidebar/lotteries");  
+        //         const lotteries = response.data;  
+
+        //         // Update the 'Lottery Dashboards' menu with fetched data
+        //         const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
+        //         lotteryDashboard.subItems = lotteries.map(lottery => ({
+        //             id: lottery.id,
+        //             name: lottery.name,
+        //             link: `/api/admin/lottery/dashboard/${lottery.id}`,
+        //         }));
+        //     } catch (error) {
+        //         console.error("Error fetching lottery data:", error);
+        //     }
+        // },
         async fetchLotteryData() {
             try {
-                const response = await axios.get("/api/admin/sidebar/lotteries");  
-                const lotteries = response.data;  
+                const response = await axios.get("/api/admin/sidebar/lotteries");
+                const lotteries = response.data;
 
                 // Update the 'Lottery Dashboards' menu with fetched data
                 const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
@@ -150,11 +166,20 @@ export default {
                     name: lottery.name,
                     link: `/api/admin/lottery/dashboard/${lottery.id}`,
                 }));
+
+                // Update the 'Purchase List' menu with fetched data (same lotteries)
+                const purchaseList = this.menuItems.find(item => item.name === "Purchase List");
+                purchaseList.subItems = lotteries.map(lottery => ({
+                    id: lottery.id,
+                    name: lottery.name,
+                    link: `/api/admin/purchase/${lottery.id}`,  // Adjust the link as needed
+                }));
             } catch (error) {
                 console.error("Error fetching lottery data:", error);
             }
-        },
-       
+        }
+
+
 
     },
     // Fetch lottery data when component is mounted

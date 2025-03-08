@@ -24,25 +24,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.price }}</td>
-                                <td>{{ dashboard.attachment }}</td>
+                            <tr v-for="(deposit, index) in credits" :key="index">
+
+                                <td><a href="#">{{ deposit.wallet?.user?.name || 'N/A' }}</a></td>
+
+                                <td>{{ deposit.deposit_date }}</td>
+                                <td>{{ deposit.amount }}</td>
+                                <td><a :href="deposit.image" target="_blank">View</a></td>
                                 <td>
-                                    <!-- Edit Button -->
-                                    <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
+                                    <button @click="editDashboard(deposit)" class="btn btn-warning btn-sm">
                                         <i class="fa fa-check"></i>
-
                                     </button>
-
-                                    <!-- Delete Button -->
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
+                                    <button @click="confirmDelete(deposit)" class="btn btn-danger btn-sm mx-2">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
                         </tbody>
+
+
                     </table>
                 </div>
 
@@ -85,26 +85,21 @@ export default {
     components: {
         Sidebar,
     },
+    props: {
+        credits: Array, // Receive Credit data from Laravel
+    },
     data() {
         return {
             isSidebarVisible: true,
             isModalOpen: false,
             isEditModalOpen: false,
             isDeleteModalOpen: false,
-            dashboards: [
-                { id: 1, name: 'User 1', price: '$10', date: '2025-02-05', draw: '1', attachment: '001' },
-                { id: 2, name: 'User 2', price: '$20', date: '2025-02-05', draw: '2', attachment: '002' },
-                { id: 3, name: 'User 3', price: '$50', date: '2025-02-05', draw: '3', attachment: '003' },
-            ],
-            newDashboard: {
-                price: '',
-                date: '',
-                draw: '',
-                drawNumber: '',
-            },
+
+
             editingDashboard: {},
         };
     },
+
     methods: {
 
         confirmDelete(dashboard) {
