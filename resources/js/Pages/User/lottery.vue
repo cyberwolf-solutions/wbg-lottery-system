@@ -23,15 +23,49 @@ const pickedNumbers = ref([]);
 const showConfirmModal = ref(false);
 const numberToPick = ref(null);
 const dashboardIdToPick = ref(null);
+const totalPrice = computed(() => {
+    // Get the price from the selected lottery dashboard
+    const dashboardPrice = selectedLotteryDetails.value[0]?.price || 0; // Default to 0 if no price found
+
+    // Calculate the total price based on picked numbers
+    const pickedPrice = pickedNumbers.value.length * parseFloat(dashboardPrice); // Total price = number of picked numbers * dashboard price
+
+    return pickedPrice.toFixed(2); // Return the total price
+});
+
+// Store picked numbers in localStorage
+function savePickedNumbersToLocalStorage() {
+    localStorage.setItem('pickedNumbers', JSON.stringify(pickedNumbers.value));
+}
+
+// Retrieve picked numbers from localStorage
+function loadPickedNumbersFromLocalStorage() {
+    const storedPickedNumbers = localStorage.getItem('pickedNumbers');
+    if (storedPickedNumbers) {
+        pickedNumbers.value = JSON.parse(storedPickedNumbers);
+    }
+}
+
 
 
 onMounted(() => {
     window.Echo.channel('lottery')
         .listen('NumberPicked', (event) => {
-            console.log("Number Picked Event Received:", event);
-            pickedNumbers.value.push(event.pickedNumber.picked_number);
+            // Push number and its price when picked
+            pickedNumbers.value.push({
+                number: event.pickedNumber.picked_number,
+                price: event.pickedNumber.price
+            });
         });
+
+    loadPickedNumbersFromLocalStorage(); // Load from localStorage when the page reloads
+
+    // Call deletePickedNumbers if necessary (e.g., reset or cleanup on page load)
+    deletePickedNumbers();
+
 });
+
+
 
 const storedNumbers = ref([...Array(100).keys()].map(n => n.toString().padStart(2, '0')));
 
@@ -42,19 +76,36 @@ function confirmPickNumber(number, dashboardId) {
 }
 
 function pickNumberConfirmed() {
+    console.log('Confirming pick for number:', numberToPick.value);
+    console.log('Dashboard ID:', dashboardIdToPick.value); // Use the correct dashboard ID
+
     axios.post('/api/pick-number', {
         number: numberToPick.value,
-        lottery_dashboard_id: selectedLotteryDetails.value[0]?.id,
+        lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
         lottery_id: props.lotterie.id,
-    }).then(response => {
-        pickedNumbers.value.push(response.data.data.number);
-    }).catch(error => {
-        alert(error.response.data.message);
-    }).finally(() => {
-        showConfirmModal.value = false;
-        numberToPick.value = null;
-        dashboardIdToPick.value = null;
-    });
+    })
+        .then(response => {
+            console.log('Full Response:', response);
+            if (response.data && response.data.number) {
+                pickedNumbers.value.push({
+                    number: response.data.number,  // Ensure number is stored properly
+                    price: selectedLotteryDetails.value[0]?.price || 0,  // Store price
+                    lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
+                });
+            } else {
+                console.error('Response data is missing or malformed');
+            }
+
+            console.log("ok" + pickedNumbers);
+        })
+        .catch(error => {
+            alert(error.response?.data?.message || error.message);
+        })
+        .finally(() => {
+            showConfirmModal.value = false;
+            numberToPick.value = null;
+            dashboardIdToPick.value = null;
+        });
 }
 
 
@@ -151,6 +202,67 @@ const winningNumbers = computed(() => {
     return numbersMap;
 });
 
+
+
+
+function checkout() {
+    if (pickedNumbers.value.length === 0) {
+        alert("No numbers selected!");
+        return;
+    }
+
+    const numbersData = pickedNumbers.value.map(picked => ({
+        number: picked.number,  // Ensure number is correctly formatted
+        price: parseFloat(picked.price),  // Ensure price is a number
+        dashboard_id: picked.lottery_dashboard_id
+    }));
+
+    const dashboardId = selectedLotteryDetails.value[0]?.id;
+
+    if (!dashboardId) {
+        alert("Dashboard ID is missing!");
+        return;
+    }
+
+    console.log("Checkout Data:", {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    });
+
+    axios.post('/api/checkout', {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    })
+        .then(response => {
+            alert("Number allocated successfully!");
+            pickedNumbers.value = [];  // Clear picked numbers after checkout
+        })
+        .catch(error => {
+            console.error("Checkout failed:", error.response.data.message);
+            alert("Checkout failed! Please try again.");
+        });
+}
+
+
+
+
+function deletePickedNumbers() {
+    axios.post('/api/delete-picked-numbers')
+        .then(response => {
+            console.log(response.data.message);
+            pickedNumbers.value = []; // Clear the picked numbers locally
+            savePickedNumbersToLocalStorage(); // Save the updated empty list to localStorage
+        })
+        .catch(error => {
+            console.error('Error deleting picked numbers:', error.response?.data?.message || error.message);
+        });
+}
+
+
 const selectedNumber = ref(null);
 </script>
 
@@ -225,7 +337,7 @@ const selectedNumber = ref(null);
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
-
+                                        <span style="font-size: 12px;">{{ ticket.id }}</span>
                                     </div>
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
@@ -254,7 +366,7 @@ const selectedNumber = ref(null);
                                         <div v-for="number in storedNumbers" :key="number" :class="{
                                             'bg-gray-100': !pickedNumbers.includes(number),
                                             'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
-                                        }" @click="!pickedNumbers.includes(number) && confirmPickNumber(number, ticket.dashboard_id)"
+                                        }" @click="!pickedNumbers.includes(number) && confirmPickNumber(number, ticket.id)"
                                             class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
                                             {{ number }}
                                         </div>
@@ -276,36 +388,46 @@ const selectedNumber = ref(null);
                     </div>
                     <div
                         class="mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Winning Chances</p>
-                            <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
-                                <div class="absolute top-0 left-0 h-full "
-                                    style="width: 54%;background-color: rgb(44, 186, 242);"></div>
+                        <div
+                            class="winning-chances mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Winning Chances</p>
+                                <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
+                                    <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 100%;"></div>
+                                </div>
                             </div>
+
                         </div>
 
+
                         <div class="mt-4 sm:mt-0 text-left">
-                            <div>
-                                <p class="text-sm text-gray-500">1 draw with 2 tickets @ 2 × €3.50</p>
-                                <p class="text-sm text-gray-500">Total Discount: <span
-                                        class="text-blue-500">-€0.00</span>
+                            <div class="allocated-numbers mt-4 sm:mt-0 text-left mx-3">
+                                <p class="text-sm text-gray-500">
+                                    Allocated Numbers:
+                                    <span class="text-blue-500">{{pickedNumbers.map(picked => picked.number).join(', ')
+                                        }}</span>
+
                                 </p>
                             </div>
+
                             <div class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
-                                <span class="text-lg font-bold text-white"> $9.99 </span>
-                                <button class="font-bold text-white rounded-lg ml-4">Add to Cart</button>
+                                <span class="text-lg font-bold text-white">{{ totalPrice }}</span>
+
+                                <button type="button" class="font-bold text-white rounded-lg ml-4"
+                                    @click="deletePickedNumbers">
+                                    Cancel
+                                </button>
+
+                                <button @click="checkout" class="font-bold text-white rounded-lg ml-4">Checkout</button>
+
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-if="pickedNumbers.length > 0">
-            <h3 class="text-lg font-bold">Picked Numbers</h3>
-            <ul>
-                <li v-for="number in pickedNumbers" :key="number">{{ number }}</li>
-            </ul>
-        </div>
+
     </AuthenticatedLayout>
 </template>
 <style>

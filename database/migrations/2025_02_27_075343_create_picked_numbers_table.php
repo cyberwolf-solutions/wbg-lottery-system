@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('lottery_dashboard_id')->constrained('lottery_dashboards')->onDelete('cascade'); // Foreign key to lottery_dashboards
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key to users table
             $table->string('picked_number');
+            $table->string('status')->default('pending');
             $table->softDeletes();
         });
     }

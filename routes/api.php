@@ -56,6 +56,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['web'])->group(function () {
     Route::post('/pick-number', [NumberPickController::class, 'pickNumber']);
+    Route::post('/checkout', [NumberPickController::class, 'checkout']);
+    Route::post('/delete-picked-numbers', [NumberPickController::class, 'cancel']);
+
     Route::post('/deactivate-dashboard', [LotteriesController::class, 'deactivate']);
 
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
