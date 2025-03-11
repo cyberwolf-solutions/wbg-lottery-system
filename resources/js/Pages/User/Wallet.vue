@@ -369,7 +369,7 @@ onMounted(() => {
                                                 </td>
                                                 <td class="px-6 py-4 text-gray-800">{{
                                                     transaction.lotteryDashboard?.price
-                                                    }}</td>
+                                                }}</td>
                                             </tr>
 
                                         </tbody>
@@ -411,7 +411,9 @@ onMounted(() => {
                                                 <td class="px-6 py-4 text-gray-600">{{ withdrawalItem.withdrawal_date }}
                                                 </td>
                                                 <td class="px-6 py-4 text-gray-800">
-                                                    {{ withdrawalItem.status === 0 ? 'Pending' : 'Completed' }}
+                                                    {{ withdrawalItem.status === 0 ? 'Pending' : (withdrawalItem.status
+                                                    === 1 ?
+                                                    'Completed' : 'Declined') }}
                                                 </td>
 
                                             </tr>

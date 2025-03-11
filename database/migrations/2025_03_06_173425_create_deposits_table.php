@@ -22,6 +22,7 @@ class CreateDepositsTable extends Migration
             $table->string('description')->nullable(); // Optional description
             $table->date('deposit_date'); 
             $table->string('reference')->nullable(); // Reference number
+            $table->string('decline_reason')->nullable(); // Reference number
             $table->string('image')->nullable(); // Store image file path
             $table->tinyInteger('status')->default(0);
             $table->softDeletes(); // Soft delete column

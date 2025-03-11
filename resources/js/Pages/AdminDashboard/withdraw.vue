@@ -6,7 +6,7 @@
             <div class="dashboard-banner">
                 <!-- Top Navbar Section -->
                 <div class="navbar">
-                    <h2 class="lottery-name fw-bold text-danger">Credit</h2>
+                    <h2 class="lottery-name fw-bold text-danger">Withdraw</h2>
 
                 </div>
 
@@ -19,7 +19,7 @@
                                 <th>User</th>
                                 <th>Date</th>
                                 <th>Ammount</th>
-                                <th>Attachment</th>
+
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,9 +28,9 @@
 
                                 <td><a href="#">{{ deposit.wallet?.user?.name || 'N/A' }}</a></td>
 
-                                <td>{{ deposit.deposit_date }}</td>
+                                <td>{{ deposit.withdrawal_date }}</td>
                                 <td>{{ deposit.amount }}</td>
-                                <td><a :href="deposit.image" target="_blank">View</a></td>
+
                                 <td>
                                     <!-- Approve Button -->
                                     <button v-if="deposit.status === 0" @click="editDashboard(deposit)"
@@ -128,7 +128,7 @@ export default {
                 return;
             }
 
-            axios.post(`/api/admin/creditReq/decline/${this.editingDashboard.id}`, {
+            axios.post(`/api/admin/withdraw/decline/${this.editingDashboard.id}`, {
                 reason: this.declineMessage
             })
                 .then(response => {
@@ -156,7 +156,7 @@ export default {
                 return;
             }
 
-            axios.post(`/api/admin/creditReq/approve/${deposit.id}`)
+            axios.post(`/api/admin/withdraw/approve/${deposit.id}`)
                 .then(response => {
                     alert(response.data.message);
                     deposit.status = 1; // Update UI immediately

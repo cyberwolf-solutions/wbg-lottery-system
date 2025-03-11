@@ -4,12 +4,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Withdrawal extends Model
 {
-    use HasFactory;
+    use HasFactory ,SoftDeletes;
     protected $table = "withdrawals";
 
     protected $fillable = [
@@ -17,8 +18,11 @@ class Withdrawal extends Model
         'amount',
         'description',
         'withdrawal_date',
-        'status'
+        'status',
+        'decline_reason'
     ];
+
+    protected $dates = ['deleted_at'];
 
     // Relationship: A withdrawal belongs to a wallet
     public function wallet()

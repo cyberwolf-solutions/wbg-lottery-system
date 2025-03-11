@@ -24,6 +24,17 @@ class WalletController extends Controller
 
         $wallet = Wallet::where('user_id', Auth::id())->first();
 
+        if (!$wallet) {
+            
+            $wallet = Wallet::create([
+                'user_id' => Auth::id(),
+                'available_balance' => 0, 
+                
+            ]);
+        }
+
+
+
         $transaction = Transaction::with('lottery', 'lotteryDashboard')->get();
         $withdrawal = Withdrawal::all();
 

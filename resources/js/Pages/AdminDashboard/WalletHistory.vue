@@ -12,68 +12,51 @@
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Date</th>
-                                <th>Ammount</th>
-                                <th>Transaction Type</th>
+                                <th>Available Balance</th>
                                 <th>View</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.draw }}</td>
-                                <td>{{ calculatePercentage(dashboard.price) }}%</td>
+                            <tr v-for="(wallet, index) in groupedWallets" :key="index">
+                                <td>{{ wallet.userName }}</td>
+                                <td>{{ wallet.availableBalance }}</td>
                                 <td>
-                                    <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
+                                    <button @click="viewDetails(wallet)" class="btn btn-sm btn-info">
                                         <i class="bi bi-eye"></i>
                                     </button>
-
                                 </td>
-                               
                             </tr>
                         </tbody>
                     </table>
-                </div>
 
-
-
-                
-                <div class="lottery-table mt-4">
-                    <h3 class="mt-4">Withdrawal History</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Date</th>
-                                <th>Ammount</th>
-                                <th>Withdraw Type</th>
-                                <th>View</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.draw }}</td>
-                                <td>{{ calculatePercentage(dashboard.price) }}%</td>
-                                <td>
-                                    <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-
-                                </td>
-                               
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Modal -->
+                    <div v-if="showModal" class="modal-overlay">
+                        <div class="modal-content">
+                            <h4>Transaction Details</h4>
+                            <p><strong>User:</strong> {{ selectedWallet?.userName }}</p>
+                            <p><strong>Available Balance:</strong> {{ selectedWallet?.availableBalance }}</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(transaction, index) in selectedWallet?.transactions" :key="index">
+                                        <td>{{ transaction.type }}</td>
+                                        <td>{{ transaction.transaction_date }}</td>
+                                        <td>{{ transaction.amount }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button @click="closeModal" class="btn btn-danger">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        
     </div>
 </template>
 
@@ -84,33 +67,52 @@ export default {
     components: {
         Sidebar,
     },
+    props: {
+        transactions: Array
+    },
     data() {
         return {
             isSidebarVisible: true,
-            isDeleteModalOpen: false,
-            selectedDashboard: null,
-            dashboards: [
-                { id: 1, name: 'User 1', price: 10, date: '2025-02-05', draw: '1' },
-                { id: 2, name: 'User 2', price: 20, date: '2025-02-05', draw: '2' },
-                { id: 3, name: 'User 3', price: 50, date: '2025-02-05', draw: '3' },
-            ],
+            showModal: false,
+            selectedWallet: null
         };
     },
-    methods: {
-        calculatePercentage(price) {
-            const total = this.dashboards.reduce((sum, item) => sum + item.price, 0);
-            return total ? ((price / total) * 100).toFixed(2) : 0;
-        },
-        viewDetails(dashboard) {
-            alert(`Viewing details for: ${dashboard.name}`);
-        },
-        
-        handleSidebarToggle(isVisible) {
-      this.isSidebarVisible = isVisible;
+    computed: {
+        groupedWallets() {
+            // Group transactions by wallet_id
+            const walletMap = new Map();
+
+            this.transactions.forEach(transaction => {
+                if (!walletMap.has(transaction.wallet_id)) {
+                    walletMap.set(transaction.wallet_id, {
+                        walletId: transaction.wallet_id,
+                        userName: transaction.wallet?.user?.name || 'N/A',
+                        availableBalance: transaction.wallet?.available_balance || '0.00',
+                        transactions: []
+                    });
+                }
+                walletMap.get(transaction.wallet_id).transactions.push(transaction);
+            });
+
+            return Array.from(walletMap.values());
+        }
     },
+    methods: {
+        viewDetails(wallet) {
+            this.selectedWallet = wallet;
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.selectedWallet = null;
+        },
+        handleSidebarToggle(isVisible) {
+            this.isSidebarVisible = isVisible;
+        },
     },
 };
 </script>
+
 
 <style scoped>
 #app.dark-theme {
@@ -333,5 +335,24 @@ button.btn-danger {
 
 button:hover {
     opacity: 0.9;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
 }
 </style>
