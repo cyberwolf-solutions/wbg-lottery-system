@@ -117,7 +117,7 @@ export default {
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 7, name: "Transaction History", link: "/api/walletHistory" },
+                        { id: 7, name: "Transaction History", link: "/api/admin/walletHistory" },
 
                     ],
                 },

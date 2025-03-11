@@ -4,12 +4,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Deposit extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = "deposits";
 
     protected $fillable = [
@@ -19,8 +20,11 @@ class Deposit extends Model
         'deposit_date',
         'reference',
         'image',
-        'status'
+        'status',
+     
+        'decline_reason'
     ];
+    protected $dates = ['deleted_at'];
 
     // Relationship: A deposit belongs to a wallet
     public function wallet()

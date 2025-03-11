@@ -16,19 +16,48 @@ class WithdrawalController extends Controller
     {
         // Fetch the withdrawals with the related wallet and user data
         $credits = Withdrawal::with('wallet.user')->get();
-        // $withdrawals = Deposit::with('wallet.user')->get();
-        
-        // Log for debugging
-        // Log::info($withdrawals);
-        
+
         // Pass withdrawals to the Inertia view
-        return Inertia::render('AdminDashboard/Credit', [
-            
+        return Inertia::render('AdminDashboard/withdraw', [
+
             'status' => session('status'),
             'credits' => $credits,
         ]);
     }
-    
-    
 
+    public function approve(Request $request, $id)
+    {
+        $deposit = Withdrawal::findOrFail($id);
+
+        if ($deposit->status == 1) {
+            return response()->json(['message' => 'Already approved'], 400);
+        }
+
+        // Update deposit status
+        $deposit->status = 1;
+        $deposit->save();
+
+        // Add deposit amount to the wallet balance
+        $wallet = $deposit->wallet;
+        if ($wallet) {
+            $wallet->available_balance -= $deposit->amount;
+            $wallet->save();
+        }
+
+        return response()->json(['message' => 'Withdrawal approved successfully']);
+    }
+
+    public function decline(Request $request, $id)
+    {
+        $deposit = Withdrawal::findOrFail($id);
+
+        $deposit->update([
+            'status' => 2,
+            'decline_reason' => $request->reason ?? 'No reason provided',
+        ]);
+
+        // $deposit->delete();
+
+        return response()->json(['message' => 'Withdrawal request declined successfully.']);
+    }
 }

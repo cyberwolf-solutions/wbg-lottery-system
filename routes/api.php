@@ -25,6 +25,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\WalletHistoryController;
 use App\Http\Controllers\WithdrawalController;
 
 Route::middleware('guest')->group(function () {
@@ -101,7 +102,7 @@ Route::middleware(['web'])->group(function () {
         return Inertia::render("AdminDashboard/Winners");
     });
 
-    
+
 
     // Route::get('/transactions', function () {
     //     return Inertia::render("AdminDashboard/Transactions");
@@ -109,9 +110,7 @@ Route::middleware(['web'])->group(function () {
 
 
 
-    Route::get('/walletHistory', function () {
-        return Inertia::render("AdminDashboard/WalletHistory");
-    });
+    
 
     Route::get("/customers", function () {
         return Inertia::render("AdminDashboard/Customers");
@@ -188,7 +187,18 @@ Route::middleware(['web'])->group(function () {
             //creditreq
             Route::get('/creditReq', [CreditRequestController::class, 'index']);
             Route::get('/transactions', [WithdrawalController::class, 'index']);
-            
+            Route::post('/creditReq/approve/{id}', [CreditRequestController::class, 'approve']);
+            Route::post('/creditReq/decline/{id}', [CreditRequestController::class, 'decline']);
+
+            Route::post('/withdraw/approve/{id}', [WithdrawalController::class, 'approve']);
+            Route::post('/withdraw/decline/{id}', [WithdrawalController::class, 'decline']);
+
+
+
+
+            //wallet history
+            Route::get('/walletHistory' , [WalletHistoryController::class , 'index']);
+
 
 
             Route::get('/dashboard', function () {
@@ -204,15 +214,13 @@ Route::middleware(['web'])->group(function () {
                 return Inertia::render("AdminDashboard/Winners");
             });
 
-           
+
+
+
+
+
 
             
-
-
-
-            Route::get('/walletHistory', function () {
-                return Inertia::render("AdminDashboard/WalletHistory");
-            });
 
             Route::get("/customers", function () {
                 return Inertia::render("AdminDashboard/Customers");
