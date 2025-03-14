@@ -411,7 +411,7 @@ const selectedNumber = ref(null);
                             </div>
 
                             <div class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
-                                <span class="text-lg font-bold text-white">{{ totalPrice }}</span>
+                                <span class="text-lg font-bold text-white">USD {{ totalPrice }}</span>
 
                                 <button type="button" class="font-bold text-white rounded-lg ml-4"
                                     @click="deletePickedNumbers">
