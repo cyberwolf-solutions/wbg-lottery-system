@@ -92,6 +92,38 @@ class NumberPickController extends Controller
             'status' => 'allocated'
         ]);
 
+
+        // Check if all numbers are picked
+        $pickedCount = PickedNumber::where('lottery_dashboard_id', $validated['lottery_dashboard_id'])->count();
+
+        Log::info('Picked Count:', ['picked_count' => $pickedCount]);
+
+        if ($pickedCount >= 100) {
+            // Close the current dashboard
+            $dashboard = LotteryDashboards::find($validated['lottery_dashboard_id']);
+            $dashboard->update(['status' => 'closed']);
+
+            // Create a new dashboard with the same details
+            $newDashboard = LotteryDashboards::create([
+                'lottery_id' => $dashboard->lottery_id,
+                'dashboard' => $dashboard->dashboard,
+                'price' => $dashboard->price,
+                'date' => $dashboard->date,
+                'draw' => $dashboard->draw,
+                'draw_number' => $dashboard->draw_number,
+                'winning_numbers' => $dashboard->winning_numbers,
+                'status' => 'active',
+                
+            ]);
+
+            return response()->json([
+                'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
+                'new_dashboard_id' => $newDashboard->id
+            ]);
+        }
+
+
+
         return response()->json([
             'message' => 'Number allocated successfully',
             'number' => $validated['number']
@@ -164,7 +196,7 @@ class NumberPickController extends Controller
     public function cancel(Request $request)
     {
         $user = Auth::user();
-        
+
         // Delete the picked numbers for the authenticated user with status 'allocated'
         DB::table('picked_numbers')
             ->where('user_id', $user->id)
@@ -173,5 +205,4 @@ class NumberPickController extends Controller
 
         return response()->json(['message' => 'Picked numbers deleted successfully.']);
     }
-
 }
