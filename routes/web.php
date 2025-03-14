@@ -17,18 +17,12 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UserPannel;
 use App\Http\Controllers\WinnerController;
 
-// Route::get('/', function () {
-//     return Inertia::render('LandingPage', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
 
 Route::get('/', function () {
     return Inertia::render('LandingPage');
 })->name('landing');
+
+
 
 
 Route::get('/dashboard', function () {

@@ -7,14 +7,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\testController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\NumberPickController;
+use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\LotteryListController;
 use App\Http\Controllers\PurchaseListController;
 use Illuminate\Contracts\Foundation\Application;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CreditRequestController;
+use App\Http\Controllers\WalletHistoryController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -25,17 +28,16 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\WalletHistoryController;
-use App\Http\Controllers\WithdrawalController;
+use App\Http\Controllers\WinnersController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');;
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+        ->name('login')->middleware('recaptcha');;
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -89,25 +91,11 @@ Route::middleware(['web'])->group(function () {
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-    Route::get('/adminDash', function () {
-        return Inertia::render('AdminDashboard/Dashboard');
-    });
+    
 
 
-    Route::get('/adminLot', function () {
-        return Inertia::render('AdminDashboard/Lotteries');
-    });
-
-    Route::get('/adminWin', function () {
-        return Inertia::render("AdminDashboard/Winners");
-    });
-
-
-
-    // Route::get('/transactions', function () {
-    //     return Inertia::render("AdminDashboard/Transactions");
-    // });
-
+  
+    
 
 
     
@@ -193,6 +181,10 @@ Route::middleware(['web'])->group(function () {
             Route::post('/withdraw/approve/{id}', [WithdrawalController::class, 'approve']);
             Route::post('/withdraw/decline/{id}', [WithdrawalController::class, 'decline']);
 
+            //results and winners
+            Route::get('/results' , [ResultsController::class , 'index']);
+            Route::post('/results/store' , [ResultsController::class , 'store']);
+            Route::get('/adminWin/{id}' , [WinnersController::class , 'index']);
 
 
 
@@ -210,9 +202,7 @@ Route::middleware(['web'])->group(function () {
                 return Inertia::render('AdminDashboard/Lotteries');
             });
 
-            Route::get('/adminWin', function () {
-                return Inertia::render("AdminDashboard/Winners");
-            });
+            
 
 
 

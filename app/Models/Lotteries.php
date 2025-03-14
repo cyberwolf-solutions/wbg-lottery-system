@@ -10,7 +10,7 @@ class Lotteries extends Model
 
     use SoftDeletes;
 
-    protected $table = 'lotteries';
+    protected $table = 'lottery';
     protected $fillable = [
         'name',
         'description',
@@ -21,8 +21,13 @@ class Lotteries extends Model
     ];
     //
 
+    // public function dashboards()
+    // {
+    //     return $this->hasMany(LotteryDashboards::class);
+    // }
+
     public function dashboards()
     {
-        return $this->hasMany(LotteryDashboards::class);
+        return $this->hasMany(LotteryDashboards::class, 'lottery_id');
     }
 }

@@ -82,12 +82,18 @@ export default {
                     subItems: [],  // Empty initially
                 },
                 {
+                    id: 9,
+                    name: "Results",
+                    link: "/api/admin/results",
+                    isOpen: false,
+
+                },
+                {
                     id: 4,
                     name: "Winners",
                     link: "#",
                     isOpen: false,
                     subItems: [
-                        { id: 5, name: "Lottery 1", link: "/api/adminWin" },
                         { id: 6, name: "Lottery 2", link: "/api/adminWin" },
                     ],
                 },
@@ -138,22 +144,7 @@ export default {
             this.isSidebarVisible = !this.isSidebarVisible;
             this.$emit("sidebar-toggle", this.isSidebarVisible); // Emit event to update the main content layout
         },
-        // async fetchLotteryData() {
-        //     try {
-        //         const response = await axios.get("/api/admin/sidebar/lotteries");  
-        //         const lotteries = response.data;  
 
-        //         // Update the 'Lottery Dashboards' menu with fetched data
-        //         const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
-        //         lotteryDashboard.subItems = lotteries.map(lottery => ({
-        //             id: lottery.id,
-        //             name: lottery.name,
-        //             link: `/api/admin/lottery/dashboard/${lottery.id}`,
-        //         }));
-        //     } catch (error) {
-        //         console.error("Error fetching lottery data:", error);
-        //     }
-        // },
         async fetchLotteryData() {
             try {
                 const response = await axios.get("/api/admin/sidebar/lotteries");
@@ -173,6 +164,13 @@ export default {
                     id: lottery.id,
                     name: lottery.name,
                     link: `/api/admin/purchase/${lottery.id}`,  // Adjust the link as needed
+                }));
+
+                const winnersSection = this.menuItems.find(item => item.name === "Winners");
+                winnersSection.subItems = lotteries.map(lottery => ({
+                    id: lottery.id,
+                    name: lottery.name,
+                    link: `/api/admin/adminWin/${lottery.id}`,
                 }));
             } catch (error) {
                 console.error("Error fetching lottery data:", error);

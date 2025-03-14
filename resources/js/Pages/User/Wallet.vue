@@ -130,7 +130,7 @@ onMounted(() => {
                 <h3 class="text-lg font-semibold mb-4">Request Credit</h3>
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Admin Bank details
+                        Bank details
                     </label>
                     <input id="bank" type="text" :value="props.bank.length ? props.bank[0]?.bank : 'No Bank Available'"
                         disabled

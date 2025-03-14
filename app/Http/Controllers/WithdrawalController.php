@@ -33,6 +33,10 @@ class WithdrawalController extends Controller
             return response()->json(['message' => 'Already approved'], 400);
         }
 
+        Log::info('Number', ['pickednumber' => $id]);
+
+        // dd($request->all);
+
         // Update deposit status
         $deposit->status = 1;
         $deposit->save();
