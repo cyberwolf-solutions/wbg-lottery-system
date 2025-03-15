@@ -1,10 +1,3 @@
-<!-- <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-
-
-</script> -->
-
 <template>
 
     <Nav />
@@ -29,101 +22,53 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-        <div class="row d-flex justify-content-center align-items-center mt-4">
-            <div class="col-8">
-                <div class="row">
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Bootstrap Carousel for Each Lottery -->
+        <div v-for="(lottery, lotteryIndex) in lotteries" :key="lottery.id" class="mb-5">
+            <h2 class="text-center mb-4 fw-bold">{{ lottery.name }}</h2>
+            <div :id="'carouselExampleControls' + lottery.id" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div v-for="(dashboard, index) in lottery.dashboards" :key="dashboard.id" class="carousel-item"
+                        :class="{ 'active': index === 0 }">
+                        <div class="row justify-content-center">
+                            <div v-for="winner in dashboard.winners" :key="winner.id" class="col-12 col-md-4 col-lg-3">
+                                <div class="card" style="width: 13rem;border-style: none;">
+                                    <!-- <img :src="winner.user.image" alt="Logo" class="card-img-top"
+                                        style="height: 180px;"> -->
+                                    <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
+                                    <div class="card-body" style="border-top-color: aqua;text-align: center;">
+                                        <p class="card-text" style="font-weight: bold;font-size: 16px">${{ winner.price
+                                        }}</p>
+                                        <!-- <p class="card-text" style="font-size: 12px;color: gray;">{{ lottery.name }}</p> -->
+                                        <p class="card-text" style="font-size: 14px;color:#555;">{{ winner.user.name }}
+                                        </p>
+                                        <p class="card-text" style="font-size: 14px;color:#555;">{{ dashboard.date }}
+                                        </p>
+                                        <p class="card-text" style="font-size: 14px;color:#555;">{{
+                                            dashboard.draw_number }}</p>
+                                        <p class="card-text" style="font-size: 14px;color:#555;">{{ dashboard.dashboard
+                                            }}</p>
 
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl2" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4 col-lg-3 mt-4" style="border-style: none;">
-                        <div class="card" style="width: 13rem;border-style: none;">
-                            <img :src="logoUrl1" alt="Logo" class="card-img-top" style="height: 180px;">
-                            <div class="card-body" style="border-top-color: aqua;text-align: center;">
-                                <p class="card-text" style="font-weight: bold;font-size: 16px">$8000</p>
-                                <p class="card-text" style="font-size: 12px;color: gray;">Powerball</p>
-                                <p class="card-text" style="font-size: 14px;color:#555;">Lisa lily</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <button class="carousel-control-prev" type="button"
+                    :data-bs-target="'#carouselExampleControls' + lottery.id" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button"
+                    :data-bs-target="'#carouselExampleControls' + lottery.id" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
-
-
-
         </div>
+
 
         <!-- ------ -->
 
@@ -207,24 +152,57 @@ import { Head } from '@inertiajs/vue3';
 <script>
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/swiper-bundle.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 export default {
-    data() {
-        return {
-            logoUrl: '/assets/winners/a.jpeg', // Path to your logo
-            logoUrl1: '/assets/winners/b.jpeg', // Path to your logo
-            logoUrl2: '/assets/winners/c.jpeg', // Path to your logo
-        };
-    },
-    name: "winner",
     components: {
         Footer,
         Nav,
-
+        Swiper,
+        SwiperSlide,
+    },
+    props: {
+        lotteries: Array,
+    },
+    data() {
+        return {
+            swiperOptions: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            },
+            logoUrl: '/assets/winners/a.jpeg',
+        };
     },
 };
 </script>
 
 <style>
+.carousel-item {
+    padding: 20px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.card {
+    margin: 0 auto;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;

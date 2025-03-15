@@ -28,7 +28,7 @@ class LotteryDashboards extends Model
         'deleted_by',
     ];
 
-    
+
     public function lottery()
     {
         return $this->belongsTo(Lotteries::class, 'lottery_id');
@@ -38,6 +38,9 @@ class LotteryDashboards extends Model
     {
         return $this->hasMany(PickedNumber::class);
     }
-
-    
+    // In LotteryDashboards.php model
+    public function winners()
+{
+    return $this->hasMany(Winner::class, 'lottery_dashboard_id'); 
+}
 }

@@ -25,7 +25,8 @@ class Winner extends Model
         return $this->belongsTo(Lotteries::class, 'lottery_id');
     }
 
-    // Relationship with LotteryDashboard
+    
+
     public function lotteryDashboard()
     {
         return $this->belongsTo(LotteryDashboards::class, 'lottery_dashboard_id');

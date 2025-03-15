@@ -25,7 +25,7 @@
         "chart.js": "^4.4.7",
         "laravel-echo": "^2.0.2",
         "pusher-js": "^8.4.0",
-        "swiper": "^11.2.1",
+        "swiper": "^11.2.5",
         "vue": "^3.5.13",
         "vue-recaptcha-v3": "^2.0.1"
     }
