@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
+Route::get('/winners', [PrizesController::class, 'index'])->name('prize.index');
 Route::get('/HowItWorks', [HowItWorks::class, 'index'])->name('hiw.index');
 Route::get('/contact', [Contact::class, 'index'])->name('contact.index');
 Route::get('/latest', [LatestResults::class, 'index'])->name('latest.index');

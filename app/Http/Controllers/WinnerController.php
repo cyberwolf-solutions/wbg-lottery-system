@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Winner;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Winner;
+use App\Models\Lotteries;
+use Illuminate\Http\Request;
 
 class WinnerController extends Controller
 {
@@ -13,10 +14,15 @@ class WinnerController extends Controller
      */
     public function index()
     {
+        // Fetch all lotteries with their winners
+        $lotteries = Lotteries::with(['dashboards.winners.user'])->get();
+    
+        // Pass the data to the frontend
         return Inertia::render('User/Winners', [
-            'status' => session('status'),
+            'lotteries' => $lotteries,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
