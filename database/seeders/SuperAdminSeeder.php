@@ -3,22 +3,27 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
-use App\Models\SuperAdmin;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class SuperAdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run(): void
     {
-        Admin::create([
-            'name' => 'Admin',
+
+        $admin = Admin::create([
+            'name' => 'Super Admin',
             'email' => 'superadmin@gmail.com',
             'password' => Hash::make('1234'),
+            'is_super_admin' => true,
         ]);
+
+
+        $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'admin']);
+
+   
+        $admin->assignRole($superAdminRole);
     }
 }

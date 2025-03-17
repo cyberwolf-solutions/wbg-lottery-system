@@ -19,7 +19,7 @@ class CreateDepositsTable extends Migration
             $table->id();
             $table->foreignId('wallet_id')->constrained()->onDelete('cascade'); // Reference to Wallet table
             $table->decimal('amount', 15, 2);
-            $table->string('description')->nullable(); // Optional description
+            $table->string('deposite_type')->nullable(); // Optional description
             $table->date('deposit_date'); 
             $table->string('reference')->nullable(); // Reference number
             $table->string('decline_reason')->nullable(); // Reference number

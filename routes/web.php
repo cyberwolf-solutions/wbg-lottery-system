@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\AffiliateController;
+use Inertia\Inertia;
 use App\Http\Controllers\Contact;
 use App\Http\Controllers\HowItWorks;
-use App\Http\Controllers\LatestResults;
-use Inertia\Inertia;
+use App\Http\Controllers\UserPannel;
+use App\Http\Controllers\LangingPage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\LatestResults;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PrizesController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WinnerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\LangingPage;
 use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\UserPannel;
-use App\Http\Controllers\WinnerController;
 
 
 Route::get('/', function () {
@@ -25,10 +26,10 @@ Route::get('/', function () {
 
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', [HomeController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+    
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

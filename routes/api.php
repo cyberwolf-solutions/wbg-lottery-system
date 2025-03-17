@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -191,6 +192,9 @@ Route::middleware(['web'])->group(function () {
             //wallet history
             Route::get('/walletHistory' , [WalletHistoryController::class , 'index']);
 
+            //dashboard
+            Route::get('/api/admin/adminDash' , [AdminDashboardController::class , 'index']);
+
 
 
             Route::get('/dashboard', function () {
@@ -201,16 +205,6 @@ Route::middleware(['web'])->group(function () {
             Route::get('/adminLot', function () {
                 return Inertia::render('AdminDashboard/Lotteries');
             });
-
-            
-
-
-
-
-
-
-
-            
 
             Route::get("/customers", function () {
                 return Inertia::render("AdminDashboard/Customers");

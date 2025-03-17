@@ -28,6 +28,7 @@ class WithdrawalController extends Controller
     public function approve(Request $request, $id)
     {
         $deposit = Withdrawal::findOrFail($id);
+        Log::info("Approving withdrawal", ['id' => $id]);
 
         if ($deposit->status == 1) {
             return response()->json(['message' => 'Already approved'], 400);

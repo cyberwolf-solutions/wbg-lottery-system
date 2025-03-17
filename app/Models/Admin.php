@@ -12,12 +12,15 @@ class Admin extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable, HasRoles;
     
+    // protected $table = 'admin';
+    protected $guard = 'admin';
     protected $table = 'admin';
 
     protected $fillable = [
         'name',
         'email',
         'password',
+        'is_super_admin'
     ];
 
     protected $hidden = [

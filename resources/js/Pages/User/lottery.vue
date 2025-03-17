@@ -10,6 +10,17 @@ import Pusher from 'pusher-js';
 
 const authToken = localStorage.getItem('auth_token');
 console.log('Auth Token:', authToken);
+let checkoutTimeout;
+//call checkout function after 10 mins
+function startCheckoutTimer() {
+    checkoutTimeout = setTimeout(() => {
+        checkout();
+        // location.reload(); 
+    }, 600000); 
+}
+
+
+
 
 Pusher.logToConsole = true;
 window.Echo = new Echo({
@@ -62,6 +73,7 @@ onMounted(() => {
 
     // Call deletePickedNumbers if necessary (e.g., reset or cleanup on page load)
     deletePickedNumbers();
+    startCheckoutTimer();
 
 });
 
