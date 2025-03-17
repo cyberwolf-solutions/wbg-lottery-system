@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->boolean('is_super_admin')->default(false);
             // $table->string('google_id')->nullable();
         });
     }
@@ -30,5 +31,9 @@ return new class extends Migration
     {
         //
         Schema::dropIfExists('users');
+        Schema::table('admins', function (Blueprint $table) {
+            $table->dropColumn('is_super_admin');
+        });
+
     }
 };

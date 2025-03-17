@@ -69,10 +69,12 @@ class ResultsController extends Controller
 
             // Validate incoming data
             $validatedData = $request->validate([
-                'lottery_id' => 'required|exists:lottery,id',
+                'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard_id' => 'required|exists:lottery_dashboards,id',
                 'winning_number' => 'required',
             ]);
+            Log::info('Storing lottery result', $request->all());
+
 
             // Check if the result already exists
             $existingResult = Results::where('lottery_id', $validatedData['lottery_id'])
@@ -84,6 +86,7 @@ class ResultsController extends Controller
                 Log::warning('Duplicate result attempted', $validatedData);
                 return response()->json(['success' => false, 'message' => 'This result already exists'], 409);
             }
+            // Log::info("message" , $existingResult->all);
 
             // Add results for all dashboards with the same winning number
             Results::create([

@@ -10,7 +10,7 @@ class Lotteries extends Model
 
     use SoftDeletes;
 
-    protected $table = 'lottery';
+    protected $table = 'lotteries';
     protected $fillable = [
         'name',
         'description',

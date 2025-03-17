@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use Inertia\Inertia;
 use App\Models\Wallet;
+use App\Models\Winner;
 use App\Models\Deposit;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
+use App\Models\WalletAdress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -24,14 +26,21 @@ class WalletController extends Controller
 
         $wallet = Wallet::where('user_id', Auth::id())->first();
 
+
         if (!$wallet) {
-            
+
             $wallet = Wallet::create([
                 'user_id' => Auth::id(),
-                'available_balance' => 0, 
-                
+                'available_balance' => 0,
+
             ]);
         }
+
+        $winnings = Winner::with('lottery', 'lotteryDashboard') // Eager load related models
+        ->where('user_id', Auth::id()) // Filter by authenticated user's ID
+        ->get();
+
+        // dd($winnings);
 
 
 
@@ -41,6 +50,7 @@ class WalletController extends Controller
         $deposit = Deposit::all();
 
         $bank = Bank::all();
+        $walletAddress = WalletAdress::all();
 
         // dd($wallet);
 
@@ -50,7 +60,9 @@ class WalletController extends Controller
             'transactions' => $transaction,
             'withdrawal' => $withdrawal,
             'deposit' => $deposit,
-            'bank' => $bank
+            'bank' => $bank,
+            'walletAddress' => $walletAddress,
+            'winnings'=>  $winnings
         ]);
     }
 
@@ -112,7 +124,8 @@ class WalletController extends Controller
             'account_number' => 'required|string',
             'amount' => 'required|numeric',
             'reference' => 'required|string',
-            'attachment' => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048"
+            'attachment' => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
+            'deposit_type'=>'string'
         ]);
 
 
@@ -144,11 +157,12 @@ class WalletController extends Controller
         Deposit::create([
             'wallet_id' => Auth::user()->wallet?->id,
             'amount' => $request->amount,
-            'description' => "Deposit request from " . $request->bank,
+            'deposite_type' => $request->deposit_type,
             'reference' => $request->reference,
             'deposit_date' => now(),
             'image' => $imagePath ?? null,
             'status' => 0,
+            
         ]);
 
         return response()->json(['message' => 'Deposit request submitted successfully'], 200);
@@ -160,6 +174,7 @@ class WalletController extends Controller
         $validator = Validator::make($request->all(), [
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
+            'withdrawal_type' => 'required|String'
         ]);
 
 
@@ -183,8 +198,8 @@ class WalletController extends Controller
         }
 
         // Subtract the amount from available_balance
-        $wallet->available_balance -= $request->amount;
-        $wallet->save();
+        // $wallet->available_balance -= $request->amount;
+        // $wallet->save();
 
         // $wallet = Wallet::find($request->wallet_id);
         Withdrawal::create([
@@ -192,6 +207,7 @@ class WalletController extends Controller
             'amount' => $request->amount,
             'status' => 0,
             'withdrawal_date' => now(),
+            'withdrawal_type'=>$request->withdrawal_type,
         ]);
         return response()->json(['message' => 'Withdraw request submitted successfully'], 200);
     }

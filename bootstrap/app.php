@@ -6,6 +6,7 @@ use App\Http\Middleware\VerifyRecaptcha;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Spatie\Permission\Middlewares\PermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class, // Register alias for middleware
             'recaptcha' => VerifyRecaptcha::class,
+            'role'    => \App\Http\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         ]);
         // Admin API
         $middleware->api(prepend: [
@@ -31,8 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-    })
-    ->withExceptions(function (Exceptions $exceptions) {
+
+        
+    })    ->withExceptions(function (Exceptions $exceptions) {
         //
     })
     ->booted(function (Application $app) {
@@ -40,6 +44,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('lottery:deactivate')->everyMinute();
 
         $schedule->command('lottery:check-participation')->hourly();
+
+        $schedule->command('generate:dashboard')->dailyAt('00:00');
     })
     
     ->create();

@@ -10,7 +10,6 @@ import { Head } from '@inertiajs/vue3';
 
 <template>
 
-
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -58,53 +57,89 @@ import { Head } from '@inertiajs/vue3';
                                 style="display: inline-block; width: 100%; text-align: center; color: rgb(96, 200, 242); text-decoration: none; border: none; border-radius: 5px; padding: 10px 0; font-size: 14px; cursor: pointer; transition: transform 0.3s ease;">
                                 View more wallet
                             </a>
-
-
                         </div>
-
-
-                        <!-- Cart Summary Section -->
-                        <!-- <div
-                            style="width: 35%; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
-                            <h3 style="margin: 0 0 20px 0; color: rgb(96, 200, 242); font-size: 16px;">Cart Summary</h3>
-                            <div
-                                style="margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 12px; color: #6c757d;">
-                                <span>Subtotal</span>
-                                <span>€7.00</span>
-                            </div>
-                            <div
-                                style="margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 12px; color: #6c757d;">
-                                <span>Discount</span>
-                                <span>€0.00</span>
-                            </div>
-                            <div
-                                style="margin-bottom: 20px; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
-                                <span>Total Payment</span>
-                                <span>€7.00</span>
-                            </div>
-                            <button
-                                style="width: 100%; background: rgb(96, 200, 242); color: white; border: none; border-radius: 5px; padding: 10px 0; font-size: 14px; cursor: pointer;">
-                                Pay (€7.00)
-                            </button>
-                          
-                        </div> -->
                     </div>
                 </div>
             </div>
+            <div class="py-12">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4">Purchase History</h3>
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2">Draw Number</th>
+                                        <th class="py-2">Date</th>
+                                        <th class="py-2">Numbers Picked</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="purchase in currentPagePurchases" :key="purchase.id">
+                                        <td class="border px-4 py-2 text-center">
+                                            {{ purchase.lottery_dashboard?.draw_number || 'N/A' }}
+                                        </td>
+                                        <td class="border px-4 py-2 text-center">
+                                            {{ purchase.lottery_dashboard?.date || 'N/A' }}
+                                        </td>
+                                        <td class="border px-4 py-2 text-center">
+                                            {{ purchase.picked_number || 'N/A' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Pagination Controls -->
+                            <div class="mt-4 flex justify-center">
+                                <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
+                                    class="px-4 py-2 bg-blue-500 text-white rounded-l-lg">Previous</button>
+                                <span class="px-4 py-2">Page {{ currentPage }} of {{ totalPages }}</span>
+                                <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
+                                    class="px-4 py-2 bg-blue-500 text-white rounded-r-lg">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-
-
     </AuthenticatedLayout>
 </template>
+
 <script>
 export default {
     methods: {
         formatNumber(number) {
-            // Format numbers as 01, 02, ..., 99, and 00 for 100
+
             return number === 100 ? "00" : String(number).padStart(2, "0");
         },
     },
+    data() {
+        return {
+            currentPage: 1,
+            pageSize: 5, // Number of items per page
+        };
+    },
+    props: {
+        purchaseHistory: Array
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.purchaseHistory.length / this.pageSize);
+        },
+        currentPagePurchases() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            return this.purchaseHistory.slice(start, end);
+        },
+    },
+    methods: {
+        changePage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > this.totalPages) return;
+            this.currentPage = pageNumber;
+        },
+    },
+
 };
 // Set the target date and time
 const targetDate = new Date("2025-01-23T00:00:00").getTime();

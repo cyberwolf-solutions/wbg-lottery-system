@@ -10,10 +10,10 @@ class CreateWinnersTable extends Migration
     {
         Schema::create('winners', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lottery_id')->constrained('lottery')->onDelete('cascade');
+            $table->foreignId('lottery_id')->constrained('lotteries')->onDelete('cascade');
             $table->foreignId('lottery_dashboard_id')->constrained('lottery_dashboards')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->numeric('price');
+            $table->decimal('price');
             $table->string('winning_number');
             $table->timestamps();
             $table->softDeletes();

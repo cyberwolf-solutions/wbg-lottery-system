@@ -16,7 +16,7 @@ class Withdrawal extends Model
     protected $fillable = [
         'wallet_id',
         'amount',
-        'description',
+        'withdrawal_type',
         'withdrawal_date',
         'status',
         'decline_reason'

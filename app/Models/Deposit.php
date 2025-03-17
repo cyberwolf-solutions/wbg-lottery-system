@@ -16,7 +16,7 @@ class Deposit extends Model
     protected $fillable = [
         'wallet_id',
         'amount',
-        'description',
+        'deposite_type',
         'deposit_date',
         'reference',
         'image',
