@@ -6,14 +6,21 @@
       <div class="dashboard-banner">
         <!-- Top Navbar Section -->
         <div class="navbar">
-          <h2 class="lottery-name fw-bold text-danger">{{lotteries.name}}</h2>
+          <h2 class="lottery-name fw-bold text-danger">{{ lotteries.name }}</h2>
           <button @click="openModal(lotteries)" class="btn btn-primary">Create a Dashboard</button>
 
         </div>
 
+        <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+          <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+            {{ responseMessage }}
+          </div>
+        </div>
+
+
         <!-- Lottery Table Section -->
         <div class="lottery-table">
-          <h3 class="mt-4">{{lotteries.name}} Dashboard Details</h3>
+          <h3 class="mt-4">{{ lotteries.name }} Dashboard Details</h3>
           <table>
             <thead>
               <tr>
@@ -57,7 +64,7 @@
               <div class="form-group">
                 <label for="lottery">Lottery Name:</label>
                 <input type="text" :value="lotteries.name" id="lottery_name" readonly />
-                <input type="text" v-model="newDashboard.lottery_id" id="id" readonly  hidden/>
+                <input type="text" v-model="newDashboard.lottery_id" id="id" readonly hidden />
 
 
               </div>
@@ -140,6 +147,7 @@
 </template>
 
 <script>
+import { ref } from 'vue';  // Import `ref` from Vue
 import Sidebar from '@/components/AdminSidebar.vue';
 
 export default {
@@ -150,14 +158,12 @@ export default {
 
   data() {
     return {
-      // lotteries: [],
       lotteries: this.lotteries || [],
       dashboards: this.dashboards || [],
       isSidebarVisible: true,
       isModalOpen: false,
       isEditModalOpen: false,
       isDeleteModalOpen: false,
-
       newDashboard: {
         dashbard: '',
         price: '',
@@ -166,28 +172,39 @@ export default {
         draw_number: '',
         lottery_id: '',
         id: '',
-
       },
       editingDashboard: {},
+      responseMessage: ref(null),  // Use `ref` to make this reactive
+      responseClass: ref('bottom-response'),
     };
   },
   mounted() {
     console.log("Lotteries received:", this.lotteries);
     console.log("Dashboards:", this.dashboards);
-  }
-  ,
+  },
 
   methods: {
+    showResponse(message, position = 'bottom') {
+      this.responseMessage = message;
+      this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+      // Hide the message after 3 seconds
+      setTimeout(() => {
+        this.responseMessage = null;
+      }, 3000);
+    },
+
     handleSidebarToggle(isVisible) {
       this.isSidebarVisible = isVisible;
     },
+
     openModal(lottery) {
       if (lottery) {
         this.newDashboard.lottery_id = lottery.id;
       }
       this.isModalOpen = true;
-    }
-    ,
+    },
+
     closeModal() {
       this.isModalOpen = false;
     },
@@ -196,9 +213,11 @@ export default {
       this.editingDashboard = { ...dashboard };
       this.isEditModalOpen = true;
     },
+
     closeEditModal() {
       this.isEditModalOpen = false;
     },
+
     updateDashboard() {
       const index = this.dashboards.findIndex(d => d.id === this.editingDashboard.id);
       if (index !== -1) {
@@ -206,13 +225,16 @@ export default {
       }
       this.closeEditModal();
     },
+
     confirmDelete(dashboard) {
       this.editingDashboard = dashboard;
       this.isDeleteModalOpen = true;
     },
+
     closeDeleteModal() {
       this.isDeleteModalOpen = false;
     },
+
     deleteDashboard() {
       this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
       this.closeDeleteModal();
@@ -220,24 +242,59 @@ export default {
 
     async createDashboard() {
       try {
-        // alert(this.newDashboard.lottery_id);
-
         const response = await axios.post('/api/admin/dashboard/create', this.newDashboard);
         this.dashboards.push(response.data); // Add the newly created dashboard
         this.closeModal();
+        this.showResponse('Dashboard Created', 'bottom');  // Call showResponse method
         window.location.reload();
       } catch (error) {
         console.error("Error creating dashboard: ", error);
+        this.showResponse('Failed to create dashboard. Please try again.', 'bottom'); // Call showResponse on error
       }
     }
-
-
-
   },
 };
 </script>
 
 <style scoped>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
 #app.dark-theme {
   background-color: #121212;
   color: #e0e0e0;

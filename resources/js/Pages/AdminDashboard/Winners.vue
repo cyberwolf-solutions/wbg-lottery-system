@@ -1,11 +1,19 @@
 <template>
+
+    <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+        <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+            {{ responseMessage }}
+        </div>
+    </div>
+
+
     <div id="app" class="d-flex dark-theme">
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
             <div class="dashboard-banner">
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Lottery</h2>
-                    <h2 class="lottery-name fw-bold text-danger">{{lottery.name}}</h2>
+                    <h2 class="lottery-name fw-bold text-danger">{{ lottery.name }}</h2>
                 </div>
 
                 <!-- Loop through grouped winners and display them in separate tables -->
@@ -25,7 +33,7 @@
                                 <td><a href="#">{{ winner.user ? winner.user.name : 'N/A' }}</a></td>
                                 <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.date : 'N/A' }}</td>
                                 <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.draw_number : 'N/A' }}</td>
-                                <td>{{ winner.lottery_dashboard ? winner.price: 'N/A' }}</td>
+                                <td>{{ winner.lottery_dashboard ? winner.price : 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -39,24 +47,37 @@
 
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
+import { ref } from 'vue';
 
 export default {
     components: {
         Sidebar,
     },
     props: {
-        winners: Object, 
+        winners: Object,
         lottery: Array
     },
     data() {
         return {
             isSidebarVisible: true,
+            responseMessage: ref(null),  // Use `ref` to make this reactive
+            responseClass: ref('bottom-response'),
         };
     },
     methods: {
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
+        showResponse(message, position = 'bottom') {
+            this.responseMessage = message;
+            this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                this.responseMessage = null;
+            }, 3000);
+        },
+
     },
 };
 </script>

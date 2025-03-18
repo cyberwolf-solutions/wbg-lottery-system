@@ -1,4 +1,9 @@
 <template>
+    <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+        <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+            {{ responseMessage }}
+        </div>
+    </div>
     <div id="app" class="d-flex dark-theme">
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
@@ -59,16 +64,17 @@
                 </div>
 
                 <!-- Confirmation Modal for approving -->
+                <!-- Edit Confirmation Modal for approving -->
                 <div v-if="isEditModalOpen" class="modal-overlay">
                     <div class="modal-content">
-                        <h3>Are you sure you want to Accept this request</h3>
+                        <h3>Are you sure you want to accept this request?</h3>
                         <div class="row align-items-center justify-content-center">
-                            <button @click="deleteDashboard" class=" btn btn-danger mx-2 col-5">Yes</button>
-                            <button @click="closeDeleteModal" class="btn btn-secondary col-5">Cancel</button>
+                            <button @click="approveRequest" class="btn btn-success mx-2 col-5">Yes</button>
+                            <button @click="closeEditModal" class="btn btn-secondary col-5">Cancel</button>
                         </div>
-
                     </div>
                 </div>
+
 
 
                 <!-- Confirmation Modal for Deleting -->
@@ -92,6 +98,7 @@
 
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
+import { ref } from 'vue';
 
 export default {
     components: {
@@ -109,10 +116,25 @@ export default {
 
 
             editingDashboard: {},
+
+            responseMessage: ref(null),  // Use `ref` to make this reactive
+            responseClass: ref('bottom-response'),
         };
     },
 
     methods: {
+        showResponse(message, position = 'bottom') {
+            this.responseMessage = message;
+            this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                this.responseMessage = null;
+            }, 3000);
+        },
+
+
+
 
         confirmDelete(dashboard) {
             this.editingDashboard = dashboard;
@@ -124,7 +146,8 @@ export default {
         },
         declineRequest() {
             if (!this.declineMessage.trim()) {
-                alert("Please enter a reason for declining the request.");
+                this.showResponse('Please enter a reason for declining the request.', 'bottom');
+                // alert("Please enter a reason for declining the request.");
                 return;
             }
 
@@ -132,12 +155,16 @@ export default {
                 reason: this.declineMessage
             })
                 .then(response => {
-                    alert(response.data.message);
+                    this.showResponse(response.data.message, 'bottom');
+
+                    // alert(response.data.message);
                     this.editingDashboard.status = 2; // Update UI immediately (Assuming 2 is the declined status)
                     this.closeDeleteModal();
                 })
                 .catch(error => {
-                    alert(error.response?.data?.message || "Failed to decline deposit.");
+                    this.showResponse(error.response?.data?.message || "Failed to decline deposit.", 'bottom');
+
+                    // alert(error.response?.data?.message || "Failed to decline deposit.");
                 });
         },
 
@@ -150,22 +177,28 @@ export default {
         closeModal() {
             this.isModalOpen = false;
         },
-
+        // Unified editDashboard method to handle modal opening and approval action
         editDashboard(deposit) {
-            if (!confirm("Are you sure you want to approve this request?")) {
-                return;
-            }
+            this.editingDashboard = deposit;
+            this.isEditModalOpen = true;
+        },
 
-            axios.post(`/api/admin/withdraw/approve/${deposit.id}`)
+        // Approval request logic
+        approveRequest() {
+            axios.post(`/api/admin/withdraw/approve/${this.editingDashboard.id}`)
                 .then(response => {
-                    alert(response.data.message);
-                    deposit.status = 1; // Update UI immediately
+                    this.showResponse(response.data.message, 'bottom');
+                    this.editingDashboard.status = 1; // Update UI immediately
+                    this.closeEditModal();
                 })
                 .catch(error => {
-                    alert(error.response.data.message || "Failed to approve deposit.");
+                    this.showResponse(error.response?.data?.message || "Failed to approve deposit.", 'bottom');
                 });
-        }
-        ,
+        },
+
+        closeEditModal() {
+            this.isEditModalOpen = false;
+        },
         closeEditModal() {
             this.isEditModalOpen = false;
         },
@@ -187,11 +220,62 @@ export default {
             this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
             this.closeDeleteModal();
         },
+        approveRequest() {
+            // Perform the approval action
+            axios.post(`/api/admin/withdraw/approve/${this.editingDashboard.id}`)
+                .then(response => {
+                    this.showResponse(response.data.message, 'bottom');
+                    this.editingDashboard.status = 1; // Update UI immediately
+                    this.closeEditModal();
+                })
+                .catch(error => {
+                    this.showResponse(error.response?.data?.message || "Failed to approve deposit.", 'bottom');
+                });
+        }
+
     },
 };
 </script>
 
 <style scoped>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;
