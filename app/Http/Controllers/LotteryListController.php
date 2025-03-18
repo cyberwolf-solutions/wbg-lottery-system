@@ -54,7 +54,7 @@ class LotteryListController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'],
             'image' => $imagePath,
-            'created_by' => '1',
+            // /'created_by' => '1',
         ]);
 
         return response()->json($lottery, 201);

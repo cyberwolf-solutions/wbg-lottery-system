@@ -1,26 +1,141 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';  // Make sure to import onMounted
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+
 const isModalOpen = ref(false);
+const attachment = ref(null);
+const withdrawalAmount = ref(null);
+
+const responseMessage = ref(null);
+const responseClass = ref('bottom-response');
+
+function showResponse(message, position = 'bottom') {
+    responseMessage.value = message;
+    responseClass.value = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+    // Hide the message after 5 seconds
+    setTimeout(() => {
+        responseMessage.value = null;
+    }, 3000);
+}
 
 
+const props = defineProps({
+    status: String,
+    transactions: Array,
+    withdrawal: Array,
+    deposit: Array,
+    wallet: Array,
+    bank: Array,
+    walletAddress: Array,
+    winnings: Array
+});
+
+// Modal control functions
 const openModal = () => {
     isModalOpen.value = true;
 };
 
-
 const closeModal = () => {
     isModalOpen.value = false;
 };
+// handleFileUpload
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        attachment.value = file;
+    }
+};
+const handleRequest = async () => {
+    if (!creditAmount.value || !referenceNumber.value || !attachment.value) {
+        // alert("Please fill in all required fields.");
+        showResponse('Please fill in all required fields.', 'bottom');
+        return;
+    }
 
+    const formData = new FormData();
+    formData.append('bank', props.bank[0]?.bank || '');
+    formData.append('account_number', props.bank[0]?.number || '');
+    formData.append('amount', creditAmount.value);
+    formData.append('reference', referenceNumber.value);
+    formData.append('attachment', attachment.value);
 
-const handleRequest = () => {
-    console.log("Request submitted!");
-    closeModal();
+    // alert(attachment.value);
+
+    if (depositType.value) {
+        formData.append('deposit_type', depositType.value);
+    }
+
+    try {
+        const response = await axios.post('/api/wallet/request', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        // alert("Request submitted successfully!");
+        showResponse('Request submitted successfully', 'bottom');
+        console.log(response.data);
+
+        // Close the modal after success
+        closeModal();
+    } catch (error) {
+        console.error("Error submitting request:", error);
+        // alert("Failed to submit request.");
+        showResponse('Failed to submit request.', 'bottom');
+    }
 };
 
+// Handle withdraw request
+const handlewithdraw = async () => {
+    if (!withdrawalAmount.value || withdrawalAmount.value <= 0) {
+        // alert("Please enter a valid withdrawal amount.");
+        showResponse('Please enter a valid withdrawal amount.', 'bottom');
+        return;
+    }
+
+    if (!depositType.value) {
+        // alert("Please add withdraw type.");
+        showResponse('Please add withdraw type.', 'bottom');
+        return;
+    }
+
+
+    const formData = new FormData();
+    formData.append('wallet_id', props.wallet.id);
+    formData.append('amount', withdrawalAmount.value);
+    if (depositType.value) {
+        formData.append('withdrawal_type', depositType.value);
+    }
+
+    try {
+        const response = await axios.post('/api/wallet/withdraw', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        // alert("Withdrawal request submitted successfully!");
+        showResponse('Withdrawal request submitted successfully!', 'bottom');
+        console.log(response.data);
+
+        // Close the modal after success
+        closeModal();
+    } catch (error) {
+        console.error("Error submitting withdrawal request:", error);
+        // alert("Failed to submit withdrawal request.");
+        showResponse('Failed to submit withdrawal request.!', 'bottom');
+    }
+};
+
+// Log wallet data when the component is mounted
+onMounted(() => {
+    console.log(props.wallet); // This will log the wallet data to the console
+    console.log(props.bank);
+});
 </script>
+
 
 <template>
 
@@ -39,7 +154,11 @@ const handleRequest = () => {
                 </button> -->
             </div>
 
-
+            <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+                <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+                    {{ responseMessage }}
+                </div>
+            </div>
 
 
 
@@ -50,33 +169,64 @@ const handleRequest = () => {
                 <h3 class="text-lg font-semibold mb-4">Request Credit</h3>
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                     Admin Bank details
+                        Bank details
                     </label>
-                    <input id="Note" type="text" placeholder="0986217671" disabled
+                    <input id="bank" type="text" :value="props.bank.length ? props.bank[0]?.bank : 'No Bank Available'"
+                        disabled
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
 
                 <div class="mb-4">
-                    <label for="creditAmount" class="block text-sm font-medium text-gray-700">
-                        Deposit Amount
+                    <label for="Note" class="block text-sm font-medium text-gray-700">
+                        Account Number
                     </label>
-                    <input id="creditAmount" type="number" placeholder="Enter credit amount"
+                    <input id="number" type="text"
+                        :value="props.bank.length ? props.bank[0]?.number : 'No Bank Available'" disabled
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
                 <div class="mb-4">
-                    <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Reference no.
+                    <label for="wnumber" class="block text-sm font-medium text-gray-700">
+                        Wallet Address
                     </label>
-                    <input id="Note" type="text" placeholder="Add a reference number."
+                    <input id="wnumber" type="text"
+                        :value="props.walletAddress.length ? props.walletAddress[0]?.address : 'No wallet address'"
+                        disabled
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
+                <div class="mb-4">
+                    <label for="creditAmount" class="block text-sm font-medium text-gray-700">
+                        Deposit Amount
+                    </label>
+                    <input id="creditAmount" v-model="creditAmount" type="number" placeholder="Enter credit amount"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="referenceNumber" class="block text-sm font-medium text-gray-700">
+                        Reference no.
+                    </label>
+                    <input id="referenceNumber" v-model="referenceNumber" type="text"
+                        placeholder="Add a reference number."
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="depositType" class="block text-sm font-medium text-gray-700">
+                        Deposit Type (Optional)
+                    </label>
+                    <input id="depositType" v-model="depositType" type="text"
+                        placeholder="Enter deposit type (Optional)"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+
                 <div class="mb-4">
                     <label for="attachment" class="block text-sm font-medium text-gray-700">
                         Attachment
                     </label>
-                    <input id="attachment" type="file"
+                    <input id="attachment" type="file" @change="handleFileUpload" accept="image/*"
                         class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                 </div>
+
                 <div class="flex justify-end space-x-4">
                     <button class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400"
                         @click="closeModal">
@@ -97,37 +247,56 @@ const handleRequest = () => {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content rounded-lg shadow-lg">
                     <div class="modal-header border-0">
-                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
+                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details
+                        </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Account Number Input -->
                         <div class="mb-4">
-                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Available balance
-                                </label>
-                            <input type="text" id="accountNumber"
+                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">
+                                Wallet ID
+                            </label>
+                            <input type="text" id="walletId" disabled
                                 class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                disabled placeholder="Rs. 19 288">
+                                :value="props.wallet.id">
+
+                        </div>
+                        <div class="mb-4">
+                            <label for="accountNumber" class="block text-sm font-medium text-gray-700">Available
+                                balance
+                            </label>
+                            <input type="text" id="accountNumber" disabled
+                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                :value="props.wallet.available_balance">
+
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="depositType" class="block text-sm font-medium text-gray-700">
+                                Withdrawal Type
+                            </label>
+                            <input id="depositType" v-model="depositType" type="text" placeholder="Enter deposit type "
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
 
                         <!-- Account Name Input -->
                         <div class="mb-4">
-                            <label for="accountName" class="block text-sm font-medium text-gray-700">Withdrawal amount
-                                </label>
-                            <input type="text" id="accountName"
+                            <label for="accountName" id="amount"
+                                class="block text-sm font-medium text-gray-700">Withdrawal
+                                amount</label>
+                            <input type="number" id="accountName" v-model="withdrawalAmount"
                                 class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                 placeholder="enter">
+                                placeholder="enter">
                         </div>
 
-                        <!-- Bank Name Input -->
-                        <!-- <div class="mb-4">
-                            <label for="bankName" class="block text-sm font-medium text-gray-700">Bank</label>
-                            <input type="text" id="bankName"
-                                class="form-control form-control-sm mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                disabled placeholder="09/27">
-                        </div> -->
+
                     </div>
                     <div class="modal-footer border-0">
+                        <button class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600"
+                            @click="handlewithdraw">
+                            Withdraw
+                        </button>
                         <button type="button"
                             class="px-4 py-2 bg-gray-300 text-gray-800 rounded shadow hover:bg-gray-400"
                             data-bs-dismiss="modal">Close</button>
@@ -144,7 +313,8 @@ const handleRequest = () => {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content rounded-lg shadow-lg">
                     <div class="modal-header border-0">
-                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details</h1>
+                        <h1 class="modal-title fs-5 text-lg font-semibold" id="staticBackdropLabel">Bank Details
+                        </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -202,7 +372,7 @@ const handleRequest = () => {
                             <!-- Total Budget -->
                             <div class="text-center">
                                 <p class="mb-2 text-muted">Total Balance</p>
-                                <h3 class="fw-bold text-dark">$85,125.00</h3>
+                                <h3 class="fw-bold text-dark">{{ props.wallet?.available_balance }}</h3>
                             </div>
                             <!-- Credit Limit -->
                             <div class="text-center">
@@ -210,107 +380,17 @@ const handleRequest = () => {
                             </div>
                             <!-- My Goals -->
                             <div class="text-center">
-                                <button class="custom-button mt-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                style="transition: background-color 0.3s ease;">Withdrawal</button>
+                                <button class="custom-button mt-3" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"
+                                    style="transition: background-color 0.3s ease;">Withdrawal</button>
                             </div>
-                            <!-- Saved -->
-                            <!-- <div class="text-center">
-                                <p class="mb-2 text-muted">Saved</p>
-                                <h3 class="fw-bold text-info">$15,125.00</h3>
-                            </div> -->
+
                         </div>
 
-                        <!-- Card Section -->
-                        <!-- <div class="p-4 my-4 bg-white rounded-xl shadow-lg">
-                            <div class="d-flex justify-content-between align-items-center">
-                               
-                                <div class="d-flex align-items-center">
-                                    <div class="me-4 text-center">
-                                        <h5 class="mb-0 text-primary">VISA</h5>
-                                        <small class="text-muted">Gold</small>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="mb-0 fw-semibold">**** 2321</p>
-                                        <small class="text-secondary">Exp: 02/26</small>
-                                    </div>
-                                </div>
-                               
-                                <div>
-                                    <button class="btn-sm font-bold text-white rounded-circle ml-4"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                        style="background-color: #60c8f2; transition: background-color 0.3s ease;">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </button>
 
-                                    <button class="btn-sm btn-warning font-bold text-white rounded-circle ml-4"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop1"
-                                        style="transition: background-color 0.3s ease;">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
 
 
-                    <!-- <div class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4">
-                        <div class="card-body">
-                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
-                                <table class="min-w-full table-auto">
-                                    <thead class="text-white" style="background-color: #60c8f2;">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Lottery Name</th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Picked Numbers</th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Date
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Prize
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
-                                            <td class="px-6 py-4 text-green-600 font-medium">$2,000.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Meta</td>
-                                            <td class="px-6 py-4 text-red-600 font-medium">-$170.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
-                                        </tr>
-                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Apple</td>
-                                            <td class="px-6 py-4 text-green-600 font-medium">$2,187.00</td>
-                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
-                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
-                                            <td class="px-6 py-4 text-green-600 font-medium">$4,177.00</td>
-                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
-                                            <td class="px-6 py-4 text-green-600 font-semibold">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-indigo-50 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
-                                            <td class="px-6 py-4 text-red-600 font-medium">-$277.00</td>
-                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div> -->
 
 
 
@@ -322,15 +402,14 @@ const handleRequest = () => {
                         <div class="card-body">
                             <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
                                 <table class="min-w-full table-auto">
-                                    <thead class="" style="background-color: #60c8f2;">
+                                    <thead style="background-color: #60c8f2;">
                                         <tr>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Lottery Name</th>
-                                                <th
+                                            <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Transaction type</th>
-
+                                                Transaction Type</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Picked Numbers</th>
@@ -338,48 +417,25 @@ const handleRequest = () => {
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Date
                                             </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Prize
-                                            </th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
-                                            <td class="px-6 py-4 text-gray-800">Deposit</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$2,000.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
+                                        <!-- Loop through transactions and display data -->
+                                        <tr v-for="transaction in transactions" :key="transaction.id">
+
+                                            <td class="px-6 py-4 text-gray-800">{{ transaction.lottery.name }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{ transaction.type }}</td>
+                                            <td class="px-6 py-4 text-green-500 font-medium">{{
+                                                transaction.picked_number }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-800">{{
+                                                transaction.lotteryDashboard?.price
+                                            }}</td>
                                         </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Meta</td>
-                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
-                                            <td class="px-6 py-4 text-red-500 font-medium">-$170.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Apple</td>
-                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$2,187.00</td>
-                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
-                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$4,177.00</td>
-                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
-                                            <td class="px-6 py-4 text-gray-800">Withdrawal</td>
-                                            <td class="px-6 py-4 text-red-500 font-medium">-$277.00</td>
-                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -387,11 +443,10 @@ const handleRequest = () => {
                     </div>
 
 
-
                     <!-- table 3 -->
                     <div
                         class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
-                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Wins</div>
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Withdrawals</div>
                         <div class="card-body">
                             <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
                                 <table class="min-w-full table-auto">
@@ -399,50 +454,32 @@ const handleRequest = () => {
                                         <tr>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Lottery Name</th>
+                                                Amount</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Picked Numbers</th>
+                                                Date</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Date
+                                                Status
                                             </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Prize
-                                            </th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Paypal</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$2,000.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Meta</td>
-                                            <td class="px-6 py-4 text-red-500 font-medium">-$170.00</td>
-                                            <td class="px-6 py-4 text-gray-600">20.02.2023</td>
-                                            <td class="px-6 py-4 text-yellow-600">In Progress</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Apple</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$2,187.00</td>
-                                            <td class="px-6 py-4 text-gray-600">18.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Playstation</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">$4,177.00</td>
-                                            <td class="px-6 py-4 text-gray-600">16.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
-                                            <td class="px-6 py-4 text-gray-800">Amazon</td>
-                                            <td class="px-6 py-4 text-red-500 font-medium">-$277.00</td>
-                                            <td class="px-6 py-4 text-gray-600">15.02.2023</td>
-                                            <td class="px-6 py-4 text-gray-800">Completed</td>
+                                        <tr v-for="withdrawalItem in withdrawal" :key="withdrawalItem.id"
+                                            class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <!-- <td class="px-6 py-4 text-gray-800">{{ withdrawalItem.wallet.name }}</td> -->
+                                            <td class="px-6 py-4 text-green-500 font-medium">{{
+                                                withdrawalItem.amount }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-600">{{ withdrawalItem.withdrawal_date }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-800">
+                                                {{ withdrawalItem.status === 0 ? 'Pending' : (withdrawalItem.status
+                                                    === 1 ?
+                                                    'Completed' : 'Declined') }}
+                                            </td>
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -452,9 +489,150 @@ const handleRequest = () => {
 
                     <!-- Transactions Table -->
 
+                    <!-- table 3 -->
+                    <div
+                        class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Deposit</div>
+                        <div class="card-body">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Amount</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Date</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Description
+                                            </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Status
+                                            </th>
 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        <tr v-for="depositItem in deposit" :key="depositItem.id"
+                                            class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">{{ depositItem.amount }}</td>
+                                            <td class="px-6 py-4 text-gray-600">{{ depositItem.deposit_date }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{ depositItem.description }}</td>
+                                            <td class="px-6 py-4 text-gray-800">
+                                                {{ depositItem.status === 0 ? 'Pending' : (depositItem.status
+                                                    === 1 ?
+                                                    'Completed' : 'Declined') }}
+                                            </td>
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div
+                        class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Winnings</div>
+                        <div class="card-body">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Price</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Winning Number</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Lottery Name
+                                            </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Draw Number
+                                            </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Draw Date
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        <tr v-for="winningsItem in winnings" :key="winningsItem.id"
+                                            class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.price }}</td>
+                                            <td class="px-6 py-4 text-gray-600">{{ winningsItem.winning_number }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery.name }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{
+                                                winningsItem.lottery_dashboard.draw_number }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{
+                                                winningsItem.lottery_dashboard.date }}
+                                            </td>
+
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <span>{{ winnings }}</span> -->
                 </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+<style>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>

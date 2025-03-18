@@ -21,8 +21,13 @@ class Lotteries extends Model
     ];
     //
 
+    // public function dashboards()
+    // {
+    //     return $this->hasMany(LotteryDashboards::class);
+    // }
+
     public function dashboards()
     {
-        return $this->hasMany(LotteryDashboards::class);
+        return $this->hasMany(LotteryDashboards::class, 'lottery_id');
     }
 }

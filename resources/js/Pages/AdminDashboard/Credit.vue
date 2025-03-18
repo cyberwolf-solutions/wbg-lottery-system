@@ -1,4 +1,10 @@
 <template>
+
+    <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+        <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+            {{ responseMessage }}
+        </div>
+    </div>
     <div id="app" class="d-flex dark-theme">
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
@@ -7,7 +13,6 @@
                 <!-- Top Navbar Section -->
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Credit</h2>
-
                 </div>
 
                 <!-- Lottery Table Section -->
@@ -18,26 +23,33 @@
                             <tr>
                                 <th>User</th>
                                 <th>Date</th>
-                                <th>Ammount</th>
+                                <th>Amount</th>
                                 <th>Attachment</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.price }}</td>
-                                <td>{{ dashboard.attachment }}</td>
+                            <tr v-for="(deposit, index) in credits" :key="index">
+                                <td><a href="#">{{ deposit.wallet?.user?.name || 'N/A' }}</a></td>
+                                <td>{{ deposit.deposit_date }}</td>
+                                <td>{{ deposit.amount }}</td>
+                                <td><a :href="deposit.image" target="_blank">View</a></td>
                                 <td>
-                                    <!-- Edit Button -->
-                                    <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
+                                    <!-- Approve Button -->
+                                    <button v-if="deposit.status === 0" @click="editDashboard(deposit)"
+                                        class="btn btn-warning btn-sm">
                                         <i class="fa fa-check"></i>
-
                                     </button>
 
+                                    <!-- Approved Label -->
+                                    <span v-if="deposit.status === 1" class="text-success">Approved</span>
+
+                                    <!-- Declined Label -->
+                                    <span v-else-if="deposit.status === 2" class="text-danger">Declined</span>
+
                                     <!-- Delete Button -->
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
+                                    <button v-if="deposit.status === 0" @click="confirmDelete(deposit)"
+                                        class="btn btn-danger btn-sm mx-2">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -49,15 +61,13 @@
                 <!-- Confirmation Modal for approving -->
                 <div v-if="isEditModalOpen" class="modal-overlay">
                     <div class="modal-content">
-                        <h3>Are you sure you want to Accept this request</h3>
+                        <h3>Are you sure you want to accept this request?</h3>
                         <div class="row align-items-center justify-content-center">
-                            <button @click="deleteDashboard" class=" btn btn-danger mx-2 col-5">Yes</button>
-                            <button @click="closeDeleteModal" class="btn btn-secondary col-5">Cancel</button>
+                            <button @click="approveRequest" class=" btn btn-danger mx-2 col-5">Yes</button>
+                            <button @click="closeEditModal" class="btn btn-secondary col-5">Cancel</button>
                         </div>
-
                     </div>
                 </div>
-
 
                 <!-- Confirmation Modal for Deleting -->
                 <div v-if="isDeleteModalOpen" class="modal-overlay">
@@ -73,17 +83,20 @@
                 </div>
             </div>
         </div>
-
         <router-view />
     </div>
 </template>
 
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
+import { ref } from 'vue';
 
 export default {
     components: {
         Sidebar,
+    },
+    props: {
+        credits: Array, // Receive Credit data from Laravel
     },
     data() {
         return {
@@ -91,79 +104,131 @@ export default {
             isModalOpen: false,
             isEditModalOpen: false,
             isDeleteModalOpen: false,
-            dashboards: [
-                { id: 1, name: 'User 1', price: '$10', date: '2025-02-05', draw: '1', attachment: '001' },
-                { id: 2, name: 'User 2', price: '$20', date: '2025-02-05', draw: '2', attachment: '002' },
-                { id: 3, name: 'User 3', price: '$50', date: '2025-02-05', draw: '3', attachment: '003' },
-            ],
-            newDashboard: {
-                price: '',
-                date: '',
-                draw: '',
-                drawNumber: '',
-            },
             editingDashboard: {},
+            declineMessage: "",
+
+            responseMessage: ref(null),  // Use `ref` to make this reactive
+            responseClass: ref('bottom-response'),
         };
     },
     methods: {
 
+        showResponse(message, position = 'bottom') {
+            this.responseMessage = message;
+            this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                this.responseMessage = null;
+            }, 3000);
+        },
+
         confirmDelete(dashboard) {
             this.editingDashboard = dashboard;
             this.isDeleteModalOpen = true;
-            this.declineMessage = ""; // Reset message input
+            this.declineMessage = "";
         },
         closeDeleteModal() {
             this.isDeleteModalOpen = false;
         },
         declineRequest() {
             if (!this.declineMessage.trim()) {
-                alert("Please enter a reason for declining the request.");
+                this.showResponse('Please enter a reason for declining the request.', 'bottom');
+                // alert("Please enter a reason for declining the request.");
                 return;
             }
-            console.log("Declined:", this.editingDashboard, "Reason:", this.declineMessage);
-            this.closeDeleteModal();
+
+            axios.post(`/api/admin/creditReq/decline/${this.editingDashboard.id}`, {
+                reason: this.declineMessage
+            })
+                .then(response => {
+                    this.showResponse(response.data.message, 'bottom');
+
+                    // alert(response.data.message);
+                    this.editingDashboard.status = 2; // Update UI immediately (Assuming 2 is the declined status)
+                    this.closeDeleteModal();
+                })
+                .catch(error => {
+                    this.showResponse(error.response?.data?.message || "Failed to decline deposit.", 'bottom');
+
+                    // alert(error.response?.data?.message || "Failed to decline deposit.");
+                });
         },
 
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
-        openModal() {
-            this.isModalOpen = true;
-        },
-        closeModal() {
-            this.isModalOpen = false;
+
+        editDashboard(deposit) {
+            this.editingDashboard = deposit;
+            this.isEditModalOpen = true; // Open the modal for approval confirmation
         },
 
-        editDashboard(dashboard) {
-            this.editingDashboard = { ...dashboard };
-            this.isEditModalOpen = true;
-        },
         closeEditModal() {
             this.isEditModalOpen = false;
         },
-        updateDashboard() {
-            const index = this.dashboards.findIndex(d => d.id === this.editingDashboard.id);
-            if (index !== -1) {
-                this.dashboards.splice(index, 1, this.editingDashboard);
-            }
-            this.closeEditModal();
-        },
-        // confirmDelete(dashboard) {
-        //     this.editingDashboard = dashboard;
-        //     this.isDeleteModalOpen = true;
-        // },
-        // closeDeleteModal() {
-        //     this.isDeleteModalOpen = false;
-        // },
-        deleteDashboard() {
-            this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
-            this.closeDeleteModal();
-        },
+
+        approveRequest() {
+            axios.post(`/api/admin/creditReq/approve/${this.editingDashboard.id}`)
+                .then(response => {
+                    this.showResponse(response.data.message, 'bottom');
+
+                    // alert(response.data.message);
+                    this.editingDashboard.status = 1; // Update UI immediately
+                    this.closeEditModal();
+                })
+                .catch(error => {
+                    this.showResponse(error.response.data.message || "Failed to approve deposit.", 'bottom');
+
+                    // alert(error.response.data.message || "Failed to approve deposit.");
+                });
+        }
     },
 };
 </script>
 
+
 <style scoped>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;

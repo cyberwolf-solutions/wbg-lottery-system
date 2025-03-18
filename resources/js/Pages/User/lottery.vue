@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -8,8 +8,72 @@ import axios from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-Pusher.logToConsole = true;
 
+const responseMessage = ref(null);  // To hold the response message
+const responseClass = ref('bottom-response');  // Class for positioning (top/bottom)
+
+function showResponse(message, position = 'bottom') {
+    responseMessage.value = message;
+    responseClass.value = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+    // Hide the message after 5 seconds
+    setTimeout(() => {
+        responseMessage.value = null;
+    }, 3000);
+}
+
+
+
+const authToken = localStorage.getItem('auth_token');
+console.log('Auth Token:', authToken);
+let checkoutTimeout;
+//call checkout function after 10 mins
+function startCheckoutTimer() {
+    checkoutTimeout = setTimeout(() => {
+        checkout();
+        // location.reload(); 
+    }, 600000);
+}
+// Pagination variables
+const currentPage = ref(1);
+const itemsPerPage = ref(4); // Adjust as needed
+
+// Computed property for paginated tickets
+const paginatedTickets = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return selectedLotteryDetails.value.slice(start, end);
+});
+
+// Computed property for total pages
+const totalPages = computed(() => {
+    return Math.ceil(selectedLotteryDetails.value.length / itemsPerPage.value);
+});
+
+// Method to navigate to a specific page
+function goToPage(page) {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+    }
+}
+
+// Method to go to the next page
+function nextPage() {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
+}
+
+// Method to go to the previous page
+function prevPage() {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+}
+
+
+
+Pusher.logToConsole = true;
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'your_pusher_key',
@@ -17,58 +81,124 @@ window.Echo = new Echo({
     forceTLS: true
 });
 
-// Store the picked numbers (those that are disabled)
 const pickedNumbers = ref([]);
+const showConfirmModal = ref(false);
+const numberToPick = ref(null);
+const dashboardIdToPick = ref(null);
+const totalPrice = computed(() => {
+    // Get the price from the selected lottery dashboard
+    const dashboardPrice = selectedLotteryDetails.value[0]?.price || 0; // Default to 0 if no price found
 
-// Listen for a number being picked through the Pusher event
-window.Echo.channel('lottery')
-    .listen('NumberPicked', (event) => {
-        console.log("Number Picked Event Received:", event);
-        pickedNumbers.value.push(event.pickedNumber.picked_number);
-    });
+    // Calculate the total price based on picked numbers
+    const pickedPrice = pickedNumbers.value.length * parseFloat(dashboardPrice); // Total price = number of picked numbers * dashboard price
 
+    return pickedPrice.toFixed(2); // Return the total price
+});
 
-function pickNumber(number, dashboardId) {
-    // Send a POST request to mark the number as picked in the database
-    // alert(JSON.stringify(selectedLotteryDetails.value[0]?.id , 2));
-
-
-
-    axios.post('/api/pick-number', {
-        number: number,
-        lottery_dashboard_id: selectedLotteryDetails.value[0]?.id,
-    }, {
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
-    }).then(response => {
-        pickedNumbers.value.push(response.data.data.number);
-    }).catch(error => {
-        alert(error.response.data.message);
-    });
-
+// Store picked numbers in localStorage
+function savePickedNumbersToLocalStorage() {
+    localStorage.setItem('pickedNumbers', JSON.stringify(pickedNumbers.value));
 }
 
+// Retrieve picked numbers from localStorage
+function loadPickedNumbersFromLocalStorage() {
+    const storedPickedNumbers = localStorage.getItem('pickedNumbers');
+    if (storedPickedNumbers) {
+        pickedNumbers.value = JSON.parse(storedPickedNumbers);
+    }
+}
+
+
+
+onMounted(() => {
+    window.Echo.channel('lottery')
+        .listen('NumberPicked', (event) => {
+            // Push number and its price when picked
+            pickedNumbers.value.push({
+                number: event.pickedNumber.picked_number,
+                price: event.pickedNumber.price
+            });
+        });
+
+    loadPickedNumbersFromLocalStorage(); // Load from localStorage when the page reloads
+
+    // Call deletePickedNumbers if necessary (e.g., reset or cleanup on page load)
+    deletePickedNumbers();
+    startCheckoutTimer();
+
+});
+
+
+
+const storedNumbers = ref([...Array(100).keys()].map(n => n.toString().padStart(2, '0')));
+
+function confirmPickNumber(number, dashboardId) {
+    numberToPick.value = number;
+    dashboardIdToPick.value = dashboardId;
+    showConfirmModal.value = true;
+}
+
+function pickNumberConfirmed() {
+    console.log('Confirming pick for number:', numberToPick.value);
+    console.log('Dashboard ID:', dashboardIdToPick.value); // Use the correct dashboard ID
+
+    axios.post('/api/pick-number', {
+        number: numberToPick.value,
+        lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
+        lottery_id: props.lotterie.id,
+    })
+        .then(response => {
+            console.log('Full Response:', response);
+            if (response.data && response.data.number) {
+                pickedNumbers.value.push({
+                    number: response.data.number,  // Ensure number is stored properly
+                    price: selectedLotteryDetails.value[0]?.price || 0,  // Store price
+                    lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
+                });
+
+                showResponse('Number allocated successfully!', 'bottom');
+            } else {
+                console.error('Response data is missing or malformed');
+            }
+
+            console.log("ok" + pickedNumbers);
+        })
+        .catch(error => {
+            showResponse(error.response?.data?.message || error.message, 'bottom');
+        })
+        .finally(() => {
+            showConfirmModal.value = false;
+            numberToPick.value = null;
+            dashboardIdToPick.value = null; showResponse(error.response?.data?.message || error.message, 'bottom');
+        });
+}
 
 
 
 const props = defineProps({
     lotterie: Object,
-    lotterydashboards: Array
+    lotterydashboards: Array,
+    pickedNumbers: Array
 });
+function isNumberPicked(number, dashboardId) {
+    return props.pickedNumbers.some(picked =>
+        picked.picked_number === number && picked.lottery_dashboard_id === dashboardId
+    );
+}
+
 const showModal = ref(true);
 const selectedLottery = ref(props.lottery?.name || '');
 const selectedLotteryDetails = ref([]);
-// const countdownTimer = ref('');
 const countdowns = ref({});
 const selectedDashboardCount = computed(() => selectedLotteryDetails.value.length);
+
 function selectLottery(dashboard) {
     selectedLottery.value = dashboard.dashboard;
     selectedLotteryDetails.value = props.lotterydashboards.filter(d => d.dashboard === dashboard.dashboard);
     showModal.value = false;
     startCountdown();
 }
+
 const uniqueDashboards = computed(() => {
     const seen = new Set();
     return props.lotterydashboards.filter(dashboard => {
@@ -79,9 +209,17 @@ const uniqueDashboards = computed(() => {
         return false;
     });
 });
+
+let countdownIntervals = {}; // Store countdown intervals
+
 function startCountdown() {
     selectedLotteryDetails.value.forEach(ticket => {
-        const targetDate = new Date(ticket.date).getTime();
+        const targetDate = new Date(ticket.date);
+        targetDate.setHours(20, 0, 0, 0); // Set time to 8:00 PM (20:00)
+
+        if (countdownIntervals[ticket.draw_number]) {
+            clearInterval(countdownIntervals[ticket.draw_number]); // Clear existing interval
+        }
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -96,17 +234,31 @@ function startCountdown() {
                 };
             } else {
                 countdowns.value[ticket.draw_number] = { expired: true };
+                clearInterval(countdownIntervals[ticket.draw_number]); // Stop countdown
+                deactivateDashboard(ticket.dashboard_id);
             }
+            console.log("Time left:", timeLeft, countdowns.value[ticket.draw_number]);
         }
 
-        // Start countdown update every second
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        countdownIntervals[ticket.draw_number] = setInterval(updateCountdown, 1000);
     });
 }
-// Format number (ensure two-digit format)
+
+// Function to send API request to deactivate dashboard
+function deactivateDashboard(dashboardId) {
+    axios.post('/api/deactivate-dashboard', { dashboard_id: dashboardId })
+        .then(response => {
+            console.log('Dashboard deactivated:', response.data);
+        })
+        .catch(error => {
+            console.error('Error deactivating dashboard:', error.response?.data || error);
+        });
+}
+
+
 const formatNumber = (num) => num.toString().padStart(2, '0');
-// Compute winning numbers dynamically based on each draw number
+
 const winningNumbers = computed(() => {
     let numbersMap = {};
     selectedLotteryDetails.value.forEach(ticket => {
@@ -121,13 +273,75 @@ const winningNumbers = computed(() => {
     return numbersMap;
 });
 
-// const pickedNumbers = ref([]); // Stores picked numbers
-const selectedNumber = ref(null); // Stores the number user selects
 
 
 
+function checkout() {
+    if (pickedNumbers.value.length === 0) {
+        showResponse('Number Picked successfully!', 'bottom');
+        return;
+    }
+
+    const numbersData = pickedNumbers.value.map(picked => ({
+        number: picked.number,  // Ensure number is correctly formatted
+        price: parseFloat(picked.price),  // Ensure price is a number
+        dashboard_id: picked.lottery_dashboard_id
+    }));
+
+    const dashboardId = selectedLotteryDetails.value[0]?.id;
+
+    if (!dashboardId) {
+        // alert("Dashboard ID is missing!");
+        showResponse("Dashboard ID is missing!", "bottom");
+        return;
+    }
+
+    console.log("Checkout Data:", {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    });
+
+    axios.post('/api/checkout', {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    })
+        .then(response => {
+            showResponse("Number Picked", "bottom");
+            pickedNumbers.value = [];  // Clear picked numbers after checkout
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error("Checkout failed:", error.response.data.message);
+            // alert(error.response.data.message || "Checkout failed! Please try again.");
+            showResponse(error.response?.data?.message || "Checkout failed! Please try again.", "bottom");
+        });
+}
+
+
+
+
+function deletePickedNumbers() {
+    axios.post('/api/delete-picked-numbers')
+        .then(response => {
+            console.log(response.data.message);
+            pickedNumbers.value = []; // Clear the picked numbers locally
+            savePickedNumbersToLocalStorage(); // Save the updated empty list to localStorage
+        })
+        .catch(error => {
+            console.error('Error deleting picked numbers:', error.response?.data?.message || error.message);
+        });
+}
+
+
+const selectedNumber = ref(null);
 </script>
+
 <template>
+    
 
     <Head :title="props ? props.lotterie.name : 'Lottery'" />
     <AuthenticatedLayout>
@@ -137,6 +351,14 @@ const selectedNumber = ref(null); // Stores the number user selects
             </h2>
         </template>
 
+
+        <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+            <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+                {{ responseMessage }}
+            </div>
+        </div>
+
+
         <!-- Modal -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-container">
@@ -145,8 +367,8 @@ const selectedNumber = ref(null); // Stores the number user selects
                     <button v-for="dashboard in uniqueDashboards" :key="dashboard.dashboard"
                         @click="selectLottery(dashboard)" class="lottery-button lottery-b">
                         {{ dashboard.dashboard }}
+                        <!-- {{ dashboard.id }} -->
                     </button>
-
                 </div>
             </div>
         </div>
@@ -162,7 +384,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-
                     <!-- Modal Body -->
                     <div class="modal-body text-center p-4">
                         <i class="fas fa-exclamation-circle text-danger fs-1 mb-3"></i>
@@ -173,7 +394,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                             Please make a settlement to continue.
                         </p>
                     </div>
-
                     <!-- Modal Footer -->
                     <div class="modal-footer justify-content-center border-0 pb-4">
                         <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
@@ -192,7 +412,8 @@ const selectedNumber = ref(null); // Stores the number user selects
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                            <div v-for="ticket in selectedLotteryDetails" :key="ticket.draw_number"
+                            <!-- Loop through paginated tickets -->
+                            <div v-for="ticket in paginatedTickets" :key="ticket.draw_number"
                                 class="border rounded-lg p-4 relative">
                                 <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
@@ -201,9 +422,8 @@ const selectedNumber = ref(null); // Stores the number user selects
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
-
+                                        <span style="font-size: 12px;">{{ ticket.id }}</span>
                                     </div>
-
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
                                         <span style="font-size: 12px;">{{ ticket.date }}</span>
@@ -213,7 +433,6 @@ const selectedNumber = ref(null); // Stores the number user selects
                                         <span class="fw-bold" style="font-size: 12px;">Prize</span>
                                         <span style="font-size: 12px;">{{ ticket.price }}</span>
                                     </div>
-
                                     <div id="countdown" class="countdown mt-3">
                                         ⏳
                                         <span v-if="!countdowns[ticket.draw_number]?.expired">
@@ -225,22 +444,81 @@ const selectedNumber = ref(null); // Stores the number user selects
                                         <span v-else class="text-red-500">Time's up!</span>
                                     </div>
                                 </div>
-
                                 <!-- Number Buttons -->
                                 <div class="mt-4">
                                     <h3 class="text-sm font-semibold">Pick a Number</h3>
                                     <div class="grid grid-cols-6 gap-3 mt-4">
-                                        <div v-for="number in Array.from({ length: 100 }, (_, i) => i + 1)"
-                                            :key="number" :class="{
-                                                'bg-gray-100': !pickedNumbers.includes(number),
-                                                'bg-gray-400 cursor-not-allowed': pickedNumbers.includes(number)
-                                            }"
-                                            @click="!pickedNumbers.includes(number) && pickNumber(number, ticket.dashboard_id)"
-                                            class="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-300">
-                                            {{ formatNumber(number) }}
+                                        <div v-for="number in storedNumbers" :key="number" :class="{
+                                            'bg-gray-100 cursor-pointer hover:bg-gray-300': !isNumberPicked(number, ticket.id),
+                                            'bg-gray-400 cursor-not-allowed opacity-50': isNumberPicked(number, ticket.id)
+                                        }" @click="!isNumberPicked(number, ticket.id) && confirmPickNumber(number, ticket.id)"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full">
+                                            {{ number }}
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <div class="mt-6 flex justify-center">
+                            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                                class="px-4 py-2 bg-blue-500 text-white rounded">
+                                Prev
+                            </button>
+                            <span class="px-4 py-2">{{ currentPage }} / {{ totalPages }}</span>
+                            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                                class="px-4 py-2 bg-blue-500 text-white rounded">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Confirmation Modal -->
+                    <div v-if="showConfirmModal" class="modal-overlay">
+                        <div class="modal-container">
+                            <h3 class="modal-title">Confirm Number Pick</h3>
+                            <p>Are you sure you want to pick number {{ numberToPick }}?</p>
+                            <div class="button-row">
+                                <button @click="showConfirmModal = false" class="cancel-button">Cancel</button>
+                                <button @click="pickNumberConfirmed" class="confirm-button">Yes, Pick</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
+                        <div
+                            class="winning-chances mt-6 flex flex-col sm:flex-row justify-between items-center p-4 bg-white rounded-lg shadow-md">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Winning Chances</p>
+                                <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
+                                    <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 100%;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-4 sm:mt-0 text-left">
+                            <div class="allocated-numbers mt-4 sm:mt-0 text-left mx-3">
+                                <p class="text-sm text-gray-500">
+                                    Allocated Numbers:
+                                    <span class="text-blue-500">{{pickedNumbers.map(picked => picked.number).join(', ')
+                                        }}</span>
+
+                                </p>
+                            </div>
+
+                            <div class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
+                                <span class="text-lg font-bold text-white">USD {{ totalPrice }}</span>
+
+                                <button type="button" class="font-bold text-white rounded-lg ml-4"
+                                    @click="deletePickedNumbers">
+                                    Cancel
+                                </button>
+
+                                <button @click="checkout" class="font-bold text-white rounded-lg ml-4">Checkout</button>
+
+
                             </div>
                         </div>
                     </div>
@@ -248,18 +526,55 @@ const selectedNumber = ref(null); // Stores the number user selects
             </div>
         </div>
 
-
-        <div v-if="pickedNumbers.length > 0">
-            <h3 class="text-lg font-bold">Picked Numbers</h3>
-            <ul>
-                <li v-for="number in pickedNumbers" :key="number">{{ number }}</li>
-            </ul>
-        </div>
-
     </AuthenticatedLayout>
 </template>
-
 <style>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    /* Prevents clicking */
+    opacity: 0.5;
+    /* Optional: Makes it look visually disabled */
+}
+
 /* Modal Overlay */
 .modal-overlay {
     position: fixed;

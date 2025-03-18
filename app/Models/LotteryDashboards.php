@@ -22,21 +22,25 @@ class LotteryDashboards extends Model
         'draw',
         'draw_number',
         'winning_numbers',
+        'status',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    // public function lottery()
-    // {
-    //     return $this->belongsTo(Lottery::class);
-    // }
+
     public function lottery()
     {
         return $this->belongsTo(Lotteries::class, 'lottery_id');
     }
 
-    public function pickedNumbers(){
+    public function pickedNumbers()
+    {
         return $this->hasMany(PickedNumber::class);
     }
+    // In LotteryDashboards.php model
+    public function winners()
+{
+    return $this->hasMany(Winner::class, 'lottery_dashboard_id'); 
+}
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use the;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use App\Jobs\PickNumberJob;
@@ -33,8 +35,8 @@ class LotteryDashboardController extends Controller
     public function store(Request $request)
     {
         try {
-
             Log::info($request);
+
             // Validate the incoming data
             $validated = $request->validate([
                 'price' => 'required|numeric',
@@ -45,40 +47,48 @@ class LotteryDashboardController extends Controller
                 'dashboard' => 'required|string',
             ]);
 
+            // Calculate the start date
+            $startDate = Carbon::parse($validated['date']);
+            $drawNumber = $validated['drawNumber'];
+
             // Generate the winning numbers (00, 01, 02, ..., 99)
             $winningNumbers = $this->generateWinningNumbers();
 
-            // Create a new Lottery Dashboard record in the database
-            $dashboard = LotteryDashboards::create([
-                'price' => $validated['price'],
-                'date' => $validated['date'],
-                'draw' => $validated['draw'],
-                'draw_number' => str_pad($validated['drawNumber'], 3, '0', STR_PAD_LEFT),
-                'winning_numbers' => json_encode($winningNumbers),
-                'lottery_id' => $validated['lottery_id'],
-                'dashboard' => $validated['dashboard']
-            ]);
+            // Create 10 dashboards (1 for the current day and 9 for the next 9 days)
+            $dashboards = [];
+            for ($i = 0; $i < 10; $i++) {
+                $currentDate = $startDate->addDay(); // Increment the date for the next day
+                $dashboards[] = LotteryDashboards::create([
+                    'price' => $validated['price'],
+                    'date' => $currentDate->toDateString(),  // Convert to a date string format (YYYY-MM-DD)
+                    'draw' => $drawNumber,
+                    'draw_number' => str_pad($drawNumber++, 3, '0', STR_PAD_LEFT),
+                    'winning_numbers' => json_encode($winningNumbers),
+                    'lottery_id' => $validated['lottery_id'],
+                    'dashboard' => $validated['dashboard'],
+                    'status' => 'active',
+                ]);
+            }
 
-            // Return the response
+            // Return the response with created dashboards
             return response()->json([
-                'message' => 'Dashboard created successfully!',
-                'dashboard' => $dashboard,
+                'message' => 'Dashboards created successfully!',
+                'dashboards' => $dashboards,
             ], 201);
         } catch (\Exception $e) {
-            // Log the error details to the log file
-            Log::error('Error creating Lottery Dashboard:', [
+            // Log the error details
+            Log::error('Error creating Lottery Dashboards:', [
                 'error_message' => $e->getMessage(),
                 'error_stack' => $e->getTraceAsString(),
-                'request_data' => $request->all(), // Optionally log the request data
+                'request_data' => $request->all(),
             ]);
 
             // Return a response with the error
             return response()->json([
-                'message' => 'There was an error creating the dashboard. Please try again later.',
+                'message' => 'There was an error creating the dashboards. Please try again later.',
             ], 500);
         }
     }
-
 
     private function generateWinningNumbers()
     {
@@ -88,26 +98,4 @@ class LotteryDashboardController extends Controller
         }
         return $numbers;
     }
-
-
-    public function pickNumber(Request $request)
-    {
-        $validated = $request->validate([
-            'number' => 'required',
-            'lottery_dashboard_id' => 'required|exists:lottery_dashboards,id',
-        ]);
-
-
-        Log::info("Dispatching PickNumberJob: Number = {$validated['number']}, Lottery ID = {$validated['lottery_dashboard_id']}, User ID = " . Auth::id());
-       
-        
-        PickNumberJob::dispatch($validated['number'], $validated['lottery_dashboard_id'] ,Auth::id());
-
-
-
-        
-
-        return response()->json(['message' => 'Number picked successfully']);
-    }
-    
 }

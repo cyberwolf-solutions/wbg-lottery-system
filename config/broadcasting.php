@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'default' => env('BROADCAST_DRIVER', 'database'),
+    'default' => env('BROADCAST_DRIVER', 'pusher'),
 
     'connections' => [
         'pusher' => [
@@ -13,6 +13,12 @@ return [
                 'cluster' => env('PUSHER_APP_CLUSTER', 'mt1'),
                 'useTLS' => true,
             ],
+        ],
+
+        'database' => [
+            'driver' => 'database',
+            'connection' => env('DB_CONNECTION', 'mysql'),
+            'table' => 'jobs',
         ],
 
         'log' => [

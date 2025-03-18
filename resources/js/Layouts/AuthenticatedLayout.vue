@@ -79,6 +79,7 @@ onMounted(fetchLotteries);
                                     prizes
                                 </NavLink>
 
+
                                 <NavLink :href="route('terms')" :active="route().current('terms')">
                                     Terms & conditions
                                 </NavLink>

@@ -7,7 +7,6 @@
                 <!-- Top Navbar Section -->
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Transactions</h2>
-
                 </div>
 
                 <!-- Lottery Table Section -->
@@ -18,27 +17,22 @@
                             <tr>
                                 <th>User</th>
                                 <th>Date</th>
-                                <th>Ammount</th>
-                              
-                                
+                                <th>Amount</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.price }}</td>
-                            
-                               
+                            <tr v-for="(credits, index) in credits" :key="index">
+                                <td><a href="#">{{ credits.wallet.user.name }}</a></td>
+                                <td>{{ credits.withdrawal_date }}</td>
+                                <td>{{ credits.amount }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
-                
             </div>
         </div>
-
         <router-view />
     </div>
 </template>
@@ -50,34 +44,30 @@ export default {
     components: {
         Sidebar,
     },
+    mounted() {
+        console.log(this.withdrawals);
+        console.log(this.credits);
+    },
+    props: {
+        withdrawals: Array,
+        credits: Array
+    },
     data() {
         return {
             isSidebarVisible: true,
             isModalOpen: false,
             isEditModalOpen: false,
             isDeleteModalOpen: false,
-            dashboards: [
-                { id: 1, name: 'User 1', price: '$10', date: '2025-02-05', draw: '1', attachment: '001' },
-                { id: 2, name: 'User 2', price: '$20', date: '2025-02-05', draw: '2', attachment: '002' },
-                { id: 3, name: 'User 3', price: '$50', date: '2025-02-05', draw: '3', attachment: '003' },
-            ],
-            newDashboard: {
-                price: '',
-                date: '',
-                draw: '',
-                drawNumber: '',
-            },
-            editingDashboard: {},
         };
     },
     methods: {
         handleSidebarToggle(isVisible) {
-      this.isSidebarVisible = isVisible;
-    },
-        
+            this.isSidebarVisible = isVisible;
+        },
     },
 };
 </script>
+
 
 <style scoped>
 #app.dark-theme {

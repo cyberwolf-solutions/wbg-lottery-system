@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('winners', function (Blueprint $table) {
+        Schema::create('wallet_address', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('address');
         });
     }
 
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('winners');
+        Schema::dropIfExists('wallet_address');
     }
 };

@@ -1,18 +1,24 @@
 <template>
+
+    <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+        <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+            {{ responseMessage }}
+        </div>
+    </div>
+
+
     <div id="app" class="d-flex dark-theme">
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
-            <!-- Dashboard Widgets -->
             <div class="dashboard-banner">
-                <!-- Top Navbar Section -->
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Lottery</h2>
-                    <h2 class="lottery-name fw-bold text-danger">Misco</h2>
+                    <h2 class="lottery-name fw-bold text-danger">{{ lottery.name }}</h2>
                 </div>
 
-                <!-- Lottery Table Section -->
-                <div class="lottery-table">
-                    <h3 class="mt-4">Lottery Winners:</h3>
+                <!-- Loop through grouped winners and display them in separate tables -->
+                <div v-for="(group, dashboardName) in winners" :key="dashboardName" class="lottery-table">
+                    <h3 class="mt-4">{{ dashboardName }} Winners:</h3>
                     <table>
                         <thead>
                             <tr>
@@ -23,105 +29,58 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.name }}</a></td>
-                                <td>
-                                    {{ dashboard.date }}
-                                </td>
-                                <td>
-                                    {{ dashboard.draw }}
-                                </td>
-                                <td>
-                                    {{ dashboard.price }}
-                                </td>
-
+                            <tr v-for="(winner, index) in group" :key="index">
+                                <td><a href="#">{{ winner.user ? winner.user.name : 'N/A' }}</a></td>
+                                <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.date : 'N/A' }}</td>
+                                <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.draw_number : 'N/A' }}</td>
+                                <td>{{ winner.lottery_dashboard ? winner.price : 'N/A' }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
-                
-
-                
-
-                
             </div>
         </div>
-
         <router-view />
     </div>
 </template>
 
+
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
+import { ref } from 'vue';
 
 export default {
     components: {
         Sidebar,
     },
+    props: {
+        winners: Object,
+        lottery: Array
+    },
     data() {
         return {
             isSidebarVisible: true,
-            isModalOpen: false,
-            isEditModalOpen: false,
-            isDeleteModalOpen: false,
-            dashboards: [
-                { id: 1, name: 'Winner 1', price: '$10', date: '2025-02-05', draw: '1', drawNumber: '001' },
-                { id: 2, name: 'Winner 2', price: '$20', date: '2025-02-05', draw: '2', drawNumber: '002' },
-                { id: 3, name: 'Winner 3', price: '$50', date: '2025-02-05', draw: '3', drawNumber: '003' },
-            ],
-            newDashboard: {
-                price: '',
-                date: '',
-                draw: '',
-                drawNumber: '',
-            },
-            editingDashboard: {},
+            responseMessage: ref(null),  // Use `ref` to make this reactive
+            responseClass: ref('bottom-response'),
         };
     },
     methods: {
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
-        openModal() {
-            this.isModalOpen = true;
+        showResponse(message, position = 'bottom') {
+            this.responseMessage = message;
+            this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                this.responseMessage = null;
+            }, 3000);
         },
-        closeModal() {
-            this.isModalOpen = false;
-        },
-        createDashboard() {
-            this.dashboards.push({ ...this.newDashboard, id: this.dashboards.length + 1 });
-            this.closeModal();
-        },
-        editDashboard(dashboard) {
-            this.editingDashboard = { ...dashboard };
-            this.isEditModalOpen = true;
-        },
-        closeEditModal() {
-            this.isEditModalOpen = false;
-        },
-        updateDashboard() {
-            const index = this.dashboards.findIndex(d => d.id === this.editingDashboard.id);
-            if (index !== -1) {
-                this.dashboards.splice(index, 1, this.editingDashboard);
-            }
-            this.closeEditModal();
-        },
-        confirmDelete(dashboard) {
-            this.editingDashboard = dashboard;
-            this.isDeleteModalOpen = true;
-        },
-        closeDeleteModal() {
-            this.isDeleteModalOpen = false;
-        },
-        deleteDashboard() {
-            this.dashboards = this.dashboards.filter(d => d.id !== this.editingDashboard.id);
-            this.closeDeleteModal();
-        },
+
     },
 };
 </script>
-
 <style scoped>
 #app.dark-theme {
     background-color: #121212;

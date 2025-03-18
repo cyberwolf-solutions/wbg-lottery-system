@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->unique();
             $table->string('image');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // Assuming 'users' table exists
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade'); // Assuming 'users' table exists
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade'); // Nullable for cases where no update happens yet
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('cascade'); // Nullable for soft deletes
             $table->softDeletes(); // Enable soft delete
