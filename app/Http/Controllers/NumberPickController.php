@@ -73,6 +73,11 @@ class NumberPickController extends Controller
 
 
         $user = Auth::user();
+        $wallet = $user->wallet; 
+
+        if (!$wallet) {
+            return response()->json(['message' => 'Wallet not found'], 400);
+        }
 
         // Check if number is already allocated
         $alreadyPicked = PickedNumber::where('picked_number', $validated['number'])
@@ -113,7 +118,7 @@ class NumberPickController extends Controller
                 'draw_number' => $dashboard->draw_number,
                 'winning_numbers' => $dashboard->winning_numbers,
                 'status' => 'active',
-                
+
             ]);
 
             return response()->json([
@@ -146,14 +151,18 @@ class NumberPickController extends Controller
             return response()->json(['message' => 'Wallet not found'], 400);
         }
 
+        
+
 
         $numbers = $request->input('numbers', []);
         $lotteryId = $request->input('lottery_id');
 
         $totalPrice = $request->input('total_price');
 
+        
 
-        // Log::debug('Cart data: ', ['numbers' => $numbers, 'lottery_id' => $lotteryId, 'dashboard_id' => $dashboardId, 'total_price' => $totalPrice]);
+
+        Log::debug('Cart data: ', ['numbers' => $numbers, 'lottery_id' => $lotteryId,  'total_price' => $totalPrice]);
 
 
         if (empty($numbers)) {
@@ -172,19 +181,25 @@ class NumberPickController extends Controller
         if ($wallet->available_balance < $totalPrice) {
             return response()->json(['message' => 'Insufficient balance'], 400);
         }
-
+        Log::debug('wallet reducing');
 
         $wallet->decrement('available_balance', $totalPrice);
 
-
+        Log::debug('Entering foreach loop');
         // Loop through the numbers array
         foreach ($request->input('numbers') as $numberData) {
-            // Access the dashboard_id from each individual number entry
-            $dashboardId = $numberData['dashboard_id'];  // This is correct
+            $dashboardId = $numberData['dashboard_id'];
 
-            // Now dispatch the job with the correct values
+            Log::debug('Dispatching PickNumberJob', [
+                'number' => $numberData['number'],
+                'dashboard_id' => $dashboardId,
+                'lottery_id' => $lotteryId,
+                'user_id' => $user->id
+            ]);
+
             PickNumberJob::dispatch($numberData['number'], $dashboardId, $lotteryId, $user->id);
         }
+
 
 
         session()->forget('cart');

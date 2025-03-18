@@ -68,6 +68,9 @@ Route::middleware(['web'])->group(function () {
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet/request', [WalletCOntroller::class, 'request'])->name('wallet.request');
     Route::post('/wallet/withdraw', [WalletCOntroller::class, 'withdraw'])->name('wallet.withdraw');
+
+    Route::get('/picked-numbers/{dashboardId}', [LotteriesController::class, 'getPickedNumbers']);
+
 });
 
 

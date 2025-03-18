@@ -10,6 +10,13 @@
                     <h2 class="lottery-name fw-bold text-danger">Results</h2>
                 </div>
 
+                <div v-if="responseMessage" :class="responseClass" class="fixed w-full p-4 text-center z-50">
+                    <div class="bg-blue-500 text-white p-3 rounded-lg shadow-md">
+                        {{ responseMessage }}
+                    </div>
+                </div>
+
+
                 <!-- Lottery Results Form -->
                 <div class="lottery-form">
                     <h3 class="mt-4">Add Lottery Results:</h3>
@@ -35,7 +42,7 @@
                                     <select id="dashboardSelect" v-model="newResult.dashboard" class="form-control">
                                         <!-- Loop through the dashboards based on selected lottery -->
                                         <option v-for="(dashboard, index) in filteredDashboards" :key="index"
-                                            :value="dashboard.draw_number">
+                                            :value="dashboard.id">
                                             {{ dashboard.draw_number }}
                                         </option>
                                     </select>
@@ -56,8 +63,7 @@
                                 <div class="form-group">
                                     <label for="price">Winning Number:</label>
                                     <input type="number" id="number" v-model="newResult.winning_number"
-                                        class="form-control" min="0" max="99"
-                                        @input="validateWinningNumber" />
+                                        class="form-control" min="0" max="99" @input="validateWinningNumber" />
                                 </div>
 
                             </div>
@@ -110,6 +116,7 @@
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
 import axios from 'axios';
+import { ref } from 'vue'; 
 
 export default {
     components: {
@@ -123,6 +130,9 @@ export default {
                 dashboard: null,
                 price: 70,
             },
+
+            responseMessage: ref(null),  
+            responseClass: ref('bottom-response'),
         };
     },
     props: {
@@ -141,6 +151,19 @@ export default {
         console.log(this.results);
     },
     methods: {
+
+
+        showResponse(message, position = 'bottom') {
+            this.responseMessage = message;
+            this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                this.responseMessage = null;
+            }, 3000);
+        },
+
+
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
@@ -156,7 +179,7 @@ export default {
 
                 if (response.data.success) {
                     console.log('Result added successfully');
-                    alert('Results Added');
+                    this.showResponse('Result Added', 'bottom'); 
                     location.reload();
                 }
             } catch (error) {
@@ -179,6 +202,45 @@ export default {
 
 
 <style scoped>
+.top-response {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bottom-response {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
+    z-index: 999;
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.text-white {
+    color: white;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;
