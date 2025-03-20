@@ -71,7 +71,9 @@ import { Head } from '@inertiajs/vue3';
                                     <tr>
                                         <th class="py-2">Draw Number</th>
                                         <th class="py-2">Date</th>
+                                        <th class="py-2">Lottery</th>
                                         <th class="py-2">Numbers Picked</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -81,6 +83,9 @@ import { Head } from '@inertiajs/vue3';
                                         </td>
                                         <td class="border px-4 py-2 text-center">
                                             {{ purchase.lottery_dashboard?.date || 'N/A' }}
+                                        </td>
+                                        <td class="border px-4 py-2 text-center">
+                                            {{ purchase.lottery_dashboard?.lottery.name || 'N/A' }}
                                         </td>
                                         <td class="border px-4 py-2 text-center">
                                             {{ purchase.picked_number || 'N/A' }}
@@ -100,6 +105,7 @@ import { Head } from '@inertiajs/vue3';
                         </div>
                     </div>
                 </div>
+                
             </div>
 
         </div>

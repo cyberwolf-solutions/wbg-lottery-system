@@ -36,18 +36,30 @@ class WalletController extends Controller
             ]);
         }
 
-        $winnings = Winner::with('lottery', 'lotteryDashboard') // Eager load related models
-        ->where('user_id', Auth::id()) // Filter by authenticated user's ID
-        ->get();
+        $winnings = Winner::with('lottery', 'lotteryDashboard')
+            ->where('user_id', Auth::id())
+            ->get();
 
         // dd($winnings);
 
 
 
-        $transaction = Transaction::with('lottery', 'lotteryDashboard')->get();
-        $withdrawal = Withdrawal::all();
+        $transaction = Transaction::with('lottery', 'lotteryDashboard')
+            ->whereHas('wallet', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->get();
 
-        $deposit = Deposit::all();
+
+        $withdrawal = Withdrawal::whereHas('wallet', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+            ->get();
+
+        $deposit = Deposit::whereHas('wallet', function ($query) {
+            $query->where('user_id', Auth::id());
+        })->get();
+        // dd($deposit);
 
         $bank = Bank::all();
         $walletAddress = WalletAdress::all();
@@ -62,7 +74,7 @@ class WalletController extends Controller
             'deposit' => $deposit,
             'bank' => $bank,
             'walletAddress' => $walletAddress,
-            'winnings'=>  $winnings
+            'winnings' =>  $winnings
         ]);
     }
 
@@ -125,7 +137,7 @@ class WalletController extends Controller
             'amount' => 'required|numeric',
             'reference' => 'required|string',
             'attachment' => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
-            'deposit_type'=>'string'
+            'deposit_type' => 'string'
         ]);
 
 
@@ -162,7 +174,7 @@ class WalletController extends Controller
             'deposit_date' => now(),
             'image' => $imagePath ?? null,
             'status' => 0,
-            
+
         ]);
 
         return response()->json(['message' => 'Deposit request submitted successfully'], 200);
@@ -207,7 +219,7 @@ class WalletController extends Controller
             'amount' => $request->amount,
             'status' => 0,
             'withdrawal_date' => now(),
-            'withdrawal_type'=>$request->withdrawal_type,
+            'withdrawal_type' => $request->withdrawal_type,
         ]);
         return response()->json(['message' => 'Withdraw request submitted successfully'], 200);
     }

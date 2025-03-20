@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Deposit;
 use App\Models\Withdrawal;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -49,9 +51,18 @@ class WithdrawalController extends Controller
             $wallet->save();
         }
 
+        Transaction::create([
+            'wallet_id' => $wallet->id,
+            'amount' => -$deposit->amount, 
+            'type' => 'Withdrawal',
+            'lottery_id' => null,
+            'lottery_dashboard_id' => null,
+            'transaction_date' => Carbon::now(),
+            'picked_number' => null
+        ]);
+
         return response()->json(['message' => 'Withdrawal approved successfully']);
     }
-
     public function decline(Request $request, $id)
     {
         $deposit = Withdrawal::findOrFail($id);

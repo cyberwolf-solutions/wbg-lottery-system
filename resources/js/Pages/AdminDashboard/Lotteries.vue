@@ -71,7 +71,19 @@
 
               <div class="form-group">
                 <label for="dashboard">Dashboard Name:</label>
-                <input type="text" v-model="newDashboard.dashboard" id="dashboard" required />
+                <select v-model="newDashboard.dashboard" id="dashboard" class="form-control" required>
+                  <option value="$1 Dashboard">$1 Dashboard</option>
+                  <option value="$10 Dashboard">$10 Dashboard</option>
+                  <option value="$100 Dashboard">$100 Dashboard</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="dashboardType">Dashboard Type:</label>
+                <select v-model="newDashboard.dashboardType" id="dashboardType" class="form-control" required>
+                  <option value="First Digits">First Digits</option>
+                  <option value="Last Digits">Last Digits</option>
+                </select>
               </div>
 
               <div class="form-group">
@@ -165,13 +177,15 @@ export default {
       isEditModalOpen: false,
       isDeleteModalOpen: false,
       newDashboard: {
-        dashbard: '',
+        dashboard: '',
         price: '',
         date: '',
         draw: '',
         draw_number: '',
         lottery_id: '',
         id: '',
+        dashboardType: ''
+
       },
       editingDashboard: {},
       responseMessage: ref(null),  // Use `ref` to make this reactive
@@ -258,39 +272,39 @@ export default {
 
 <style scoped>
 .top-response {
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    position: fixed;
-    z-index: 999;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  position: fixed;
+  z-index: 999;
 }
 
 .bottom-response {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    position: fixed;
-    z-index: 999;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  position: fixed;
+  z-index: 999;
 }
 
 .bg-blue-500 {
-    background-color: #3b82f6;
+  background-color: #3b82f6;
 }
 
 .text-white {
-    color: white;
+  color: white;
 }
 
 .p-3 {
-    padding: 12px;
+  padding: 12px;
 }
 
 .rounded-lg {
-    border-radius: 8px;
+  border-radius: 8px;
 }
 
 .shadow-md {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 
