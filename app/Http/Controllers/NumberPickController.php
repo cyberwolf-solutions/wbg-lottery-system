@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Jobs\PickNumberJob;
+use App\Models\Transaction;
 use App\Models\PickedNumber;
 use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
@@ -73,7 +75,7 @@ class NumberPickController extends Controller
 
 
         $user = Auth::user();
-        $wallet = $user->wallet; 
+        $wallet = $user->wallet;
 
         if (!$wallet) {
             return response()->json(['message' => 'Wallet not found'], 400);
@@ -138,12 +140,8 @@ class NumberPickController extends Controller
 
     public function checkout(Request $request)
     {
-
-
-
-
         $user = Auth::user();
-        $wallet = $user->Wallet;
+        $wallet = $user->wallet;
 
         Log::debug('Request data:', $request->all());
 
@@ -151,61 +149,74 @@ class NumberPickController extends Controller
             return response()->json(['message' => 'Wallet not found'], 400);
         }
 
-        
-
-
         $numbers = $request->input('numbers', []);
         $lotteryId = $request->input('lottery_id');
-
         $totalPrice = $request->input('total_price');
 
-        
-
-
-        Log::debug('Cart data: ', ['numbers' => $numbers, 'lottery_id' => $lotteryId,  'total_price' => $totalPrice]);
-
+        Log::debug('Cart data: ', ['numbers' => $numbers, 'lottery_id' => $lotteryId, 'total_price' => $totalPrice]);
 
         if (empty($numbers)) {
             return response()->json(['message' => 'No numbers selected for checkout'], 400);
         }
 
-
         $calculatedTotalPrice = collect($numbers)->sum('price');
-
 
         if ($totalPrice != $calculatedTotalPrice) {
             return response()->json(['message' => 'Total price mismatch'], 400);
         }
 
-
         if ($wallet->available_balance < $totalPrice) {
             return response()->json(['message' => 'Insufficient balance'], 400);
         }
-        Log::debug('wallet reducing');
 
+        Log::debug('wallet reducing');
         $wallet->decrement('available_balance', $totalPrice);
 
         Log::debug('Entering foreach loop');
+
         // Loop through the numbers array
-        foreach ($request->input('numbers') as $numberData) {
+        foreach ($numbers as $numberData) {
             $dashboardId = $numberData['dashboard_id'];
+            $pickedNumber = $numberData['number'];
+            $amount = $numberData['price'];
+
+            Log::debug('Saving Transaction', [
+                'wallet_id' => $wallet->id,
+                'amount' => $amount,
+                'type' => 'transfer',
+                'lottery_id' => $lotteryId,
+                'lottery_dashboard_id' => $dashboardId,
+                'transaction_date' => Carbon::now(),
+                'picked_number' => $pickedNumber
+            ]);
+
+            // Save transaction
+            Transaction::create([
+                'wallet_id' => $wallet->id,
+                'amount' => $amount,
+                'type' => 'Number pick',
+                'lottery_id' => $lotteryId,
+                'lottery_dashboard_id' => $dashboardId,
+                'transaction_date' => Carbon::now(),
+                'picked_number' => $pickedNumber
+            ]);
 
             Log::debug('Dispatching PickNumberJob', [
-                'number' => $numberData['number'],
+                'number' => $pickedNumber,
                 'dashboard_id' => $dashboardId,
                 'lottery_id' => $lotteryId,
                 'user_id' => $user->id
             ]);
 
-            PickNumberJob::dispatch($numberData['number'], $dashboardId, $lotteryId, $user->id);
+            // Dispatch Job
+            PickNumberJob::dispatch($pickedNumber, $dashboardId, $lotteryId, $user->id);
         }
-
-
 
         session()->forget('cart');
 
         return response()->json(['message' => 'Checkout successful']);
     }
+
 
 
     public function cancel(Request $request)

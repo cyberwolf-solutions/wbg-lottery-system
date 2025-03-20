@@ -6,16 +6,12 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { VueReCaptcha } from 'vue-recaptcha-v3';
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-// app.use(useReCaptcha, {
-//     siteKey: '6LfREPQqAAAAAHiHpgRxp2pWCfkPeAkMAlnjBasJ',
-    
-// });
-// app.mount('#app');
 
-// axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 
 axios.defaults.withCredentials = true;
@@ -38,8 +34,8 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(useReCaptcha, {
-                siteKey: '6LfREPQqAAAAAHiHpgRxp2pWCfkPeAkMAlnjBasJ',
+            .use(VueReCaptcha, { 
+                siteKey: '6LfREPQqAAAAAHiHpgRxp2pWCfkPeAkMAlnjBasJ' 
             })
             .mount(el);
     },
@@ -47,7 +43,6 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
-
 
 
 // Reactive state to track selected numbers for each ticket

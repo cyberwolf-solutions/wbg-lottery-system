@@ -35,10 +35,13 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');;
+    // Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');
+    Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    //     ->name('login')->middleware('recaptcha');;
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login')->middleware('recaptcha');;
+        ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -70,7 +73,6 @@ Route::middleware(['web'])->group(function () {
     Route::post('/wallet/withdraw', [WalletCOntroller::class, 'withdraw'])->name('wallet.withdraw');
 
     Route::get('/picked-numbers/{dashboardId}', [LotteriesController::class, 'getPickedNumbers']);
-
 });
 
 
@@ -95,14 +97,14 @@ Route::middleware(['web'])->group(function () {
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-    
 
 
-  
-    
 
 
-    
+
+
+
+
 
     Route::get("/customers", function () {
         return Inertia::render("AdminDashboard/Customers");
@@ -186,17 +188,17 @@ Route::middleware(['web'])->group(function () {
             Route::post('/withdraw/decline/{id}', [WithdrawalController::class, 'decline']);
 
             //results and winners
-            Route::get('/results' , [ResultsController::class , 'index']);
-            Route::post('/results/store' , [ResultsController::class , 'store']);
-            Route::get('/adminWin/{id}' , [WinnersController::class , 'index']);
+            Route::get('/results', [ResultsController::class, 'index']);
+            Route::post('/results/store', [ResultsController::class, 'store']);
+            Route::get('/adminWin/{id}', [WinnersController::class, 'index']);
 
 
 
             //wallet history
-            Route::get('/walletHistory' , [WalletHistoryController::class , 'index']);
+            Route::get('/walletHistory', [WalletHistoryController::class, 'index']);
 
             //dashboard
-            Route::get('/api/admin/adminDash' , [AdminDashboardController::class , 'index']);
+            Route::get('/api/admin/adminDash', [AdminDashboardController::class, 'index']);
 
 
 

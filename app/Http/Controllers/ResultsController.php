@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use Inertia\Inertia;
+use App\Models\Wallet;
 use App\Models\Winner;
 use App\Models\Results;
 use App\Models\Lotteries;
+use App\Models\Transaction;
 use App\Models\PickedNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Lottery;
@@ -116,6 +119,22 @@ class ResultsController extends Controller
                     'user_id' => $pickedNumber->user_id,
                     'winning_number' => $pickedNumber->picked_number,
                     'price' => $winningPrice
+                ]);
+
+                $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
+
+                // Add winning amount to the wallet
+                $wallet->increment('available_balance', $winningPrice);
+
+                // Save the transaction for the winning amount
+                Transaction::create([
+                    'wallet_id' => $wallet->id,
+                    'amount' => $winningPrice,
+                    'type' => 'Winning',
+                    'lottery_id' => $validatedData['lottery_id'],
+                    'lottery_dashboard_id' => $validatedData['dashboard_id'],
+                    'transaction_date' => Carbon::now(),
+                    'picked_number' => $pickedNumber->picked_number
                 ]);
             }
 

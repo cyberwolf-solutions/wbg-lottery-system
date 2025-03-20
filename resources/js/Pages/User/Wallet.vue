@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';  // Make sure to import onMounted
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const isModalOpen = ref(false);
 const attachment = ref(null);
@@ -90,17 +91,14 @@ const handleRequest = async () => {
 // Handle withdraw request
 const handlewithdraw = async () => {
     if (!withdrawalAmount.value || withdrawalAmount.value <= 0) {
-        // alert("Please enter a valid withdrawal amount.");
         showResponse('Please enter a valid withdrawal amount.', 'bottom');
         return;
     }
 
     if (!depositType.value) {
-        // alert("Please add withdraw type.");
         showResponse('Please add withdraw type.', 'bottom');
         return;
     }
-
 
     const formData = new FormData();
     formData.append('wallet_id', props.wallet.id);
@@ -116,16 +114,18 @@ const handlewithdraw = async () => {
             },
         });
 
-        // alert("Withdrawal request submitted successfully!");
         showResponse('Withdrawal request submitted successfully!', 'bottom');
         console.log(response.data);
+        window.location.reload();
 
         // Close the modal after success
-        closeModal();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
+        if (modal) {
+            modal.hide();
+        }
     } catch (error) {
         console.error("Error submitting withdrawal request:", error);
-        // alert("Failed to submit withdrawal request.");
-        showResponse('Failed to submit withdrawal request.!', 'bottom');
+        showResponse('Failed to submit withdrawal request.', 'bottom');
     }
 };
 
@@ -404,9 +404,9 @@ onMounted(() => {
                                 <table class="min-w-full table-auto">
                                     <thead style="background-color: #60c8f2;">
                                         <tr>
-                                            <th
+                                            <!-- <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Lottery Name</th>
+                                                Lottery Name</th> -->
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Transaction Type</th>
@@ -417,6 +417,10 @@ onMounted(() => {
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Date
                                             </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Amount
+                                            </th>
 
                                         </tr>
                                     </thead>
@@ -424,15 +428,18 @@ onMounted(() => {
                                         <!-- Loop through transactions and display data -->
                                         <tr v-for="transaction in transactions" :key="transaction.id">
 
-                                            <td class="px-6 py-4 text-gray-800">{{ transaction.lottery.name }}</td>
+                                            <!-- <td class="px-6 py-4 text-gray-800">{{ transaction.lottery.name ? transaction.name : 'N/A'  }}</td> -->
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.type }}</td>
-                                            <td class="px-6 py-4 text-green-500 font-medium">{{
+                                            <td class="px-6 py-4 text-green-500 font-medium">
+                                                {{ transaction.picked_number === null ? transaction.type :
                                                 transaction.picked_number }}
                                             </td>
-                                            <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date }}
+
+                                            <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?
+                                                transaction.transaction_date : 'N/A' }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{
-                                                transaction.lotteryDashboard?.price
+                                                transaction.amount
                                             }}</td>
                                         </tr>
 
@@ -475,10 +482,13 @@ onMounted(() => {
                                             <td class="px-6 py-4 text-gray-600">{{ withdrawalItem.withdrawal_date }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">
-                                                {{ withdrawalItem.status === 0 ? 'Pending' : (withdrawalItem.status
-                                                    === 1 ?
-                                                    'Completed' : 'Declined') }}
+                                                {{
+                                                    withdrawalItem.status === 0 ? 'Pending' :
+                                                        (withdrawalItem.status === 1 ? 'Completed' : 'Declined: ' +
+                                                            withdrawalItem.decline_reason)
+                                                }}
                                             </td>
+
 
                                         </tr>
                                     </tbody>
@@ -506,12 +516,12 @@ onMounted(() => {
                                                 Date</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Description
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Status
                                             </th>
+                                            <!-- <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Status
+                                            </th> -->
 
                                         </tr>
                                     </thead>
@@ -522,12 +532,18 @@ onMounted(() => {
                                             class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">{{ depositItem.amount }}</td>
                                             <td class="px-6 py-4 text-gray-600">{{ depositItem.deposit_date }}</td>
-                                            <td class="px-6 py-4 text-gray-800">{{ depositItem.description }}</td>
                                             <td class="px-6 py-4 text-gray-800">
-                                                {{ depositItem.status === 0 ? 'Pending' : (depositItem.status
-                                                    === 1 ?
-                                                    'Completed' : 'Declined') }}
+                                                {{
+                                                    depositItem.status === 0 ? 'Pending' :
+                                                        (depositItem.status === 1 ? 'Completed' : 'Declined: ' + (
+                                                            depositItem.decline_reason))
+                                                }}
                                             </td>
+
+                                            <!-- <td class="px-6 py-4 text-gray-800">
+                                                {{ depositItem.status === 0 ? 'Pending' : (depositItem.status === 1 ?
+                                                    'Completed' : 'Declined') }}
+                                            </td> -->
                                         </tr>
 
 

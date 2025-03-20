@@ -18,13 +18,16 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');;
+    // Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');;
+    Route::post('register', [RegisteredUserController::class, 'store']);
 
     // Route::post('/login', function () {
     //     dd(request()->all());
     // });
+    // Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    //     ->name('login')->middleware('recaptcha');;
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login')->middleware('recaptcha');;
+        ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
