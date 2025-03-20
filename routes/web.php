@@ -23,7 +23,7 @@ Route::get('/', function () {
     return Inertia::render('LandingPage');
 })->name('landing');
 
-
+// Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])

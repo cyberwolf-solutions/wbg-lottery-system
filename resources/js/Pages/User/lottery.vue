@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -11,6 +11,9 @@ import Pusher from 'pusher-js';
 
 const responseMessage = ref(null);  // To hold the response message
 const responseClass = ref('bottom-response');  // Class for positioning (top/bottom)
+const countdownTime = ref(600); // 10 minutes in seconds
+const countdownInterval = ref(null);
+
 
 function showResponse(message, position = 'bottom') {
     responseMessage.value = message;
@@ -28,12 +31,31 @@ const authToken = localStorage.getItem('auth_token');
 console.log('Auth Token:', authToken);
 let checkoutTimeout;
 //call checkout function after 10 mins
-function startCheckoutTimer() {
-    checkoutTimeout = setTimeout(() => {
-        checkout();
-        // location.reload(); 
-    }, 600000);
+function startCountdownTimer() {
+    countdownInterval.value = setInterval(() => {
+        if (countdownTime.value > 0) {
+            countdownTime.value--;
+        } else {
+            clearInterval(countdownInterval.value);
+            checkout(); // Trigger checkout when time is up
+        }
+    }, 1000);
 }
+const formattedCountdown = computed(() => {
+    const minutes = Math.floor(countdownTime.value / 60);
+    const seconds = countdownTime.value % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+});
+onMounted(() => {
+    startCountdownTimer();
+});
+onUnmounted(() => {
+    if (countdownInterval.value) {
+        clearInterval(countdownInterval.value);
+    }
+});
+
+
 // Pagination variables
 const currentPage = ref(1);
 const itemsPerPage = ref(4); // Adjust as needed
@@ -178,7 +200,8 @@ function pickNumberConfirmed() {
 const props = defineProps({
     lotterie: Object,
     lotterydashboards: Array,
-    pickedNumbers: Array
+    pickedNumbers: Array,
+    wallet: Array
 });
 function isNumberPicked(number, dashboardId) {
     return props.pickedNumbers.some(picked =>
@@ -338,10 +361,25 @@ function deletePickedNumbers() {
 
 
 const selectedNumber = ref(null);
+
+
+
+
+const pickedPercentage = computed(() => {
+    const percentages = {};
+    selectedLotteryDetails.value.forEach(ticket => {
+        const totalNumbers = storedNumbers.value.length;
+        const pickedNumbersCount = props.pickedNumbers.filter(picked =>
+            picked.lottery_dashboard_id === ticket.id
+        ).length;
+        percentages[ticket.id] = ((pickedNumbersCount / totalNumbers) * 100).toFixed(2);
+    });
+    return percentages;
+});
 </script>
 
 <template>
-    
+
 
     <Head :title="props ? props.lotterie.name : 'Lottery'" />
     <AuthenticatedLayout>
@@ -362,7 +400,7 @@ const selectedNumber = ref(null);
         <!-- Modal -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-container">
-                <h3 class="modal-title">Select a Lottery</h3>
+                <h3 class="modal-title">Select a Dashboard</h3>
                 <div class="button-row">
                     <button v-for="dashboard in uniqueDashboards" :key="dashboard.dashboard"
                         @click="selectLottery(dashboard)" class="lottery-button lottery-b">
@@ -431,7 +469,16 @@ const selectedNumber = ref(null);
 
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Prize</span>
-                                        <span style="font-size: 12px;">{{ ticket.price }}</span>
+                                        <span style="font-size: 12px;">{{ ticket.price * 70 }}</span>
+
+                                    </div>
+                                    <div class="button-container">
+                                        <span class="fw-bold" style="font-size: 12px;">Picked Percentage</span>
+                                        <!-- <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                            <div class="bg-blue-500 h-2.5 rounded-full"
+                                                :style="{ width: pickedPercentage[ticket.id] + '%' }"></div>
+                                        </div> -->
+                                        <span style="font-size: 12px;">{{ pickedPercentage[ticket.id] }}%</span>
                                     </div>
                                     <div id="countdown" class="countdown mt-3">
                                         ⏳
@@ -503,7 +550,7 @@ const selectedNumber = ref(null);
                                 <p class="text-sm text-gray-500">
                                     Allocated Numbers:
                                     <span class="text-blue-500">{{pickedNumbers.map(picked => picked.number).join(', ')
-                                        }}</span>
+                                    }}</span>
 
                                 </p>
                             </div>
@@ -517,8 +564,22 @@ const selectedNumber = ref(null);
                                 </button>
 
                                 <button @click="checkout" class="font-bold text-white rounded-lg ml-4">Checkout</button>
+                                <br>
 
 
+
+                            </div>
+
+                            <div class="allocated-numbers mt-4 sm:mt-0 text-left mx-3">
+                                <span>Avalable balance : {{ wallet.available_balance }}</span>
+                                <p class="text-sm text-gray-500">
+                                    <b>Note</b> - You have <b>{{ formattedCountdown }}</b> minutes to checkout.<br> If
+                                    not
+                                    completed, the system will
+                                    <br>
+                                    auto-confirm your
+                                    selection and <br> proceed with booking
+                                </p>
                             </div>
                         </div>
                     </div>

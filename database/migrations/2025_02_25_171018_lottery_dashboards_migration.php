@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lottery_id')->constrained('lotteries')->onDelete('cascade'); // Foreign key to lotteries table
             $table->string('dashboard');
+            $table->string('dashboardType');
             $table->decimal('price', 10, 2); // Assuming price is a decimal
             $table->date('date'); // Lottery draw date
             $table->string('draw'); // Draw type (could be like 'first', 'second', etc.)
             $table->string('draw_number'); // Draw number or code
-            $table->json('winning_numbers'); // Winning numbers stored as JSON (e.g., ["00", "01", "02", ..., "99"])
+            $table->json('winning_numbers'); 
             $table->string('status')->default('active');
-            $table->softDeletes(); // Enable soft delete
-            $table->timestamps(); // Created at and updated at
+            $table->softDeletes(); 
+            $table->timestamps(); 
         });
     }
 
@@ -34,5 +35,3 @@ return new class extends Migration
         Schema::dropIfExists('lottery_dashboards');
     }
 };
-
-

@@ -97,7 +97,7 @@
                                     <td><a href="#">{{ result.dashboard.dashboard }}</a></td>
                                     <td>{{ result.dashboard.draw }}</td>
                                     <td>{{ result.dashboard.date }}</td>
-                                    <td>{{ result.dashboard.price }}</td>
+                                    <td>{{ result.dashboard.price * 70}}</td>
                                     <td>{{ result.winning_number }}</td>
                                 </tr>
                             </tbody>

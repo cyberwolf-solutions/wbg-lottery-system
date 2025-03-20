@@ -45,6 +45,7 @@ class LotteryDashboardController extends Controller
                 'drawNumber' => 'required|numeric',
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
+                'dashboardType'=>'required|string'
             ]);
 
             // Calculate the start date
@@ -67,6 +68,7 @@ class LotteryDashboardController extends Controller
                     'lottery_id' => $validated['lottery_id'],
                     'dashboard' => $validated['dashboard'],
                     'status' => 'active',
+                    'dashboardType' =>$validated['dashboardType']
                 ]);
             }
 

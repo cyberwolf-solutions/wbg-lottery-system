@@ -23,6 +23,7 @@ class GoogleController extends Controller
 
             if ($findUser) {
                 Auth::login($findUser);
+                
             } else {
                 $newUser = User::create([
                     'name' => $user->name,
