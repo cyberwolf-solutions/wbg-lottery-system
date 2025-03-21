@@ -28,12 +28,13 @@ const fetchLotteries = async () => {
 
 
 const fetchLotteryData = async (lotteryId) => {
-    // console.log("Fetching data for lottery ID:", lotteryId); // Debugging line
     try {
-        // Making the API call without processing the response
-        await axios.get(`/api/lottery/${lotteryId}`);
-        // Optionally, alert or log that the call was made
-        console.log(`API called for lottery ID: ${lotteryId}`);
+        
+        const response = await axios.get(`/api/lottery/${lotteryId}`);
+        console.log(`API called for lottery ID: ${lotteryId}`, response.data);
+
+        
+        window.location.href = `/api/lottery/${lotteryId}`; 
     } catch (error) {
         console.error("Error fetching lottery data:", error);
     }
@@ -122,12 +123,10 @@ onMounted(fetchLotteries);
                                             </template>
                                             <template #content>
                                                 <div v-for="lottery in lotteries" :key="lottery.id">
-                                                    
-                                                    <DropdownLink @click.prevent="fetchLotteryData(lottery.id)"
+                                                    <DropdownLink @click="fetchLotteryData(lottery.id)"
                                                         class="text-sm text-gray-700 hover:text-gray-900">
                                                         {{ lottery.name }}
                                                     </DropdownLink>
-
                                                 </div>
                                             </template>
                                         </Dropdown>

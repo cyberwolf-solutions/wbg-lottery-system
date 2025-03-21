@@ -37,6 +37,11 @@
                         </ul>
                     </transition>
                 </li>
+                <li class="nav-item">
+                    <button @click="logout" class="nav-link logout-btn" aria-label="Logout">
+                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -175,7 +180,23 @@ export default {
             } catch (error) {
                 console.error("Error fetching lottery data:", error);
             }
-        }
+        },
+        async logout() {
+            try {
+                
+                const response = await axios.post('/api/admin/logout');
+
+                
+                if (response.status === 200 && response.data.redirect_url) {
+                    
+                    window.location.href = response.data.redirect_url;
+                } else {
+                    console.error('Logout failed: Unexpected response', response);
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        },
 
 
 
@@ -190,6 +211,29 @@ export default {
 </script>
 
 <style scoped>
+.logout-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logout-btn {
+        text-align: center;
+    }
+}
+
+
+
 .sidebar {
     width: 250px;
     position: fixed;
