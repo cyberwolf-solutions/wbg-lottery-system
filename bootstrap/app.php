@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'recaptcha' => VerifyRecaptcha::class,
             'role'    => \App\Http\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'CspHeader' => \App\Http\Middleware\AddCspHeaders::class,
         ]);
         // Admin API
         $middleware->api(prepend: [
