@@ -75,70 +75,68 @@ class ResultsController extends Controller
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard_id' => 'required|exists:lottery_dashboards,id',
                 'winning_number' => 'required',
+                'draw_number' => 'required'
             ]);
-            Log::info('Storing lottery result', $request->all());
 
+            // Fetch all dashboards with the same draw number
+            $dashboards = LotteryDashboards::where('draw_number', $validatedData['draw_number'])->get();
 
-            // Check if the result already exists
-            $existingResult = Results::where('lottery_id', $validatedData['lottery_id'])
-                ->where('dashboard_id', $validatedData['dashboard_id'])
-                ->where('winning_number', $validatedData['winning_number'])
-                ->first();
+            foreach ($dashboards as $dashboard) {
+                // Check if the result already exists for this dashboard
+                $existingResult = Results::where('lottery_id', $validatedData['lottery_id'])
+                    ->where('dashboard_id', $dashboard->id)
+                    ->where('winning_number', $validatedData['winning_number'])
+                    ->first();
 
-            if ($existingResult) {
-                Log::warning('Duplicate result attempted', $validatedData);
-                return response()->json(['success' => false, 'message' => 'This result already exists'], 409);
+                if (!$existingResult) {
+                    // Add result to this dashboard
+                    Results::create([
+                        'lottery_id' => $validatedData['lottery_id'],
+                        'dashboard_id' => $dashboard->id,
+                        'winning_number' => (string) $validatedData['winning_number'],
+                    ]);
+                }
+
+                // Fetch picked numbers for the current dashboard and lottery
+                $pickedNumbers = PickedNumber::where('lottery_id', $validatedData['lottery_id'])
+                    ->where('lottery_dashboard_id', $dashboard->id)
+                    ->where('picked_number', $validatedData['winning_number'])
+                    ->get();
+
+                $winningPrice = $dashboard->price * 70;
+
+                // Store winners and update wallets
+                foreach ($pickedNumbers as $pickedNumber) {
+                    Winner::create([
+                        'lottery_id' => $pickedNumber->lottery_id,
+                        'lottery_dashboard_id' => $pickedNumber->lottery_dashboard_id,
+                        'user_id' => $pickedNumber->user_id,
+                        'winning_number' => $pickedNumber->picked_number,
+                        'price' => $winningPrice
+                    ]);
+
+                    $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
+
+                    // Add winning amount to the wallet
+                    $wallet->increment('available_balance', $winningPrice);
+
+                    // Save the transaction for the winning amount
+                    Transaction::create([
+                        'wallet_id' => $wallet->id,
+                        'amount' => $winningPrice,
+                        'type' => 'Winning',
+                        'lottery_id' => $validatedData['lottery_id'],
+                        'lottery_dashboard_id' => $dashboard->id,
+                        'transaction_date' => Carbon::now(),
+                        'picked_number' => $pickedNumber->picked_number
+                    ]);
+                }
             }
-            // Log::info("message" , $existingResult->all);
 
-            // Add results for all dashboards with the same winning number
-            Results::create([
+            Log::info('Results and winners added successfully', [
                 'lottery_id' => $validatedData['lottery_id'],
-                'dashboard_id' => $validatedData['dashboard_id'],
-                'winning_number' => (string) $validatedData['winning_number'],
+                'winning_number' => $validatedData['winning_number']
             ]);
-
-            // Fetch picked numbers for the current dashboard and lottery
-            $pickedNumbers = PickedNumber::where('lottery_id', $validatedData['lottery_id'])
-                ->where('lottery_dashboard_id', $validatedData['dashboard_id'])
-                ->where('picked_number', $validatedData['winning_number'])
-                ->get();
-
-            $lotteryDashboard = LotteryDashboards::find($validatedData['dashboard_id']);
-            if (!$lotteryDashboard) {
-                return response()->json(['success' => false, 'message' => 'Lottery dashboard not found'], 404);
-            }
-
-            $winningPrice = $lotteryDashboard->price * 70;
-
-            // Store winners
-            foreach ($pickedNumbers as $pickedNumber) {
-                Winner::create([
-                    'lottery_id' => $pickedNumber->lottery_id,
-                    'lottery_dashboard_id' => $pickedNumber->lottery_dashboard_id,
-                    'user_id' => $pickedNumber->user_id,
-                    'winning_number' => $pickedNumber->picked_number,
-                    'price' => $winningPrice
-                ]);
-
-                $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
-
-                // Add winning amount to the wallet
-                $wallet->increment('available_balance', $winningPrice);
-
-                // Save the transaction for the winning amount
-                Transaction::create([
-                    'wallet_id' => $wallet->id,
-                    'amount' => $winningPrice,
-                    'type' => 'Winning',
-                    'lottery_id' => $validatedData['lottery_id'],
-                    'lottery_dashboard_id' => $validatedData['dashboard_id'],
-                    'transaction_date' => Carbon::now(),
-                    'picked_number' => $pickedNumber->picked_number
-                ]);
-            }
-
-            Log::info('Results and winners added successfully', ['lottery_id' => $validatedData['lottery_id'], 'winning_number' => $validatedData['winning_number']]);
 
             return response()->json(['success' => true, 'message' => 'Results and winners added successfully']);
         } catch (Exception $e) {
