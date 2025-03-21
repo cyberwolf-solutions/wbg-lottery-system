@@ -9,7 +9,7 @@ class PickedNumber extends Model
     //
     protected $table = "picked_numbers";
 
-    protected $fillable = ['lottery_id','lottery_dashboard_id', 'user_id', 'picked_number','status'];
+    protected $fillable = ['lottery_id', 'lottery_dashboard_id', 'user_id', 'picked_number', 'status'];
 
 
     public function lottery()
@@ -21,6 +21,7 @@ class PickedNumber extends Model
     {
         return $this->belongsTo(LotteryDashboards::class, 'lottery_dashboard_id');
     }
+
 
     public function user()
     {

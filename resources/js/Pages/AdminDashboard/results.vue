@@ -170,11 +170,13 @@ export default {
 
         async addResult() {
             try {
+                const selectedDashboard = this.filteredDashboards.find(d => d.id === this.newResult.dashboard);
                 const response = await axios.post('/api/admin/results/store', {
                     lottery_id: this.newResult.lottery,
                     dashboard_id: this.newResult.dashboard,
                     winning_number: this.newResult.winning_number,
                     price: this.newResult.price,
+                    draw_number: selectedDashboard ? selectedDashboard.draw_number : null
                 });
 
                 if (response.data.success) {
