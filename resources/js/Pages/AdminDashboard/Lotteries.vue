@@ -91,6 +91,8 @@
                 <input type="number" v-model="newDashboard.price" id="price" required />
               </div>
 
+
+
               <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" v-model="newDashboard.date" id="date" required />
@@ -99,6 +101,11 @@
               <div class="form-group">
                 <label for="draw">Draw:</label>
                 <input type="text" v-model="newDashboard.draw" id="draw" required />
+              </div>
+
+              <div class="form-group">
+                <label for="draw">Color: (#code)</label>
+                <input type="text" v-model="newDashboard.color" id="draw" required />
               </div>
 
               <div class="form-group">
