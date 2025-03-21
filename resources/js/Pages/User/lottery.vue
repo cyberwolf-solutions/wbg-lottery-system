@@ -217,7 +217,9 @@ const selectedDashboardCount = computed(() => selectedLotteryDetails.value.lengt
 
 function selectLottery(dashboard) {
     selectedLottery.value = dashboard.dashboard;
-    selectedLotteryDetails.value = props.lotterydashboards.filter(d => d.dashboard === dashboard.dashboard);
+    selectedLotteryDetails.value = props.lotterydashboards.filter(d =>
+        d.dashboard === dashboard.dashboard && d.dashboardType === dashboard.dashboardType
+    );
     showModal.value = false;
     startCountdown();
 }
@@ -225,8 +227,9 @@ function selectLottery(dashboard) {
 const uniqueDashboards = computed(() => {
     const seen = new Set();
     return props.lotterydashboards.filter(dashboard => {
-        if (!seen.has(dashboard.dashboard)) {
-            seen.add(dashboard.dashboard);
+        const key = `${dashboard.dashboard}-${dashboard.dashboardType}`;
+        if (!seen.has(key)) {
+            seen.add(key);
             return true;
         }
         return false;
@@ -400,12 +403,12 @@ const pickedPercentage = computed(() => {
         <!-- Modal -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-container">
-                <h3 class="modal-title">Select a Dashboard</h3>
+                <h3 class="modal-title">Select a Lottery</h3>
                 <div class="button-row">
-                    <button v-for="dashboard in uniqueDashboards" :key="dashboard.dashboard"
-                        @click="selectLottery(dashboard)" class="lottery-button lottery-b">
-                        {{ dashboard.dashboard }}
-                        <!-- {{ dashboard.id }} -->
+                    <button v-for="dashboard in uniqueDashboards"
+                        :key="dashboard.dashboard + '-' + dashboard.dashboardType" @click="selectLottery(dashboard)"
+                        class="lottery-button lottery-b">
+                        {{ dashboard.dashboard }} | {{ dashboard.dashboardType }}
                     </button>
                 </div>
             </div>
@@ -550,7 +553,7 @@ const pickedPercentage = computed(() => {
                                 <p class="text-sm text-gray-500">
                                     Allocated Numbers:
                                     <span class="text-blue-500">{{pickedNumbers.map(picked => picked.number).join(', ')
-                                    }}</span>
+                                        }}</span>
 
                                 </p>
                             </div>

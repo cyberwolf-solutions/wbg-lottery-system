@@ -11,9 +11,11 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
-class AdminAuthController extends Controller {
+class AdminAuthController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         return Inertia::render('AdminAuth/login', [
             'status' => session('status'),
         ]);
@@ -96,14 +98,15 @@ class AdminAuthController extends Controller {
     //     ], 200);
     // }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            $admin = Auth::guard('admin')->user(); // Get the authenticated admin
+            $admin = Auth::guard('admin')->user();
 
             return response()->json([
                 'admin' => $admin,
@@ -116,12 +119,30 @@ class AdminAuthController extends Controller {
     }
 
 
-    public function logout() {
-        Auth::guard('admin')->logout();
-        return redirect('/admin/login');
+
+
+    public function logout()
+    {
+        try {
+
+            Auth::guard('admin')->logout();
+
+
+            Log::info('Admin logged out successfully.');
+
+
+            return response()->json(['message' => 'Logged out successfully', 'redirect_url' => '/api/admin/login'], 200);
+        } catch (\Exception $e) {
+
+            Log::error('Logout failed: ' . $e->getMessage());
+
+
+            return response()->json(['message' => 'Logout failed. Please try again.'], 500);
+        }
     }
 
-    public function checkAuth(Request $request) {
+    public function checkAuth(Request $request)
+    {
         $token = $request->cookie('admin_token');
         Log::info("Checking auth, received token: " . ($token ?? 'No token'));
 
