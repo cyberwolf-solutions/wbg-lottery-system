@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Wallet;
 use App\Models\Winner;
@@ -16,6 +17,7 @@ use Illuminate\Support\Lottery;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Notifications\WinnerNotification;
 
 class ResultsController extends Controller
 {
@@ -130,6 +132,23 @@ class ResultsController extends Controller
                         'transaction_date' => Carbon::now(),
                         'picked_number' => $pickedNumber->picked_number
                     ]);
+
+                    $user = User::find($pickedNumber->user_id);
+                    $lottery = Lotteries::find($validatedData['lottery_id']);
+                    Log::info('User and lottery fetched', ['user' => $user, 'lottery' => $lottery]);
+    
+                    if ($user) {
+                        $user->notify(new WinnerNotification(
+                            $lottery->name,
+                            $pickedNumber->picked_number,
+                            $dashboard->draw_number,
+                            $winningPrice
+                        ));
+                        Log::info('Notification sent to user', ['user_id' => $user->id]);
+                    } else {
+                        Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
+                    }
+
                 }
             }
 

@@ -73,6 +73,11 @@ Route::middleware(['web'])->group(function () {
     Route::post('/wallet/withdraw', [WalletCOntroller::class, 'withdraw'])->name('wallet.withdraw');
 
     Route::get('/picked-numbers/{dashboardId}', [LotteriesController::class, 'getPickedNumbers']);
+
+    // routes/api.php
+    Route::get('/notifications', function (Request $request) {
+        return response()->json($request->user()->notifications);
+    })->middleware('auth:sanctum');
 });
 
 
