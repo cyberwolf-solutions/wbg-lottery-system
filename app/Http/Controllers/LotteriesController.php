@@ -34,15 +34,8 @@ class LotteriesController extends Controller
         Log::info($lotteries);
 
 
-
-        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)
-            ->where('status', 'active')
-            ->get()
-            ->groupBy('dashboard')
-            ->map(function ($group) {
-                return $group->take(10);
-            })
-            ->collapse();
+        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)->get();
+        // dd($lotterydashboards);
 
         $dashboardTypes = LotteryDashboards::where('lottery_id', $id)
             ->where('status', 'active')
@@ -51,7 +44,10 @@ class LotteriesController extends Controller
             ->values();
 
 
-// dd($dashboardTypes);
+
+
+
+        // dd($dashboardTypes);
         $pickedNumbers = PickedNumber::whereIn('lottery_dashboard_id', $lotterydashboards->pluck('id'))
             ->get()
             ->map(function ($item) {
@@ -71,7 +67,7 @@ class LotteriesController extends Controller
             'lotterydashboards' => $lotterydashboards,
             'pickedNumbers' => $pickedNumbers,
             'wallet' => $wallet,
-            'dashboardTypes' => $dashboardTypes, 
+            'dashboardTypes' => $dashboardTypes,
             'status' => session('status'),
         ]);
     }

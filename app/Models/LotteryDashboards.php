@@ -41,7 +41,7 @@ class LotteryDashboards extends Model
     }
     // In LotteryDashboards.php model
     public function winners()
-{
-    return $this->hasMany(Winner::class, 'lottery_dashboard_id'); 
-}
+    {
+        return $this->hasMany(Winner::class, 'lottery_dashboard_id');
+    }
 }

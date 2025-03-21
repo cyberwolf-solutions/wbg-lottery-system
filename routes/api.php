@@ -198,7 +198,10 @@ Route::middleware(['web'])->group(function () {
             Route::get('/walletHistory', [WalletHistoryController::class, 'index']);
 
             //dashboard
-            Route::get('/api/admin/adminDash', [AdminDashboardController::class, 'index']);
+            Route::get('/adminDash', [AdminDashboardController::class, 'index']);
+
+            //admin logout
+            Route::post('/logout', [AdminAuthController::class, 'logout']);
 
 
 
