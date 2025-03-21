@@ -27,7 +27,8 @@
                                 <td>{{ dashboard.dashboard }}</td>
                                 <td>{{ dashboard.draw_number }}</td>
                                 <td>{{ dashboard.date }}</td>
-                                <td>{{ calculatePercentage() }}%</td> <!-- Displaying calculated percentage -->
+                                <td>{{ calculatePercentage(dashboard.id) }}%</td>
+
                                 <td>
                                     <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
                                         <i class="bi bi-eye"></i>
@@ -52,10 +53,10 @@
                 <h3>Picked Numbers</h3>
                 <div class="number-grid">
                     <button v-for="num in numberOptions" :key="num"
-                        :class="['number-button', { 'selected': selectedNumber === num, 'highlighted': isNumberPicked(num) }]"
-                        @click="selectNumber(num)">
+                        :class="['number-button', { 'highlighted': isNumberPicked(num) }]" @click="selectNumber(num)">
                         {{ num }}
                     </button>
+
                 </div>
             </div>
         </div>
@@ -77,19 +78,21 @@ export default {
         return {
             isSidebarVisible: true,
             isPickerOpen: false,
-            selectedNumber: null,
+            selectedDashboard: null, // Store selected dashboard
+            selectedPickedNumbers: [], // Store picked numbers for the selected dashboard
             numberOptions: Array.from({ length: 100 }, (_, i) => String(i).padStart(2, "0")),
         };
     },
     methods: {
-        calculatePercentage() {
+        calculatePercentage(dashboardId) {
+            const pickedNumbers = this.pickedNumbers[dashboardId] || []; // Get picked numbers for the specific dashboard
             const totalNumbers = this.numberOptions.length;
-            const pickedCount = this.pickedNumbers.length;
-
-            // Calculate the percentage of picked numbers
+            const pickedCount = pickedNumbers.length;
             return ((pickedCount / totalNumbers) * 100).toFixed(1);
         },
         viewDetails(dashboard) {
+            this.selectedDashboard = dashboard.id;
+            this.selectedPickedNumbers = this.pickedNumbers[dashboard.id] || []; // Load numbers for selected dashboard
             this.isPickerOpen = true;
         },
         selectNumber(num) {
@@ -100,7 +103,7 @@ export default {
             this.isPickerOpen = false;
         },
         isNumberPicked(num) {
-            return this.pickedNumbers.includes(num); // Check if the number is in pickedNumbers
+            return this.selectedPickedNumbers.includes(num); // Check numbers for selected dashboard
         }
     }
 };
@@ -344,6 +347,7 @@ button:hover {
     align-items: center;
     z-index: 9999;
 }
+
 /* Modal Content */
 .modal-content {
     background-color: #333;
@@ -354,8 +358,10 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     color: #e0e0e0;
     position: relative;
-    max-height: 80vh; /* Limit the height of the modal */
-    overflow: hidden; /* Hide any overflow outside the modal */
+    max-height: 80vh;
+    /* Limit the height of the modal */
+    overflow: hidden;
+    /* Hide any overflow outside the modal */
 }
 
 /* Number Picker Grid */
@@ -364,8 +370,10 @@ button:hover {
     grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
     gap: 8px;
     padding: 15px;
-    max-height: 60vh; /* Set a specific height for the grid */
-    overflow-y: auto; /* Enable scrolling within the grid if there are many numbers */
+    max-height: 60vh;
+    /* Set a specific height for the grid */
+    overflow-y: auto;
+    /* Enable scrolling within the grid if there are many numbers */
 }
 
 /* Adjusting the overflow behavior of the modal itself */
@@ -380,7 +388,8 @@ button:hover {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    overflow: auto; /* Allow overflow to be handled properly */
+    overflow: auto;
+    /* Allow overflow to be handled properly */
 }
 
 /* Number Button */
@@ -410,6 +419,4 @@ button:hover {
     background-color: green;
     color: white;
 }
-
-
 </style>

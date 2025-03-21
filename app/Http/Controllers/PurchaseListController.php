@@ -15,26 +15,21 @@ class PurchaseListController extends Controller
     //
 
     public function index($id)
-    {
+{
+    $lottery = LotteryDashboards::with('lottery')->where('lottery_id', $id)->get();
 
+    // Fetch picked numbers grouped by lottery_dashboard_id
+    $pickedNumbers = PickedNumber::where('lottery_id', $id)
+        ->get()
+        ->groupBy('lottery_dashboard_id')
+        ->map(function ($items) {
+            return $items->pluck('picked_number')->toArray();
+        });
 
-        // $lottery = LotteryDashboards::where('lottery_id',$id)->get();
-        $lottery = LotteryDashboards::with('lottery')->where('lottery_id', $id)->get();
+    return Inertia::render('AdminDashboard/Purchase', [
+        'lottery' => $lottery,
+        'pickedNumbers' => $pickedNumbers,
+    ]);
+}
 
-        Log::info($lottery);
-
-        // Your controller method is fine
-        $pickedNumbers = PickedNumber::where('lottery_id', $id)->pluck('picked_number')->toArray();
-
-
-
-
-        Log::info('Number', ['pickednumber' => $pickedNumbers]);
-
-
-        return Inertia::render('AdminDashboard/Purchase', [
-            'lottery' => $lottery,
-            'pickedNumbers' => $pickedNumbers,
-        ]);
-    }
 }
