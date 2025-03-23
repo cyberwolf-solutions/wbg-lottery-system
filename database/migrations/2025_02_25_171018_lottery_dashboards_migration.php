@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('draw'); // Draw type (could be like 'first', 'second', etc.)
             $table->string('draw_number'); // Draw number or code
             $table->json('winning_numbers'); 
-            $table->string('color');
+            // $table->string('color');
             $table->string('status')->default('active');
             $table->softDeletes(); 
             $table->timestamps(); 

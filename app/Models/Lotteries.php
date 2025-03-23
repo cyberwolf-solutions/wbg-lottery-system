@@ -15,6 +15,7 @@ class Lotteries extends Model
         'name',
         'description',
         'image',
+        'color',
         'created_by',
         'updated_by',
         'deleted_by',

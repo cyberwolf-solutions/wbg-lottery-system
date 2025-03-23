@@ -272,15 +272,15 @@ function startCountdown() {
 }
 
 // Function to send API request to deactivate dashboard
-function deactivateDashboard(dashboardId) {
-    axios.post('/api/deactivate-dashboard', { dashboard_id: dashboardId })
-        .then(response => {
-            console.log('Dashboard deactivated:', response.data);
-        })
-        .catch(error => {
-            console.error('Error deactivating dashboard:', error.response?.data || error);
-        });
-}
+// function deactivateDashboard(dashboardId) {
+//     axios.post('/api/deactivate-dashboard', { dashboard_id: dashboardId })
+//         .then(response => {
+//             console.log('Dashboard deactivated:', response.data);
+//         })
+//         .catch(error => {
+//             console.error('Error deactivating dashboard:', error.response?.data || error);
+//         });
+// }
 
 
 const formatNumber = (num) => num.toString().padStart(2, '0');
@@ -448,7 +448,7 @@ const pickedPercentage = computed(() => {
             </div>
         </div>
         <!-- Main Content -->
-        <div :style="{ backgroundColor: selectedLotteryDetails[0]?.color }" v-if="!showModal" class="py-12">
+        <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }" v-if="!showModal" class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -458,7 +458,7 @@ const pickedPercentage = computed(() => {
                                 class="border rounded-lg p-4 relative">
                                 <h2  class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
-                                <div :style="{ backgroundColor: selectedLotteryDetails[0]?.color }" class="info-container p-3 rounded shadow-sm">
+                                <div :style="{backgroundColor: selectedLotteryDetails[0]?.lottery?.color }" class="info-container p-3 rounded shadow-sm">
                                     <!-- Additional ticket details -->
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
@@ -512,13 +512,13 @@ const pickedPercentage = computed(() => {
 
                         <!-- Pagination Controls -->
                         <div class="mt-6 flex justify-center">
-                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.color }"
+                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }"
                                 @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
                                 class="px-4 py-2 bg-blue-500 text-white rounded">
                                 Prev
                             </button>
                             <span class="px-4 py-2">{{ currentPage }} / {{ totalPages }}</span>
-                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.color }"
+                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color}"
                                 @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
                                 class="px-4 py-2 bg-blue-500 text-white rounded">
                                 Next
@@ -543,7 +543,7 @@ const pickedPercentage = computed(() => {
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Winning Chances</p>
                                 <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
-                                    <div :style="{ backgroundColor: selectedLotteryDetails[0]?.color }"
+                                    <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color}"
                                         class="absolute top-0 left-0 h-full bg-blue-500" style="width: 100%;"></div>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@ const pickedPercentage = computed(() => {
                                 </p>
                             </div>
 
-                            <div :style="{ backgroundColor: selectedLotteryDetails[0]?.color }"
+                            <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }"
                                 class="flex items-center mt-1 bg-blue-500 rounded-full py-2 px-4">
                                 <span class="text-lg font-bold text-white">USD {{ totalPrice }}</span>
 

@@ -103,10 +103,10 @@
                 <input type="text" v-model="newDashboard.draw" id="draw" required />
               </div>
 
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="draw">Color: (#code)</label>
                 <input type="text" v-model="newDashboard.color" id="draw" required />
-              </div>
+              </div> -->
 
               <div class="form-group">
                 <label for="draw-number">Draw Number:</label>
