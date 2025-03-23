@@ -62,6 +62,10 @@
                                 <textarea v-model="newLottery.description" id="description" class="form-control"
                                     rows="4" placeholder="Enter description here..." required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="draw">Color: (#code)</label>
+                                <input type="text" v-model="newLottery.color" id="draw" required />
+                            </div>
 
                             <div class="form-group">
                                 <label for="image">Lottery Image:</label>
@@ -155,6 +159,7 @@ export default {
                 description: '',
                 image: null,
                 price: '',
+                color: ''
             },
 
             editingLottery: {},
@@ -190,7 +195,7 @@ export default {
                 formData.append('name', this.newLottery.name);
                 formData.append('description', this.newLottery.description);
                 formData.append('image', this.newLottery.image);
-                //formData.append('price', this.newLottery.price);
+                formData.append('color', this.newLottery.color);
 
                 // Check for null or undefined values and alert if any are found
                 if (!this.newLottery.name) {
@@ -208,10 +213,10 @@ export default {
                     return;
                 }
 
-                // if (!this.newLottery.price) {
-                //     alert("Price is null or undefined");
-                //     return;
-                // }
+                if (!this.newLottery.color) {
+                    alert("Color is null or undefined");
+                    return;
+                }
 
                 // Get the CSRF token directly from the meta tag (document object)
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

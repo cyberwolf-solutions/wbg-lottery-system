@@ -46,7 +46,7 @@ class LotteryDashboardController extends Controller
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
                 'dashboardType'=>'required|string',
-                'color' => 'required|string'
+                // 'color' => 'required|string'
             ]);
 
             // Calculate the start date
@@ -68,7 +68,7 @@ class LotteryDashboardController extends Controller
                     'winning_numbers' => json_encode($winningNumbers),
                     'lottery_id' => $validated['lottery_id'],
                     'dashboard' => $validated['dashboard'],
-                    'color'=>$validated['color'],
+                    // 'color'=>$validated['color'],
                     'status' => 'active',
                     'dashboardType' =>$validated['dashboardType']
                 ]);
