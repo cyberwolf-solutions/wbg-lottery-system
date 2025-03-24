@@ -39,16 +39,18 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="dashboardSelect">Draw Number:</label>
-                                    <select id="dashboardSelect" v-model="newResult.dashboard" class="form-control">
+                                    <select id="dashboardSelect" v-model="newResult.dashboard" class="form-control"
+                                        @change="updateDashboardName">
                                         <!-- Loop through the dashboards based on selected lottery -->
                                         <option v-for="(dashboard, index) in filteredDashboards" :key="index"
                                             :value="dashboard.id">
-                                            {{ dashboard.draw_number }}
+                                            {{ dashboard.draw_number }} | {{ dashboard.dashboard }}
                                         </option>
                                     </select>
                                 </div>
                             </div>
 
+                            <input type="hidden" v-model="newResult.dashboardName" />
 
                             <!-- Price Field -->
                             <div class="col-md-4">
@@ -61,8 +63,16 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="price">Winning Number:</label>
+                                    <label for="price">First Winning Number:</label>
                                     <input type="number" id="number" v-model="newResult.winning_number"
+                                        class="form-control" min="0" max="99" @input="validateWinningNumber" />
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="price">Last Winning Number:</label>
+                                    <input type="number" id="number" v-model="newResult.lwinning_number"
                                         class="form-control" min="0" max="99" @input="validateWinningNumber" />
                                 </div>
 
@@ -89,15 +99,17 @@
                                     <th>Draw Date</th>
                                     <th>Price</th>
                                     <th>Winning Number</th>
+
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Loop through the results for this specific lottery -->
                                 <tr v-for="result in results" :key="result.id">
-                                    <td><a href="#">{{ result.dashboard.dashboard }}</a></td>
+                                    <td><a href="#">{{ result.dashboard.dashboard }} | {{ result.dashboard.dashboardType
+                                    }}</a></td>
                                     <td>{{ result.dashboard.draw }}</td>
                                     <td>{{ result.dashboard.date }}</td>
-                                    <td>{{ result.dashboard.price * 70}}</td>
+                                    <td>{{ result.dashboard.price * 70 }}</td>
                                     <td>{{ result.winning_number }}</td>
                                 </tr>
                             </tbody>
@@ -116,7 +128,7 @@
 <script>
 import Sidebar from '@/components/AdminSidebar.vue';
 import axios from 'axios';
-import { ref } from 'vue'; 
+import { ref } from 'vue';
 
 export default {
     components: {
@@ -129,9 +141,10 @@ export default {
                 lottery: null,
                 dashboard: null,
                 price: 70,
+                dashboardName: '',
             },
 
-            responseMessage: ref(null),  
+            responseMessage: ref(null),
             responseClass: ref('bottom-response'),
         };
     },
@@ -144,14 +157,20 @@ export default {
             const selectedLottery = this.lotteries.find(
                 (lottery) => lottery.id === this.newResult.lottery
             );
-            return selectedLottery ? selectedLottery.dashboards : [];
+            // Convert the dashboards object into an array
+            return selectedLottery ? Object.values(selectedLottery.dashboards || {}) : [];
         },
     },
     mounted() {
         console.log(this.results);
     },
     methods: {
-
+        updateDashboardName() {
+            const selectedDashboard = this.filteredDashboards.find(d => d.id === this.newResult.dashboard);
+            if (selectedDashboard) {
+                this.newResult.dashboardName = selectedDashboard.dashboard; // Store the dashboard name
+            }
+        },
 
         showResponse(message, position = 'bottom') {
             this.responseMessage = message;
@@ -169,19 +188,24 @@ export default {
         },
 
         async addResult() {
+            console.log('filteredDashboards:', this.filteredDashboards); // Debugging
+            console.log('lotteries:', this.lotteries); 
+
             try {
                 const selectedDashboard = this.filteredDashboards.find(d => d.id === this.newResult.dashboard);
                 const response = await axios.post('/api/admin/results/store', {
                     lottery_id: this.newResult.lottery,
                     dashboard_id: this.newResult.dashboard,
                     winning_number: this.newResult.winning_number,
+                    lwinning_number: this.newResult.lwinning_number, // Fix: Use this.newResult.lwinning_number
                     price: this.newResult.price,
+                    dashboard_name: this.newResult.dashboardName,
                     draw_number: selectedDashboard ? selectedDashboard.draw_number : null
                 });
 
                 if (response.data.success) {
                     console.log('Result added successfully');
-                    this.showResponse('Result Added', 'bottom'); 
+                    this.showResponse('Result Added', 'bottom');
                     location.reload();
                 }
             } catch (error) {
@@ -195,6 +219,14 @@ export default {
                 this.newResult.winning_number = "99";
             } else {
                 this.newResult.winning_number = String(this.newResult.winning_number).padStart(2, '0');
+            }
+
+            if (this.newResult.lwinning_number < 0) {
+                this.newResult.lwinning_number = "00";
+            } else if (this.newResult.lwinning_number > 99) {
+                this.newResult.lwinning_number = "99";
+            } else {
+                this.newResult.lwinning_number = String(this.newResult.lwinning_number).padStart(2, '0');
             }
         }
 

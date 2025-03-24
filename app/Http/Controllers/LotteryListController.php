@@ -29,7 +29,8 @@ class LotteryListController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:256|unique:lotteries,name', // Add unique validation here
             'description' => 'required|string',
-            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048"
+            'image' => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
+            'color' => 'required|String'
         ]);
 
         $image = $request->file('image');
@@ -54,7 +55,7 @@ class LotteryListController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'],
             'image' => $imagePath,
-            // /'created_by' => '1',
+            'color' => $validated['color'],
         ]);
 
         return response()->json($lottery, 201);
@@ -73,7 +74,8 @@ class LotteryListController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:256|unique:lotteries,name,' . $lottery->id, 
             'description' => 'required|string',
-            'image' => "nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048"
+            'image' => "nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
+            'color'=> 'required|String'
         ]);
 
         if ($request->hasFile('image')) {
@@ -93,6 +95,7 @@ class LotteryListController extends Controller
 
         $lottery->name = $validated['name'];
         $lottery->description = $validated['description'];
+        $lottery->color= $validated['color'];
         $lottery->save();
 
         return response()->json($lottery, 200);

@@ -432,7 +432,7 @@ onMounted(() => {
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.type }}</td>
                                             <td class="px-6 py-4 text-green-500 font-medium">
                                                 {{ transaction.picked_number === null ? transaction.type :
-                                                transaction.picked_number }}
+                                                    transaction.picked_number }}
                                             </td>
 
                                             <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?
@@ -440,7 +440,7 @@ onMounted(() => {
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 transaction.amount
-                                            }}</td>
+                                                }}</td>
                                         </tr>
 
                                     </tbody>
@@ -581,6 +581,10 @@ onMounted(() => {
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Draw Date
                                             </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Type
+                                            </th>
 
                                         </tr>
                                     </thead>
@@ -598,6 +602,7 @@ onMounted(() => {
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.date }}
                                             </td>
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.dashboardType }}</td>
 
                                         </tr>
 

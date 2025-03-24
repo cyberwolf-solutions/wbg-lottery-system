@@ -11,6 +11,21 @@ import axios from 'axios';
 
 const showingNavigationDropdown = ref(false);
 
+const notifications = ref([]);
+
+const fetchNotifications = async () => {
+    try {
+        const response = await axios.get('/api/notifications');
+        notifications.value = response.data;
+        console.log('Notifications fetched:', notifications.value);
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+};
+
+
+
+onMounted(fetchNotifications);
 
 
 const lotteries = ref([]);
@@ -29,12 +44,12 @@ const fetchLotteries = async () => {
 
 const fetchLotteryData = async (lotteryId) => {
     try {
-        
+
         const response = await axios.get(`/api/lottery/${lotteryId}`);
         console.log(`API called for lottery ID: ${lotteryId}`, response.data);
 
-        
-        window.location.href = `/api/lottery/${lotteryId}`; 
+
+        window.location.href = `/api/lottery/${lotteryId}`;
     } catch (error) {
         console.error("Error fetching lottery data:", error);
     }
@@ -153,36 +168,14 @@ onMounted(fetchLotteries);
                                     aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
-                                <div class="card" style="border-style: none;">
+                                <div v-for="notification in notifications" :key="notification.id" class="card"
+                                    style="border-style: none;">
                                     <div class="card-header"
                                         style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                        9.00 a.m
+                                        {{ notification.created_at }}
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title">New login at 8.56 a.m</h5>
-
-                                    </div>
-                                </div>
-
-                                <div class="card" style="border-style: none;">
-                                    <div class="card-header"
-                                        style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                        9.00 a.m
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">New login at 8.56 a.m</h5>
-
-                                    </div>
-                                </div>
-
-                                <div class="card" style="border-style: none;">
-                                    <div class="card-header"
-                                        style="background-color: whitesmoke;border-style: none;font-size: 10px;">
-                                        9.00 a.m
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">New login at 8.56 a.m</h5>
-
+                                        <h5 class="card-title">{{ notification.data.message }}</h5>
                                     </div>
                                 </div>
                             </div>

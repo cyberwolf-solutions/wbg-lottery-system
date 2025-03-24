@@ -45,10 +45,8 @@ class LotteryDashboardController extends Controller
                 'drawNumber' => 'required|numeric',
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
-                'dashboardType'=>'required|string',
-                'color' => 'required|string'
             ]);
-
+            Log::info('ok', $request->all());
             // Calculate the start date
             $startDate = Carbon::parse($validated['date']);
             $drawNumber = $validated['drawNumber'];
@@ -56,22 +54,40 @@ class LotteryDashboardController extends Controller
             // Generate the winning numbers (00, 01, 02, ..., 99)
             $winningNumbers = $this->generateWinningNumbers();
 
-            // Create 10 dashboards (1 for the current day and 9 for the next 9 days)
+            // Create 10 dashboards for "First Digits" and 10 for "Last Digits"
             $dashboards = [];
             for ($i = 0; $i < 10; $i++) {
                 $currentDate = $startDate->addDay(); // Increment the date for the next day
+                $currentDrawNumber = str_pad($drawNumber, 3, '0', STR_PAD_LEFT);
+
+                // First Digits Dashboard
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
-                    'date' => $currentDate->toDateString(),  // Convert to a date string format (YYYY-MM-DD)
+                    'date' => $currentDate->toDateString(),
                     'draw' => $drawNumber,
-                    'draw_number' => str_pad($drawNumber++, 3, '0', STR_PAD_LEFT),
+                    'draw_number' => $currentDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
                     'lottery_id' => $validated['lottery_id'],
                     'dashboard' => $validated['dashboard'],
-                    'color'=>$validated['color'],
                     'status' => 'active',
-                    'dashboardType' =>$validated['dashboardType']
+                    'dashboardType' => 'First Digits',
                 ]);
+
+                // Last Digits Dashboard
+                $dashboards[] = LotteryDashboards::create([
+                    'price' => $validated['price'],
+                    'date' => $currentDate->toDateString(),
+                    'draw' => $drawNumber,
+                    'draw_number' => $currentDrawNumber,
+                    'winning_numbers' => json_encode($winningNumbers),
+                    'lottery_id' => $validated['lottery_id'],
+                    'dashboard' => $validated['dashboard'],
+                    'status' => 'active',
+                    'dashboardType' => 'Last Digits',
+                ]);
+
+                // Increment draw number for next day
+                $drawNumber++;
             }
 
             // Return the response with created dashboards
@@ -93,6 +109,7 @@ class LotteryDashboardController extends Controller
             ], 500);
         }
     }
+
 
     private function generateWinningNumbers()
     {
