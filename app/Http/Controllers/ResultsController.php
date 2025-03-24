@@ -86,10 +86,12 @@ class ResultsController extends Controller
 
             // Fetch the two dashboards (FirstDigit and LastDigit) for the given draw number
             $dashboards = LotteryDashboards::where('draw_number', $validatedData['draw_number'])
+            ->where('lottery_id', $validatedData['lottery_id']) 
             ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
-            ->where('dashboard', $validatedData['dashboard_name']) // Check by dashboard_name as well
+            ->where('dashboard', $validatedData['dashboard_name']) 
             ->get();
     
+            Log::info('Data', ['dashboards' => $dashboards->toArray()]);
 
             if ($dashboards->count() != 2) {
                 throw new \Exception('Expected two dashboards (FirstDigit and LastDigit) for the given draw number.');
@@ -125,7 +127,6 @@ class ResultsController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-
     /**
      * Helper method to add results to a specific dashboard and handle winners/transactions.
      */
