@@ -72,19 +72,28 @@
               <div class="form-group">
                 <label for="dashboard">Dashboard Name:</label>
                 <select v-model="newDashboard.dashboard" id="dashboard" class="form-control" required>
-                  <option value="$1 Dashboard">$1 Dashboard</option>
-                  <option value="$10 Dashboard">$10 Dashboard</option>
-                  <option value="$100 Dashboard">$100 Dashboard</option>
+                  <option value="USDT1 Dashboard">USDT1 Dashboard</option>
+                  <option value="USDT2 Dashboard">USDT2 Dashboard</option>
+                  <option value="USDT3 Dashboard">USDT3 Dashboard</option>
+                  <option value="USDT4 Dashboard">USDT4 Dashboard</option>
+                  <option value="USDT5 Dashboard">USDT5 Dashboard</option>
+                  <option value="USDT10 Dashboard">USDT10 Dashboard</option>
+                  <option value="USDT15 Dashboard">USDT15 Dashboard</option>
+                  <option value="USDT25 Dashboard">USDT25 Dashboard</option>
+                  <option value="USDT50 Dashboard">USDT50 Dashboard</option>
+                  <option value="USDT100 Dashboard">USDT100 Dashboard</option>
+                  <option value="USDT500 Dashboard">USDT500 Dashboard</option>
+                  <option value="USDT1000 Dashboard">USDT1000 Dashboard</option>
                 </select>
               </div>
-
-              <div class="form-group">
+              
+              <!-- <div class="form-group">
                 <label for="dashboardType">Dashboard Type:</label>
                 <select v-model="newDashboard.dashboardType" id="dashboardType" class="form-control" required>
                   <option value="First Digits">First Digits</option>
                   <option value="Last Digits">Last Digits</option>
                 </select>
-              </div>
+              </div> -->
 
               <div class="form-group">
                 <label for="price">Price:</label>
@@ -191,7 +200,7 @@ export default {
         draw_number: '',
         lottery_id: '',
         id: '',
-        dashboardType: ''
+       
 
       },
       editingDashboard: {},

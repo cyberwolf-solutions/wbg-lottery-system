@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             PermissionSeeder::class,
             BankSeeder::class,
-            WalletAdress::class
+            WalletAddressSeeder::class
         ]);
     }
 }

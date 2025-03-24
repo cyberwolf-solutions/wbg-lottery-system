@@ -26,6 +26,7 @@
                                 <th>Draw Date</th>
                                 <th>Draw Number</th>
                                 <th>Price</th>
+                                <th>Dashboard </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,6 +35,8 @@
                                 <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.date : 'N/A' }}</td>
                                 <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.draw_number : 'N/A' }}</td>
                                 <td>{{ winner.lottery_dashboard ? winner.price : 'N/A' }}</td>
+                                <td>{{ winner.lottery_dashboard ? winner.lottery_dashboard.dashboardType : 'N/A' }}</td>
+
                             </tr>
                         </tbody>
                     </table>
