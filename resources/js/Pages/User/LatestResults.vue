@@ -7,7 +7,8 @@ import { Head } from '@inertiajs/vue3';
 
 <template>
 
-<Nav />
+    <Nav />
+
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -33,19 +34,17 @@ import { Head } from '@inertiajs/vue3';
 
         <div class="container py-5">
             <div class="row g-4 d-flex justify-content-center align-items-center">
-                <!-- Card 1 -->
-
-                <div class="col-md-6 col-lg-5">
+                <div v-for="lottery in lotteries" :key="lottery.id" class="col-md-6 col-lg-5">
                     <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
                         <div class="card-body text-center">
                             <div class="row" style="height: 70px;">
                                 <div class="col-6">
-                                    <img :src="logoUrl" alt="Logo" class="card-img-top"
-                                        style="height: 100px;width: auto;">
+                                    <img :src="logoUrl" alt="Logo"
+                                        class="card-img-top" style="height: 100px;width: auto; object-fit: contain;">
                                 </div>
                                 <div class="col-6 d-flex align-items-center justify-content-center">
                                     <button class="btn"
-                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
+                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);">
                                         PLAY NOW !
                                     </button>
                                 </div>
@@ -53,217 +52,43 @@ import { Head } from '@inertiajs/vue3';
                             <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
 
                             <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
+
+                            <div v-if="lottery.dashboardInfo?.displayDigits"
+                                style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
+                                <!-- Highlighted Digit -->
+                                <span v-for="(digit, index) in lottery.dashboardInfo.displayDigits.digits"
+                                    :key="'digit-' + index" style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
+                    border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    {{ digit }}
                                 </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    31
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    21
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    69
+
+                                <!-- Display position indicator -->
+                                <span style="display: flex; align-items: center; margin-left: 10px; font-size: 12px;">
+                                    ({{ lottery.dashboardInfo.displayDigits.position }} digit)
                                 </span>
                             </div>
+
+                            <div v-else style="margin-bottom: 15px;">
+                                <p>No results available yet</p>
+                            </div>
                         </div>
-                        <!-- Bottom Blue Section -->
-                        <div class="draw-info">
+
+                        <!-- Dashboard Info -->
+                        <div class="draw-info" v-if="lottery.dashboardInfo">
                             <p>
+                                <span>Lottery:</span> <span>{{ lottery.name || 'N/A' }}</span>
                                 <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
+                                <span>Type:</span> <span>{{ lottery.dashboardInfo.dashboardType || 'N/A' }}</span>
+                                <br />
+                                <i class="fas fa-hashtag draw-icon"></i>
+                                <span>Draw Number:</span> <span>{{ lottery.dashboardInfo.draw_number || 'N/A' }}</span>
                                 <br />
                                 <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
+                                <span>Draw Date:</span> <span>{{ formatDate(lottery.dashboardInfo.date) }}</span>
                             </p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Card 1 -->
-
-                <div class="col-md-6 col-lg-5">
-                    <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                        <div class="card-body text-center">
-                            <div class="row" style="height: 70px;">
-                                <div class="col-6">
-                                    <img :src="logoUrl2" alt="Logo" class="card-img-top"
-                                        style="height: 100px;width: auto;">
-                                </div>
-                                <div class="col-6 d-flex align-items-center justify-content-center">
-                                    <button class="btn"
-                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                        PLAY NOW !
-                                    </button>
-                                </div>
-                            </div>
-                            <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                            <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    31
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    21
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    69
-                                </span>
-                            </div>
-                        </div>
-                        <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-
-                <div class="col-md-6 col-lg-5">
-                    <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                        <div class="card-body text-center">
-                            <div class="row" style="height: 70px;">
-                                <div class="col-6">
-                                    <img :src="logoUrl1" alt="Logo" class="card-img-top"
-                                        style="height: 100px;width: auto;">
-                                </div>
-                                <div class="col-6 d-flex align-items-center justify-content-center">
-                                    <button class="btn"
-                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                        PLAY NOW !
-                                    </button>
-                                </div>
-                            </div>
-                            <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                            <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    31
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    21
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    69
-                                </span>
-                            </div>
-                        </div>
-                        <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-
-                <div class="col-md-6 col-lg-5">
-                    <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                        <div class="card-body text-center">
-                            <div class="row" style="height: 70px;">
-                                <div class="col-6">
-                                    <img :src="logoUrl" alt="Logo" class="card-img-top"
-                                        style="height: 100px;width: auto;">
-                                </div>
-                                <div class="col-6 d-flex align-items-center justify-content-center">
-                                    <button class="btn"
-                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                        PLAY NOW !
-                                    </button>
-                                </div>
-                            </div>
-                            <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                            <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    31
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    21
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    19
-                                </span>
-                                <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    69
-                                </span>
-                            </div>
-                        </div>
-                        <!-- Bottom Blue Section -->
-                        <div class="draw-info">
-                            <p>
-                                <i class="fas fa-ticket-alt draw-icon"></i>
-                                <span>Draw Number:</span> <span>898</span>
-                                <br />
-                                <i class="far fa-calendar-alt draw-icon"></i>
-                                <span>Draw Date:</span> <span>2024/09/56</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add more cards as necessary -->
-            </div>
-
-            <div class="text-center mt-4">
-                <button class="btn"
-                    style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;">Load
-                    More</button>
             </div>
         </div>
 
@@ -281,7 +106,7 @@ import { Head } from '@inertiajs/vue3';
                                     style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
                                 <!-- <i class="bi bi-patch-question-fil" ></i> -->
 
-                                <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
+                                <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;">
                             </div>
                             <div class="col-6">
                                 <h1
@@ -327,20 +152,40 @@ import { Head } from '@inertiajs/vue3';
 <script>
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
+import { Head } from '@inertiajs/vue3';
+
 export default {
     data() {
         return {
-            logoUrl: '/assets/images/1.png', // Path to your logo
-            logoUrl1: '/assets/images/2.png', // Path to your logo
-            logoUrl2: '/assets/images/3.png', // Path to your logo
+            logoUrl: '/assets/images/1.png',
+            logoUrl1: '/assets/images/2.png',
+            logoUrl2: '/assets/images/3.png',
         };
     },
-    name: "latest",
+    props: {
+        lotteries: {
+      type: Array,
+      required: true,
+      default: () => []
+    }
+    },
+
+    methods: {
+        formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+    },
     components: {
         Footer,
         Nav,
-
-    },
+        Head
+    }
 };
 </script>
 

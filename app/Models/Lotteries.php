@@ -31,4 +31,20 @@ class Lotteries extends Model
     {
         return $this->hasMany(LotteryDashboards::class, 'lottery_id');
     }
+    public function winners()
+    {
+        return $this->hasManyThrough(Winner::class, LotteryDashboards::class, 'lottery_id', 'lottery_dashboard_id');
+    }
+
+    public function results()
+    {
+        return $this->hasManyThrough(
+            Results::class,
+            LotteryDashboards::class,
+            'lottery_id', // Foreign key on LotteryDashboards table
+            'dashboard_id', // Foreign key on Results table
+            'id', // Local key on Lotteries table
+            'id' // Local key on LotteryDashboards table
+        );
+    }
 }
