@@ -16,6 +16,7 @@
                                 <th>Dashboard</th>
                                 <th>Draw Number</th>
                                 <th>Draw Date</th>
+                                <th>Type</th>
                                 <th>Percentage</th>
                                 <th>View</th>
                                 <th>Action</th>
@@ -27,6 +28,7 @@
                                 <td>{{ dashboard.dashboard }}</td>
                                 <td>{{ dashboard.draw_number }}</td>
                                 <td>{{ dashboard.date }}</td>
+                                <td>{{ dashboard.dashboardType }}</td>
                                 <td>{{ calculatePercentage(dashboard.id) }}%</td>
 
                                 <td>

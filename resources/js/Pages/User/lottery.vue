@@ -402,7 +402,7 @@ const pickedPercentage = computed(() => {
 
         <!-- Modal -->
         <div v-if="showModal" class="modal-overlay">
-            <div class="modal-container">
+            <div class="modal-container1">
                 <h3 class="modal-title">Select a Lottery</h3>
                 <div class="button-row">
                     <button v-for="dashboard in uniqueDashboards"
@@ -703,6 +703,17 @@ const pickedPercentage = computed(() => {
     text-align: center;
     width: 400px;
 }
+.modal-container1 {
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Transparent white */
+    /* border: 2px solid #00ffff; */
+    /* Aqua border */
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 800px;
+}
 
 /* Modal Title */
 .modal-title {
@@ -715,22 +726,31 @@ const pickedPercentage = computed(() => {
 /* Button Row */
 .button-row {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    /* Spacing between buttons */
+    flex-direction: row;  /* Align items in a row */
+    gap: 1rem;            /* Spacing between buttons */
+    flex-wrap: wrap;      /* Allow buttons to wrap to the next line if needed */
 }
 
-/* Lottery Buttons */
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;               /* Allow wrapping to the next line */
+    gap: 1rem;                     /* Space between buttons */
+    justify-content: space-between; /* Ensure equal distribution of buttons */
+}
+
 .lottery-button {
+    width: calc(25% - 0.75rem); /* Each button takes up 25% of the container width minus the gap */
     padding: 0.75rem 1.5rem;
     border: 2px solid transparent;
     border-radius: 50px;
-    /* Fully rounded buttons */
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
 }
+
+
 
 /* Hover and Specific Styles for Buttons */
 .lottery-button:hover {

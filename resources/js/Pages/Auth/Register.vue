@@ -51,7 +51,12 @@
             formData.append('email', form.email);
             formData.append('password', form.password);
             formData.append('password_confirmation', form.password_confirmation);
+            formData.append('affilate_link', form.affiliate_link);
             formData.append('recaptcha_token', recaptchaToken);
+
+            // for (let [key, value] of formData.entries()) {
+            //    alert(key + ': ' + value);
+            // }
 
 
             axios.post(route('register'), formData, {
@@ -194,6 +199,13 @@
                             class=" block w-full rounded-md border-gray-300 shadow-sm"
                             v-model="form.password_confirmation" required autocomplete="new-password" />
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="affiliate_link" value="Affiliate link" />
+                        <TextInput id="affiliate_link" type="text"
+                            class=" block w-full rounded-md border-gray-300 shadow-sm" v-model="form.affiliate_link"
+                            autocomplete="affiliate link"></TextInput>
                     </div>
 
 
