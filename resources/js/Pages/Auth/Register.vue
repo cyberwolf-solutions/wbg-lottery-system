@@ -44,7 +44,7 @@
         try {
             const recaptchaToken = await executeRecaptcha('register');
             console.log('reCAPTCHA Token:', recaptchaToken);
-
+ 
             // Create a FormData object and append all form fields
             const formData = new FormData();
             formData.append('name', form.name);

@@ -68,7 +68,7 @@ import { Head } from '@inertiajs/vue3';
                             <strong>Contact Us</strong>
                         </p>
                         <p><i class="fas fa-phone-alt"></i> 012 345 6789</p>
-                        <p><i class="fas fa-envelope"></i> info@sorteo.com</p>
+                        <p><i class="fas fa-envelope"></i> info@WBG.com</p>
                     </div>
                 </div>
 

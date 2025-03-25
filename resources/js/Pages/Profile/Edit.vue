@@ -4,17 +4,29 @@ import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
+import { ref, defineProps } from 'vue';
 
-defineProps({
+// Define props using defineProps in the <script setup> syntax
+const props = defineProps({
     mustVerifyEmail: {
         type: Boolean,
     },
     status: {
         type: String,
     },
+    user: Object,
 });
 
-import { ref } from 'vue';
+// Bind the affiliate link to a reactive variable
+const affiliateLink = ref(props.user.user_affiliate_link); // Use the affiliate link from the user data
+
+const copyToClipboard = () => {
+    navigator.clipboard.writeText(affiliateLink.value).then(() => {
+        // alert('Affiliate link copied to clipboard!');
+    }).catch(err => {
+        // alert('Failed to copy link: ', err);
+    });
+};
 
 // Mocked user profile picture URL
 const profilePicture = ref('/path/to/profile-picture.jpg');
@@ -52,9 +64,7 @@ const saveProfilePicture = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800"
-            >
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Profile
             </h2>
         </template>
@@ -104,9 +114,7 @@ const saveProfilePicture = () => {
                 </div>
 
                 <!-- Update Profile Information -->
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
@@ -115,17 +123,39 @@ const saveProfilePicture = () => {
                 </div>
 
                 <!-- Update Password -->
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
 
-                <!-- Delete User -->
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <DeleteUserForm class="max-w-xl" />
+                <!-- Affiliate Link Section -->
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div class="flex flex-col items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Your Affiliate Link</h3>
+                        <p class="text-sm text-gray-600 mt-2">Share this link to earn commissions on referred sales.</p>
+
+                        <!-- Affiliate Link Display -->
+                        <div class="mt-4 w-full max-w-xs">
+                            <input
+                                type="text"
+                                v-model="affiliateLink"
+                                readonly
+                                class="block w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-800"
+                            />
+                        </div>
+
+                        <!-- Copy Button -->
+                        <button
+                            @click="copyToClipboard"
+                            class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+                        >
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Delete User Section -->
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <DeleteUserForm />
                 </div>
             </div>
         </div>
