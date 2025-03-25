@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Wallet;
 use App\Models\Winner;
 use App\Models\Results;
+use App\Models\Affiliate;
 use App\Models\Lotteries;
 use App\Models\Transaction;
 use App\Models\PickedNumber;
@@ -17,6 +18,7 @@ use Illuminate\Support\Lottery;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\WinnerNotification;
 
 class ResultsController extends Controller
@@ -79,18 +81,19 @@ class ResultsController extends Controller
                 'winning_number' => 'required',
                 'lwinning_number' => 'required',
                 'draw_number' => 'required',
-                'dashboard_name'=>'required'
+                'dashboard_name' => 'required'
             ]);
 
             Log::info('Data', $request->all());
 
             // Fetch the two dashboards (FirstDigit and LastDigit) for the given draw number
             $dashboards = LotteryDashboards::where('draw_number', $validatedData['draw_number'])
-            ->where('lottery_id', $validatedData['lottery_id']) 
-            ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
-            ->where('dashboard', $validatedData['dashboard_name']) 
-            ->get();
-    
+
+                ->where('lottery_id', $validatedData['lottery_id'])
+                ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
+                ->where('dashboard', $validatedData['dashboard_name'])
+                ->get();
+
             Log::info('Data', ['dashboards' => $dashboards->toArray()]);
 
             if ($dashboards->count() != 2) {
@@ -181,9 +184,44 @@ class ResultsController extends Controller
                 'picked_number' => $pickedNumber->picked_number,
             ]);
 
+            // Process affiliate commission (10% of the winner's prize)
+            $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
+            Log::info('Data', ['affiliate' => $affiliate]);
+         
+            // dd($affiliate);
+
+            if ($affiliate) {
+                $affiliateCommission = $winningPrice * 0.10;
+                $affiliateWallet = Wallet::firstOrCreate(['user_id' => $affiliate->id]);
+
+                // Add commission to affiliate's wallet
+                $affiliateWallet->increment('available_balance', $affiliateCommission);
+
+                // Save the transaction for the affiliate commission
+                Transaction::create([
+                    'wallet_id' => $affiliateWallet->id,
+                    'amount' => $affiliateCommission,
+                    'type' => 'Affiliate Commission',
+                    'lottery_id' => $validatedData['lottery_id'],
+                    'lottery_dashboard_id' => $dashboard->id,
+                    'transaction_date' => Carbon::now(),
+                ]);
+
+                Affiliate::create([
+                    'user_id' => $affiliate->id,
+                    'affiliate_user_id' => Auth::id(),
+                    'price' => $affiliateCommission,
+                    'date' => Carbon::now(),
+                ]);
+
+                Log::info('Affiliate commission added', [
+                    'affiliate_user_id' => $affiliate->user_id,
+                    'commission' => $affiliateCommission,
+                ]);
+            }
+
             $user = User::find($pickedNumber->user_id);
             $lottery = Lotteries::find($validatedData['lottery_id']);
-            Log::info('User and lottery fetched', ['user' => $user, 'lottery' => $lottery]);
 
             if ($user) {
                 $user->notify(new WinnerNotification(

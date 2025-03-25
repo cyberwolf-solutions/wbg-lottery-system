@@ -3,7 +3,7 @@
       <div class="" style="background-color: transparent;border-style: none;padding-left: 150px;padding-right: 150px;">
         <div class="row text-center text-md-start">
           <div class="col-md-4">
-            <h5 style="font-weight: bold;">About Sorteo</h5>
+            <h5 style="font-weight: bold;">About WBG</h5>
             <ul class="list-unstyled">
               <li><a href="#">About us</a></li>
               <li><a href="#">How it works</a></li>
@@ -19,7 +19,7 @@
               <li><a href="#">Affiliate Program</a></li>
               <li><a href="#">Terms and Conditions</a></li>
               <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Sorteo Licenses</a></li>
+              <li><a href="#">WBG Licenses</a></li>
             </ul>
           </div>
           <div class="col-md-4">
@@ -34,7 +34,7 @@
         </div>
         <div class="row mt-4 text-left" >
           <div class="col-md-6" style="margin-top: 30px;">
-            <p style="font-size: 12px;">© 2025 Sorteo - All Rights Reserved.</p>
+            <p style="font-size: 12px;">© 2025 WBG - All Rights Reserved.</p>
           </div>
           <div class="col-md-6 text-center text-md-end">
             <div class="social-icons">

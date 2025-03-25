@@ -28,7 +28,7 @@ import { Head } from '@inertiajs/vue3';
 
                 <div class="category-buttons">
 
-                    <button class="custom-button mt-3" style=" background-color: #63b5f6;">SorteoTickets</button>
+                    <button class="custom-button mt-3" style=" background-color: #63b5f6;">WBGTickets</button>
                     <button class="custom-button mt-3" style=" background-color: #63b5f6;">Banking</button>
                     <button class="custom-button mt-3" style=" background-color: #63b5f6;">Winning</button>
                     <button class="custom-button mt-3" style=" background-color: #63b5f6;">Results & Alerts</button>
