@@ -6,7 +6,7 @@
           class="py-5 col-12 col-md-6 align-content-center d-flex flex-column justify-content-center align-items-center align-items-md-start">
           <h1 class="hero-title text-center text-md-start">Take the chance to <br> change your life</h1>
           <p class="hero-subtitle text-center text-md-start">
-            Sorteo is an online lottery platform inspired by a few sorteo <br> lover's fantasy
+            WBG is an online lottery platform inspired by a few WBG <br> lover's fantasy
             of the ultimate lottery platform.
           </p>
           <button class="custom-button mt-3">BUY TICKET NOW!</button>
@@ -252,7 +252,7 @@
             <div class="intro mt-4 mb-3">
               <h2 class="text-center fw-bold">Why Choose Us?</h2>
               <p class="text-center text-secondary">
-                Sorteo makes playing the world's largest lotteries easy and fun.
+                WBG makes playing the world's largest lotteries easy and fun.
               </p>
             </div>
           </div>

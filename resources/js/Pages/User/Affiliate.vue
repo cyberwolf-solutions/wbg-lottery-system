@@ -1,22 +1,56 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Chart from 'chart.js/auto';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 
-// Define the ref for the chart canvas
+// Fetch data from Laravel backend
+const page = usePage();
+const totalEarnings = ref(page.props.totalEarnings || 0);
+const activeReferrals = ref(page.props.activeReferrals || 0);
+const earningsByMonth = ref(page.props.earningsByMonth || {});
+const recentReferrals = ref(page.props.recentReferrals || []);
+const userlink = page.props.userlink;
+
+// Define chart canvas ref
 const chartCanvas = ref(null);
+let chartInstance = null;
 
-onMounted(() => {
+// Function to ensure all months are included (January to December)
+const getEarningsByMonth = () => {
+    // Array of month names in English
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    // Fill missing months with 0 earnings
+    const filledEarnings = months.map((month) => {
+        return earningsByMonth.value[month] || 0;
+    });
+
+    return filledEarnings;
+};
+
+// Function to initialize chart
+const createChart = () => {
     if (chartCanvas.value) {
         const ctx = chartCanvas.value.getContext('2d');
-        new Chart(ctx, {
+
+        if (chartInstance) {
+            chartInstance.destroy(); // Destroy old instance if re-rendering
+        }
+
+        chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ], 
                 datasets: [{
                     label: 'Earnings',
-                    data: [50, 25, 40, 60, 55, 80],
+                    data: getEarningsByMonth(), // Processed earnings data
                     borderColor: '#7F9CF5',
                     borderWidth: 2,
                     fill: false,
@@ -29,9 +63,15 @@ onMounted(() => {
             }
         });
     }
-});
+};
 
-const referralLink = ref("https://yourstore.com/?ref=user123");
+// Watch for changes and update chart
+watch(earningsByMonth, createChart, { deep: true });
+
+onMounted(createChart);
+
+// Copy referral link
+const referralLink = ref(userlink);
 
 const copyToClipboard = async () => {
     try {
@@ -42,11 +82,15 @@ const copyToClipboard = async () => {
     }
 };
 
+const props = defineProps({
+    recentReferrals: Array,
+});
 </script>
+
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Affiliate Dashboard" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
@@ -59,32 +103,25 @@ const copyToClipboard = async () => {
             <p class="text-gray-600 mb-6">Track your referrals and earnings</p>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="p-4 bg-white rounded-lg shadow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 mb-6 w-full">
+                <div
+                    class="p-4 bg-white rounded-lg shadow flex flex-col items-center justify-center col-span-6 sm:col-span-1 md:col-span-3">
                     <p class="text-gray-500">Total Earnings</p>
-                    <h3 class="text-2xl font-bold">$1,234</h3>
-                    <p class="text-green-500">+20% from last month</p>
+                    <h3 class="text-2xl font-bold">${{ totalEarnings }}</h3>
                 </div>
-                <div class="p-4 bg-white rounded-lg shadow">
-                    <p class="text-gray-500">Conversion Rate</p>
-                    <h3 class="text-2xl font-bold">12.5%</h3>
-                    <p class="text-green-500">+2.2% from last month</p>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow">
-                    <p class="text-gray-500">Total Clicks</p>
-                    <h3 class="text-2xl font-bold">845</h3>
-                    <p class="text-green-500">+201 from last month</p>
-                </div>
-                <div class="p-4 bg-white rounded-lg shadow">
+
+                <div
+                    class="p-4 bg-white rounded-lg shadow flex flex-col items-center justify-center col-span-6 sm:col-span-1 md:col-span-3">
                     <p class="text-gray-500">Active Referrals</p>
-                    <h3 class="text-2xl font-bold">45</h3>
-                    <p class="text-green-500">+3 from last month</p>
+                    <h3 class="text-2xl font-bold">{{ activeReferrals }}</h3>
                 </div>
             </div>
 
+
+
             <!-- Performance Chart -->
             <div class="p-6 bg-white rounded-lg shadow mb-6" style="height: 300px;">
-                <h3 class="text-lg font-bold mb-4">Performance Overview</h3>
+                <h3 class="text-lg font-bold mb-4">Earnings Overview</h3>
                 <canvas ref="chartCanvas" class="w-full h-full"></canvas>
             </div>
 
@@ -93,19 +130,21 @@ const copyToClipboard = async () => {
                 <div class="p-6 bg-white rounded-lg shadow">
                     <h3 class="text-lg font-bold mb-4">Your Referral Link</h3>
                     <div class="flex items-center border rounded">
-                        <input type="text" id="referralLink" class="w-full p-2 outline-none"
-                            value="https://yourstore.com/?ref=user123" readonly>
-                        <button onclick="copyToClipboard()" class="p-2 bg-gray-200 hover:bg-gray-300 rounded-r">
+                        <input type="text" id="referralLink" class="w-full p-2 outline-none" :value="referralLink"
+                            readonly>
+                        <button @click="copyToClipboard" class="p-2 bg-gray-200 hover:bg-gray-300 rounded-r">
                             📋
                         </button>
                     </div>
                 </div>
+
                 <div class="p-6 bg-white rounded-lg shadow">
                     <h3 class="text-lg font-bold mb-4">Recent Referrals</h3>
                     <ul>
-                        <li class="flex justify-between py-2 border-b">John Doe <span>$50.00</span></li>
-                        <li class="flex justify-between py-2 border-b">Jane Smith <span>$75.00</span></li>
-                        <li class="flex justify-between py-2">Mike Johnson <span>$100.00</span></li>
+                        <li v-for="(referral, index) in recentReferrals" :key="index"
+                            class="flex justify-between py-2 border-b">
+                            {{ referral.name }}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -113,6 +152,7 @@ const copyToClipboard = async () => {
     </AuthenticatedLayout>
 
 </template>
+
 
 
 

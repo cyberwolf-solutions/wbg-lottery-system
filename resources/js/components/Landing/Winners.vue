@@ -150,7 +150,7 @@
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
-                                    Win any prize while playing your favourite lotteries online at Sorteo.
+                                    Win any prize while playing your favourite lotteries online at WBG.
                                 </p>
                             </div>
 
@@ -174,7 +174,7 @@
                             <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    Your win will be directly transferred to your account on Sorteo!
+                                    Your win will be directly transferred to your account on WBG!
                                 </p>
                             </div>
 
