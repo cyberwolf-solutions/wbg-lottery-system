@@ -64,7 +64,7 @@ import { Head } from '@inertiajs/vue3';
 
                                 <!-- Display position indicator -->
                                 <span style="display: flex; align-items: center; margin-left: 10px; font-size: 12px;">
-                                    ({{ lottery.dashboardInfo.displayDigits.position }} digit)
+                                    <!-- ({{ lottery.dashboardInfo.displayDigits.position }} digit) -->
                                 </span>
                             </div>
 

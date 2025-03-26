@@ -3,71 +3,76 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-
 use App\Models\Results;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
+use App\Models\LotteryDashboards;
+use Illuminate\Support\Facades\Log;
 
 class LatestResults extends Controller
 {
     public function index()
     {
-        $lotteries = Lotteries::with(['dashboards', 'results' => function ($query) {
-            $query->latest()->limit(1);
-        }])->get()->map(function ($lottery) {
-            $latestResult = $lottery->results->first();
+        // Fetch the result
+        $dashboardDetails = LotteryDashboards::select('price', 'date', 'draw_number', 'draw')
+            ->distinct()
+            ->get();
 
-            $dashboardInfo = null;
-            if ($latestResult && $latestResult->dashboard) {
-                $winningNumbers = explode(',', $latestResult->dashboard->winning_numbers);
+        $formattedLotteries = [];
 
-                $dashboardInfo = [
-                    'dashboardType' => $latestResult->dashboard->dashboardType,
-                    'winning_numbers' => $latestResult->dashboard->winning_numbers,
-                    'displayDigits' => $this->getDisplayDigits(
-                        $winningNumbers,
-                        $latestResult->dashboard->dashboardType
-                    ),
-                    'draw_number' => $latestResult->dashboard->draw_number,
-                    'date' => $latestResult->dashboard->date,
-                ];
+        foreach ($dashboardDetails as $details) {
+            // Find matching dashboards with "First Digits" and "Last Digits"
+            $matchingDashboards = LotteryDashboards::where([
+                ['price', '=', $details->price],
+                ['date', '=', $details->date],
+                ['draw_number', '=', $details->draw_number],
+                ['draw', '=', $details->draw]
+            ])
+                ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
+                ->get();
+
+            // Get the winning numbers for these dashboards
+            $results = Results::whereIn('dashboard_id', $matchingDashboards->pluck('id'))
+                ->get()
+                ->keyBy('dashboard_id');
+
+            // Get the lottery
+            $lottery = Lotteries::whereHas('dashboards', function ($query) use ($details) {
+                $query->where([
+                    ['price', '=', $details->price],
+                    ['date', '=', $details->date],
+                    ['draw_number', '=', $details->draw_number],
+                    ['draw', '=', $details->draw]
+                ]);
+            })->first();
+
+            // Process each matching dashboard to format data for the frontend
+            foreach ($matchingDashboards as $dashboard) {
+                $winningNumber = $results->get($dashboard->id)?->winning_number;
+                
+                if ($winningNumber) {
+                    $formattedLotteries[] = [
+                        'id' => $dashboard->id,
+                        'name' => $lottery ? $lottery->name : 'Unknown Lottery',
+                        'dashboardInfo' => [
+                            'dashboardType' => $dashboard->dashboardType,
+                            'draw_number' => $dashboard->draw_number,
+                            'date' => $dashboard->date,
+                            'price' => $dashboard->price,
+                            'draw' => $dashboard->draw,
+                            'displayDigits' => [
+                                'digits' => str_split($winningNumber),
+                                'position' => str_contains($dashboard->dashboardType, 'First') ? 'First' : 'Last'
+                            ]
+                        ]
+                    ];
+                }
             }
-
-            return [
-                'id' => $lottery->id,
-                'name' => $lottery->name,
-                'image' => $lottery->image,
-                'color' => $lottery->color,
-                'latestResult' => $latestResult ? [
-                    'winning_number' => $latestResult->winning_number,
-                    'additional_info' => $latestResult->additional_info,
-                ] : null,
-                'dashboardInfo' => $dashboardInfo,
-            ];
-        });
+        }
 
         return Inertia::render('User/LatestResults', [
-            'lotteries' => $lotteries,
+            'lotteries' => $formattedLotteries,
             'status' => session('status'),
         ]);
-    }
-
-    private function getDisplayDigits($winningNumbers, $dashboardType)
-    {
-        if (empty($winningNumbers)) return null;
-
-        if ($dashboardType === 'First Digit') {
-            return [
-                'type' => 'first',
-                'digits' => [reset($winningNumbers)], 
-                'position' => 'first'
-            ];
-        } else {
-            return [
-                'type' => 'last',
-                'digits' => [end($winningNumbers)], 
-                'position' => 'last'
-            ];
-        }
     }
 }

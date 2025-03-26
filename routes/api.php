@@ -203,16 +203,16 @@ Route::middleware(['web'])->group(function () {
             Route::get('/walletHistory', [WalletHistoryController::class, 'index']);
 
             //dashboard
-            Route::get('/adminDash', [AdminDashboardController::class, 'index']);
+            Route::get('/dashboard', [AdminDashboardController::class, 'index']);
 
             //admin logout
             Route::post('/logout', [AdminAuthController::class, 'logout']);
 
 
 
-            Route::get('/dashboard', function () {
-                return Inertia::render('AdminDashboard/Dashboard');
-            });
+            // Route::get('/dashboard', function () {
+            //     return Inertia::render('AdminDashboard/Dashboard');
+            // });
 
 
             Route::get('/adminLot', function () {
