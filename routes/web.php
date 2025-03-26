@@ -16,14 +16,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\NotificationsController;
 
 
-Route::get('/', function () {
-    return Inertia::render('LandingPage');
-})->name('landing');
+// Route::get('/', function () {
+//     return Inertia::render('LandingPage');
+// })->name('landing');
 
-// Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 
 Route::get('/dashboard', [HomeController::class, 'dashboard'])

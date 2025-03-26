@@ -38,7 +38,8 @@ class LotteryDashboards extends Model
 
     public function pickedNumbers()
     {
-        return $this->hasMany(PickedNumber::class);
+        return $this->hasMany(PickedNumber::class, 'lottery_dashboard_id');
+        // Explicitly specify the foreign key column name
     }
     // In LotteryDashboards.php model
     public function winners()

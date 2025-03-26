@@ -38,23 +38,24 @@
         <div class="col-12 col-md-4 mt-3">
           <div class="countdown-timer d-flex justify-content-center align-items-center gap-3">
             <div class="time-box text-center">
-              <span class="time-number">10</span>
+              <span class="time-number">{{ countdown.days }}</span>
               <span class="time-label">days</span>
             </div>
             <div class="time-box text-center">
-              <span class="time-number">44</span>
+              <span class="time-number">{{ countdown.hours }}</span>
               <span class="time-label">hrs</span>
             </div>
             <div class="time-box text-center">
-              <span class="time-number">15</span>
+              <span class="time-number">{{ countdown.minutes }}</span>
               <span class="time-label">mins</span>
             </div>
             <div class="time-box text-center">
-              <span class="time-number">53</span>
+              <span class="time-number">{{ countdown.seconds }}</span>
               <span class="time-label">sec</span>
             </div>
           </div>
         </div>
+
 
         <div class="col-12 col-md-3 mt-3">
           <div class="mt-4 align-content-center text-center">
@@ -82,39 +83,20 @@
               </div>
               <div class="row people align-items-center justify-content-center">
 
-                <div class="card-wrapper item col-md-4 col-lg-3"
+                <div v-for="lottery in lotteries" :key="lottery.id" class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
                     <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
-                    <p class="card-title title mb-2">US Powerball</p>
-                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
+                    <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
+                    <p class="card-title title mb-2">{{ lottery.name }}</p>
+                    <p class="card-description text-muted mb-4">
+                      Next Draw: {{ formatCountdown(lottery.draw_time) }}
+                    </p>
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
 
 
-                <div class="card-wrapper item col-md-4 col-lg-3"
-                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
-                  <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
-                    <img class="card-logo rounded-circle mb-3" :src="image3" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
-                    <p class="card-title title mb-2">US Powerball</p>
-                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
-                  </div>
-                  <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
-                </div>
-
-                <div class="card-wrapper item col-md-4 col-lg-3"
-                  style="margin-left: 10px;margin-top:10px;margin-bottom: 30px;" onclick="selectCard(this)">
-                  <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
-                    <img class="card-logo rounded-circle mb-3" :src="image4" style="height: 80px;" alt="Logo">
-                    <h3 class="card-prize text-danger mb-2">€161,557,581</h3>
-                    <p class="card-title title mb-2">US Powerball</p>
-                    <p class="card-description text-muted mb-4">Next Draw: 3 days 4:21:11</p>
-                  </div>
-                  <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
-                </div>
 
               </div>
               <p class=" text-secondary text-center text-decoration-underline">See All Lotteries</p>
@@ -130,9 +112,10 @@
               <div class="col-12 col-md-12">
                 <div class="intro mt-5">
                   <h2 class="text-center fw-bold">Latest Lotttery Results </h2>
-                  <p class="text-center text-secondary">Lottery results will be updated as per the official web sites of lottery boards.<br/>find the latest
+                  <p class="text-center text-secondary">Lottery results will be updated as per the official web sites of
+                    lottery boards.<br />find the latest
                     winning numbers and see if you won the particular winboard prize.
-                    <br> 
+                    <br>
                   </p>
                 </div>
               </div>
@@ -155,52 +138,32 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr style="background-color: #EEEEEE;">
+
+                            <!-- Iterate over each lottery result (winning_numbers) -->
+                            <tr v-for="(winningResult, index) in winning_numbers" :key="index"
+                              style="background-color: #EEEEEE;">
                               <td>
-                                <i class="bi bi-heart-fill text-danger me-2"></i> Cancer Charity
+                                <i class="bi bi-heart-fill text-danger me-2"></i>{{ winningResult.lottery_name }}
                               </td>
-                              <td>30/05/2018</td>
-                              <td>
+                              <td>{{ winningResult.date }}</td>
+                              <td colspan="3">
+                                <!-- Iterate over winning numbers for each draw -->
+                                <div v-for="(numbers, drawNumber) in winningResult.winning_numbers" :key="drawNumber">
 
-                                <span class="badge badgecol2 border ">19</span>
-                                <span class="badge badgecol2 border ">31</span>
-                                <span class="badge badgecol2 border">21</span>
-                                <span class="badge badgecol1 border ">69</span>
-                                <span class="badge badgecol1 border">77</span>
-
+                                  <span>{{ Object.values(numbers).join(', ') }}</span>
+                                </div>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
-                              </td>
-                              <td>30/05/2018</td>
-                              <td>
-                                <span class="badge badgecol1 border">19</span>
-                                <span class="badge badgecol3 border">31</span>
-                                <span class="badge badgecol1 border">21</span>
-                                <span class="badge badgecol3 border">69</span>
-                                <span class="badge badgecol3 border">77</span>
-                              </td>
-                            </tr>
-                            <tr style="background-color: #EEEEEE;">
-                              <td>
-                                <i class="bi bi-flag-fill text-primary me-2"></i> US Powerball
-                              </td>
-                              <td>30/05/2018</td>
-                              <td>
-                                <span class="badge badgecol1 border">19</span>
-                                <span class="badge badgecol1 border">31</span>
-                                <span class="badge badgecol2 border">21</span>
-                                <span class="badge badgecol1 border">69</span>
-                                <span class="badge badgecol2 border">77</span>
-                              </td>
+
+                            <!-- Fallback if no winning numbers are available -->
+                            <tr v-if="winning_numbers.length === 0">
+                              <td colspan="3">No Winning Numbers Available</td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
-
                     </div>
+
                   </div>
                 </div>
 
@@ -212,34 +175,21 @@
                     </div>
                     <div class="card-body">
                       <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                          style="background-color: #EEEEEE;">
+                        <!-- Iterate through the winners passed from the controller -->
+                        <li v-for="(winner, index) in winners" :key="index"
+                          class="list-group-item d-flex justify-content-between align-items-center"
+                          :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                           <div>
-                            <i class="bi bi-flag-fill text-primary me-2"></i> Viola Pitman
-                            <small class="d-block text-muted">Cancer Charity, 30/05/2018</small>
+                            <i class="bi bi-flag-fill text-primary me-2"></i> {{ winner.name }}
+                            <small class="d-block text-muted">{{ winner.lottery }}</small>
                           </div>
-                          <span class="text-success fw-bold">€500.00</span>
+                          <span class="text-success fw-bold">€{{ winner.amount }}</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                          <div>
-                            <i class="bi bi-flag-fill text-primary me-2"></i> Clay Colon
-                            <small class="d-block text-muted">Powerball, 30/05/2018</small>
-                          </div>
-                          <span class="text-success fw-bold">€3400.00</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                          style="background-color: #EEEEEE;">
-                          <div>
-                            <i class="bi bi-flag-fill text-primary me-2"></i> Inez Newton
-                            <small class="d-block text-muted">Powerball, 30/05/2018</small>
-                          </div>
-                          <span class="text-success fw-bold">€130.00</span>
-                        </li>
-
                       </ul>
                     </div>
                   </div>
                 </div>
+
               </div>
 
             </div>
@@ -294,7 +244,7 @@
                 <div class="feature-box text-center border rounded-3 p-3" style="background-color: #63b5f6;">
                   <p class="text-light">
                     Community-Based: Built and managed by a team of dedicated individuals from various
-backgrounds.
+                    backgrounds.
                   </p>
                 </div>
               </div>
@@ -339,104 +289,76 @@ backgrounds.
               <h2 class="text-center fw-bold">Buy Lottery Tickets Online.</h2>
               <p class="text-center text-secondary mt-3">
                 Book your lucky number online
-Play Smart. Win Big. Be Part of the Community!
+                Play Smart. Win Big. Be Part of the Community!
               </p>
             </div>
           </div>
         </div>
 
         <div class="row justify-content-center mt-4">
-          <div class="col-12 col-md-10  rounded">
+          <div class="col-12 col-md-10 rounded">
             <div class="table-responsive rounded">
               <div class="table-responsive">
                 <table class="table table-bordered text-center align-middle bg-white shadow rounded">
                   <thead class="bg-light align-middle" style="height: 70px;">
                     <tr>
                       <th>Lottery</th>
-                      <th> </th>
-                      <th>Price</th>
-                      <th>Time to Draw</th>
+                      <th>Prize</th>
+                      <th>Time</th>
                       <th>Sold</th>
-                      <th>Status</th>
+                      <th>Buy</th>
+                      <!-- <th>Status</th> -->
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style="background-color: #EEEEEE;">
+                    <tr v-for="(dashboard, index) in upcomingDraws" :key="dashboard.id"
+                      :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                       <td>
-                        <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                        Cancer Charity
+                        <img :src="image2" alt="Flag" class="me-2" style="width: 30px; height: 20px;">
+                        {{ dashboard.name || 'Unknown Lottery' }}
                       </td>
-                      <td>€53,000,000</td>
-                      <td>€3.9</td>
+                      <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>
+
+                      <!-- <td>€{{ ((parseFloat(dashboard.prize) / 100) || 0).toFixed(2) }}</td> -->
                       <td>
                         <div class="d-flex justify-content-center">
                           <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
+                            <span class="badge badgecol2 border">{{ formatTimeRemaining(dashboard.date).days }}</span>
                             <div>days</div>
                           </div>
                           <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
+                            <span class="badge badgecol2 border">{{ formatTimeRemaining(dashboard.date).hours }}</span>
                             <div>hrs</div>
                           </div>
                           <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
+                            <span class="badge badgecol2 border">{{ formatTimeRemaining(dashboard.date).minutes
+                              }}</span>
                             <div>mins</div>
                           </div>
                           <div class="text-center">
-                            <span class="badge badgecol2 border">19</span>
+                            <span class="badge badgecol2 border">{{ formatTimeRemaining(dashboard.date).seconds
+                              }}</span>
                             <div>secs</div>
                           </div>
                         </div>
                       </td>
                       <td>
                         <div class="progress-bar">
-                          <div class="progress-fill" style="width: 50%;">
-                            <span class="progress-text">50%</span>
+                          <div class="progress-fill"
+                            :style="{ width: ((dashboard.pickedNumbers?.length / 100) * 100 || 0) + '%' }">
+                            <span class="progress-text">{{ Math.round((dashboard.pickedNumbers?.length / 100) *
+                              100) }}%</span>
                           </div>
                         </div>
-                      </td>
-                      <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img src="https://via.placeholder.com/30x20" alt="Flag" class="me-2">
-                        US Powerball
-                      </td>
-                      <td>€13,000,000</td>
-                      <td>€3.9</td>
-                      <td>
-                        <div class="d-flex justify-content-center">
-                          <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
-                            <div>days</div>
-                          </div>
-                          <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
-                            <div>hrs</div>
-                          </div>
-                          <div class="text-center me-2">
-                            <span class="badge badgecol2 border">19</span>
-                            <div>mins</div>
-                          </div>
-                          <div class="text-center">
-                            <span class="badge badgecol2 border">19</span>
-                            <div>secs</div>
-                          </div>
-                        </div>
+                        <small>{{ dashboard.pickedNumbers?.length || 0 }}/100 numbers sold</small>
                       </td>
                       <td>
-                        <div class="progress-bar">
-                          <div class="progress-fill" style="width: 50%;">
-                            <span class="progress-text">50%</span>
-                          </div>
-                        </div>
+                        <button class="btn btn-primary btn-sm">Buy Tickets</button>
                       </td>
-                      <td><button class="btn btn-primary btn-sm">Buy Tickets</button></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-
             </div>
             <div class="text-center mt-5 mb-5">
               <a href="#" class="btn btn-link text-primary">View All Lotteries</a>
@@ -450,7 +372,7 @@ Play Smart. Win Big. Be Part of the Community!
 
 
 
-    
+
 
 
 
@@ -458,61 +380,164 @@ Play Smart. Win Big. Be Part of the Community!
   </div>
 </template>
 
-
 <script>
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
-import axios from 'axios';
-
-
-
+import axios from "axios";
 
 export default {
+  props: {
+    latestDraw: String,
+    lotteries: Array,
+    winning_numbers: Array,
+    winners: Array,
+    upcomingDraws: Array
+  },
+
   data() {
     return {
-      image1: '/assets/images/image1.png',
-      image2: '/assets/images/1.png',
-      image3: '/assets/images/2.png',
-      image4: '/assets/images/3.png',
-      image5: '/assets/images/why.png',
-      image6: '/assets/images/contact.png',
+      image1: "/assets/images/image1.png",
+      image2: "/assets/images/1.png",
+      image3: "/assets/images/2.png",
+      image4: "/assets/images/3.png",
+      image5: "/assets/images/why.png",
+      image6: "/assets/images/contact.png",
 
       landingPageData: {},
+      countdown: {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      },
+      countdownInterval: null,
+      now: new Date(),
+      loading: false
     };
-
   },
 
   created() {
     this.fetchLandingPageData();
+    if (this.latestDraw) {
+      this.startCountdown(this.latestDraw);
+    }
   },
+
   methods: {
-    async fetchLandingPageData() {
+    formatTimeRemaining(drawDate) {
+      if (!drawDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
       try {
-        const response = await axios.get('/api/landing-page-data');
-        // console.log('Data fetched:', response.data);
-        this.landingPageData = response.data;
-      } catch (error) {
-        console.error('Error fetching landing page data:', error);
+        const now = new Date();
+        // Set the draw time to 8 PM (20:00:00) on the draw date
+        const drawDateTime = new Date(drawDate);
+        drawDateTime.setHours(20, 0, 0, 0);
+        const diff = drawDateTime - now;
+
+        if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        return { days, hours, minutes, seconds };
+      } catch (e) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
     },
+
+    startCountdown() {
+      // Clear any existing interval
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+      }
+
+      // Update the countdown every second
+      this.countdownInterval = setInterval(() => {
+        // Force Vue to re-render by updating a reactive property
+        this.now = new Date();
+      }, 1000);
+    },
+    async fetchLandingPageData() {
+      try {
+        const response = await axios.get("/api/landing-page-data");
+        this.landingPageData = response.data;
+      } catch (error) {
+        console.error("Error fetching landing page data:", error);
+      }
+    },
+
+    startCountdown(drawDate) {
+      // Convert drawDate to a timestamp
+      const targetDate = new Date(drawDate).getTime();
+
+      this.countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance <= 0) {
+          clearInterval(this.countdownInterval);
+          this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+          return;
+        }
+
+        this.countdown.days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        this.countdown.hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        this.countdown.minutes = Math.floor(
+          (distance % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        this.countdown.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      }, 1000);
+    },
+    formatCountdown(drawTime) {
+      if (!drawTime) return "N/A";
+
+      const now = new Date();
+      const drawDate = new Date(drawTime);
+      const diff = drawDate - now;
+
+      if (diff <= 0) return "Expired";
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      return `${days} days ${hours}:${minutes}:${seconds}`;
+    },
+
+    methods: {
+      extractHighlightedNumbers(numbers) {
+        if (!numbers || numbers.length < 4) return numbers; // Ensure we have enough numbers
+        return [...numbers.slice(0, 2), ...numbers.slice(-2)];
+      }
+    }
+
+
+  },
+  
+  mounted() {
+    setInterval(() => {
+      this.now = new Date();
+    }, 1000);
+  },
+  beforeUnmount() {
+    clearInterval(this.countdownInterval);
   },
 
-  name: "Home",
+
   components: {
     Footer,
-    Nav
+    Nav,
   },
-
-
-
-
-
 };
-
-
 </script>
 
 
+``
 
 <style scoped>
 /* Base styles for card */

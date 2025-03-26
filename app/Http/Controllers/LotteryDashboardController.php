@@ -41,15 +41,26 @@ class LotteryDashboardController extends Controller
             $validated = $request->validate([
                 'price' => 'required|numeric',
                 'date' => 'required|date',
-                'draw' => 'required|string',
-                'drawNumber' => 'required|numeric',
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
             ]);
+
             Log::info('ok', $request->all());
+
+            // Get the last created draw and draw_number
+            $lastDashboard = LotteryDashboards::where('lottery_id', $validated['lottery_id'])
+                ->where('dashboard', $validated['dashboard'])
+                ->where('price', $validated['price'])
+                ->orderBy('draw', 'desc')
+                ->orderBy('draw_number', 'desc')
+                ->first();
+
+            // If no previous draw exists, start from 1
+            $draw = $lastDashboard ? $lastDashboard->draw + 1 : 1;
+            $drawNumber = $lastDashboard ? $lastDashboard->draw_number + 1 : 1;
+
             // Calculate the start date
             $startDate = Carbon::parse($validated['date']);
-            $drawNumber = $validated['drawNumber'];
 
             // Generate the winning numbers (00, 01, 02, ..., 99)
             $winningNumbers = $this->generateWinningNumbers();
@@ -86,7 +97,7 @@ class LotteryDashboardController extends Controller
                     'dashboardType' => 'Last Digits',
                 ]);
 
-                // Increment draw number for next day
+                // Increment draw number for next dashboard
                 $drawNumber++;
             }
 
@@ -109,6 +120,7 @@ class LotteryDashboardController extends Controller
             ], 500);
         }
     }
+
 
 
     private function generateWinningNumbers()

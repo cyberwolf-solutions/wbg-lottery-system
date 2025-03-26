@@ -63,9 +63,11 @@
                                     rows="4" placeholder="Enter description here..." required></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="draw">Color: (#code)</label>
-                                <input type="text" v-model="newLottery.color" id="draw" required />
+                                <label for="colorPicker">Pick a Color:</label>
+                                <input type="color" id="colorPicker" v-model="newLottery.color">
+                                <span>{{ newLottery.color }}</span>
                             </div>
+
 
                             <div class="form-group">
                                 <label for="image">Lottery Image:</label>
@@ -90,7 +92,7 @@
                                 <input type="text" v-model="editingLottery.name" id="name" required />
                                 <!-- Display validation error if name is missing -->
                                 <span v-if="validationErrors.name" class="text-danger">{{ validationErrors.name[0]
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="form-group">
                                 <label for="edescription">Description:</label>
@@ -99,6 +101,11 @@
                                 <span v-if="validationErrors.description" class="text-danger">{{
                                     validationErrors.description[0] }}</span>
                             </div>
+                            <div class="form-group">
+                                <label for="color">Lottery Color:</label>
+                                <input type="color" v-model="editingLottery.color" id="color" />
+                            </div>
+
 
                             <div class="form-group">
                                 <label for="eimage">Lottery Image URL:</label>
@@ -159,7 +166,7 @@ export default {
                 description: '',
                 image: null,
                 price: '',
-                color: ''
+                color: '#000000'
             },
 
             editingLottery: {},
@@ -174,6 +181,10 @@ export default {
 
     ,
     methods: {
+        updateColor(color) {
+            document.getElementById("selectedColorCode").textContent = color;
+            console.log("Selected Color:", color);
+        },
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
@@ -288,6 +299,7 @@ export default {
                 formData.append('name', this.editingLottery.name);
                 formData.append('description', this.editingLottery.description);
                 formData.append('image', this.editingLottery.image);
+                formData.append('color', this.editingLottery.color);
 
                 // Make the update request
                 const csrfToken = this.csrfToken;
