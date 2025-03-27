@@ -8,93 +8,117 @@
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Roles</h2>
                     <button class="btn btn-primary create-button" @click="openAddRolePage">
-                        <i class="fa fa-plus"></i>
+                        <i class="fa fa-plus"></i> Add Role
                     </button>
-
                 </div>
 
                 <!-- Lottery Table Section -->
                 <div class="lottery-table">
                     <h3 class="mt-4">Role Details</h3>
-                    <table>
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Role</th>
-                                <th>Permission</th>
-                                <th>Action</th>
-
-
+                                <th>ID</th>
+                                <th>Role Name</th>
+                                <th>Permissions</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.Role }}</a></td>
-                                <td>{{ dashboard.permission }}</td>
-                                <td><!-- Edit Button -->
-                                    <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
+                            <tr v-for="role in roles" :key="role.id">
+                                <td>{{ role.id }}</td>
+                                <td>{{ role.name }}</td>
+                                <td>{{ role.permissions }}</td>
+                                <td>{{ role.created_at }}</td>
+                                <td>
+                                    <!-- <button @click="editRole(role)" class="btn btn-sm btn-warning mx-1">
                                         <i class="fa fa-edit"></i>
-                                    </button>
-
-                                    <!-- Delete Button -->
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
+                                    </button> -->
+                                    <button @click="confirmDelete(role)" class="btn btn-sm btn-danger mx-1">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
-
-
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
-
             </div>
         </div>
 
-        <router-view />
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="modal fade show" style="display: block;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this role?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="showDeleteModal = false">Cancel</button>
+                        <button type="button" class="btn btn-danger" @click="deleteRole">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 import Sidebar from '@/components/AdminSidebar.vue';
 
-export default {
-    components: {
-        Sidebar,
-    },
-    data() {
-        return {
-            isSidebarVisible: true,
-            isModalOpen: false,
-            isEditModalOpen: false,
-            isDeleteModalOpen: false,
-            dashboards: [
-                { id: 1, Role: 'Role 1', permission: 'Add , Delete , Update', Action: '' },
-                { id: 2, Role: 'Role 2', permission: 'Add , Delete , Update', Action: '' },
-                { id: 3, Role: 'Role 3', permission: 'Add , Delete , Update', Action: '' },
-            ],
-            newDashboard: {
-                price: '',
-                date: '',
-                draw: '',
-                drawNumber: '',
-            },
-            editingDashboard: {},
-        };
-    },
-    methods: {
-        handleSidebarToggle(isVisible) {
-            this.isSidebarVisible = isVisible;
-        },
-        openAddRolePage() {
-            window.location.href = "/api/Roles/Add";
-        }
+const props = defineProps({
+    roles: Array
+});
 
-    },
+const isSidebarVisible = ref(true);
+const showDeleteModal = ref(false);
+const roleToDelete = ref(null);
+
+const handleSidebarToggle = (isVisible) => {
+    isSidebarVisible.value = isVisible;
 };
+const openAddRolePage = async () => {
+    try {
+        window.location.href = ('/api/admin/Roles/Add');
+        console.log(response.data);
+    } catch (error) {
+        console.error('Error fetching add role page:', error);
+    }
+};
+
+// const editRole = async (role) => {
+//     try {
+//         const response = await axios.get(`/api/admin/roles/${role.id}/edit`);
+//         console.log(response.data);
+//     } catch (error) {
+//         console.error('Error fetching role details:', error);
+//     }
+// };
+
+// const confirmDelete = (role) => {
+//     roleToDelete.value = role;
+//     showDeleteModal.value = true;
+// };
+
+// const deleteRole = async () => {
+//     try {
+//         await axios.delete(`/api/admin/roles/${roleToDelete.value.id}`);
+//         showDeleteModal.value = false;
+//         console.log('Role deleted successfully');
+//     } catch (error) {
+//         console.error('Error deleting role:', error);
+//     }
+// };
 </script>
 
 <style scoped>
+/* Add your custom styles here */
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;
