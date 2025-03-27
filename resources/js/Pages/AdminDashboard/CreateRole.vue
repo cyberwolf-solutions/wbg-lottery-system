@@ -9,6 +9,10 @@
 
                 <div class="lottery-table">
                     <h3 class="mt-4">Assign Permissions to Role</h3>
+                    <div class="role-name-container">
+                        <label for="roleName">Role Name:</label>
+                        <input type="text" id="roleName" v-model="roleName" placeholder="Enter role name" class="role-name-input">
+                    </div>
                     <table>
                         <thead>
                             <tr>
@@ -146,4 +150,27 @@ th {
     background-color: #218838;
     transform: scale(1.05);
 }
+
+
+.role-name-container {
+    margin-bottom: 15px;
+}
+
+.role-name-container label {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-right: 10px;
+}
+
+.role-name-input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+    background-color: #2c2c2c;
+    color: #fff;
+}
+
 </style>

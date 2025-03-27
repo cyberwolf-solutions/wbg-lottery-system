@@ -20,7 +20,9 @@ import { Head } from '@inertiajs/vue3';
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">How it works
             </p>
-            <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Start booking your numbers today and invite friends to multiply the fun and
+            <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Start booking your numbers
+                today and
+                invite friends to multiply the fun and
                 rewards!
             </p>
         </div>
@@ -44,7 +46,9 @@ import { Head } from '@inertiajs/vue3';
                             Lucky rewards</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
-                                Winners updated daily.Prize value is 70 times of the initial value of that selected board Purchase
+                                Winners updated daily.Prize value is 70 times of the initial value of that selected
+                                board
+                                Purchase
                                 user id shown where applicable. All Prizes are 100% commission-FREE.
                             </p>
                         </div>
@@ -87,7 +91,8 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    Your win will be directly transferred to your winboard wallet and withdraw from it anytime
+                                    Your win will be directly transferred to your winboard wallet and withdraw from it
+                                    anytime
                                 </p>
                             </div>
 
@@ -120,16 +125,19 @@ import { Head } from '@inertiajs/vue3';
                                     If you have any questions</h1>
                                 <div style="width: 50%;margin-left: auto;margin-right: auto;align-items: left;">
                                     <p style="color: #555; font-size: 14px; margin-bottom: 40px;text-align: left;">
-                                        Start booking your numbers today and invite friends to multiply the fun and rewards!
-Stay tuned here for updates, winner announcements, and special offers!
-Contact us for any questions.
+                                        Start booking your numbers today and invite friends to multiply the fun and
+                                        rewards!
+                                        Stay tuned here for updates, winner announcements, and special offers!
+                                        Contact us for any questions.
                                     </p>
 
                                     <div class="text-center mt-4" style="margin-bottom: 30px;">
-                                        <button class="btn"
-                                            style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
-                                            FAQs
-                                        </button>
+                                        <a :href="route('faq')" :active="route().current('faq')">
+                                            <button class="btn"
+                                                style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
+                                                FAQs
+                                            </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

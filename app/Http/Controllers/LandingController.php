@@ -132,7 +132,7 @@ class LandingController extends Controller
 
 
 
-            // dd($upcomingDraws);
+            // dd($winningNumbers);
 
         
         // dd($closestDrawDate ? $closestDrawDate->toIso8601String() : null);

@@ -1,12 +1,6 @@
-<!-- <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-
-
-</script> -->
-
 <template>
-<Nav />
+    <Nav />
+
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
@@ -25,32 +19,23 @@ import { Head } from '@inertiajs/vue3';
                         you have
                         any questions or queries, our helpful support team will be more than happy to assist.
                     </p>
-                    <form>
-                        <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                            <input
-                                style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                type="text" class="form-control" placeholder="Full Name" />
-                        </div>
-
-                        <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                            <input
-                                style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                type="text" class="form-control" placeholder="Contact number " />
-                        </div>
-
-                        <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                            <input
-                                style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                type="text" class="form-control" placeholder="Email" />
-                        </div>
+                    <form @submit.prevent="sendMessage">
                         <div class="form-group">
-                            <textarea
-                                style="border-style: none; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 20px;"
-                                class="form-control" rows="3" placeholder="Message"></textarea>
+                            <input v-model="fullName" type="text" class="form-control" placeholder="Full Name"
+                                required />
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block"
-                            style="width: 100%;margin-top: 20px;">SEND
-                            MESSAGE</button>
+                        <div class="form-group mt-1">
+                            <input v-model="contactNumber" type="text" class="form-control" placeholder="Contact number"
+                                required />
+                        </div>
+                        <div class="form-group mt-1">
+                            <input v-model="email" type="email" class="form-control" placeholder="Email" required />
+                        </div>
+                        <div class="form-group mt-1">
+                            <textarea v-model="message" class="form-control" rows="3" placeholder="Message"
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-2"  >SEND MESSAGE</button>
                     </form>
                 </div>
                 <!-- Right Section -->
@@ -94,6 +79,11 @@ export default {
 
             logoUrl3: '/assets/images/contact.jpg', // Path to your logo
 
+            fullName: '',
+            contactNumber: '',
+            email: '',
+            message: '',
+
         };
     },
     name: "contact",
@@ -102,17 +92,43 @@ export default {
         Nav,
 
     },
+    methods: {
+        async sendMessage() {
+            try {
+                const response = await axios.post('/send-contact-email', {
+                    full_name: this.fullName,
+                    contact_number: this.contactNumber,
+                    email: this.email,
+                    message: this.message,
+                });
+                alert('Message sent successfully!');
+                this.resetForm();
+            } catch (error) {
+                console.error('There was an error sending the email:', error);
+            }
+        },
+        resetForm() {
+            this.fullName = '';
+            this.contactNumber = '';
+            this.email = '';
+            this.message = '';
+        }
+    }
 };
 </script>
 
 
 <style>
 .contact-right {
-    position: relative; /* Ensures proper positioning for overlay */
-    color: white; /* Make text stand out on a dark background */
+    position: relative;
+    /* Ensures proper positioning for overlay */
+    color: white;
+    /* Make text stand out on a dark background */
     padding: 20px;
-    overflow: hidden; /* Ensures the image doesn't overflow the container */
-    border-radius: 10px; /* Optional: Rounded corners */
+    overflow: hidden;
+    /* Ensures the image doesn't overflow the container */
+    border-radius: 10px;
+    /* Optional: Rounded corners */
 }
 
 .contact-bg {
@@ -121,14 +137,18 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the entire container */
-    filter: brightness(40%); /* Reduce brightness to darken the image */
-    z-index: 0; /* Sends the image behind the text */
+    object-fit: cover;
+    /* Ensures the image covers the entire container */
+    filter: brightness(40%);
+    /* Reduce brightness to darken the image */
+    z-index: 0;
+    /* Sends the image behind the text */
 }
 
 .contact-content {
     position: relative;
-    z-index: 1; /* Brings the text in front of the image */
+    z-index: 1;
+    /* Brings the text in front of the image */
 }
 
 

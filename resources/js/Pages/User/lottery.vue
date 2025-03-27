@@ -30,6 +30,78 @@ function showResponse(message, position = 'bottom') {
 const authToken = localStorage.getItem('auth_token');
 console.log('Auth Token:', authToken);
 let checkoutTimeout;
+
+
+
+
+function checkout() {
+    if (pickedNumbers.value.length === 0) {
+        showResponse('Number Picked successfully!', 'bottom');
+        return;
+    }
+
+    const numbersData = pickedNumbers.value.map(picked => ({
+        number: picked.number,  // Ensure number is correctly formatted
+        price: parseFloat(picked.price),  // Ensure price is a number
+        dashboard_id: picked.lottery_dashboard_id
+    }));
+
+    const dashboardId = selectedLotteryDetails.value[0]?.id;
+
+    if (!dashboardId) {
+        // alert("Dashboard ID is missing!");
+        showResponse("Dashboard ID is missing!", "bottom");
+        return;
+    }
+
+    console.log("Checkout Data:", {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    });
+
+    axios.post('/api/checkout', {
+        numbers: numbersData,
+        lottery_id: props.lotterie.id,
+        dashboard_id: dashboardId,
+        total_price: totalPrice.value,
+    })
+        .then(response => {
+            showResponse("Number Picked", "bottom");
+            pickedNumbers.value = [];  // Clear picked numbers after checkout
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error("Checkout failed:", error.response.data.message);
+            // alert(error.response.data.message || "Checkout failed! Please try again.");
+            showResponse(error.response?.data?.message || "Checkout failed! Please try again.", "bottom");
+        });
+}
+
+
+
+
+function deletePickedNumbers() {
+    axios.post('/api/delete-picked-numbers')
+        .then(response => {
+            console.log(response.data.message);
+            pickedNumbers.value = []; // Clear the picked numbers locally
+            savePickedNumbersToLocalStorage(); // Save the updated empty list to localStorage
+        })
+        .catch(error => {
+            console.error('Error deleting picked numbers:', error.response?.data?.message || error.message);
+        });
+}
+
+
+
+
+
+
+
+
+
 //call checkout function after 10 mins
 function startCountdownTimer() {
     countdownInterval.value = setInterval(() => {
@@ -48,6 +120,10 @@ const formattedCountdown = computed(() => {
 });
 onMounted(() => {
     startCountdownTimer();
+    router.beforeEach((to, from, next) => {
+        checkout();
+        next();
+    });
 });
 onUnmounted(() => {
     if (countdownInterval.value) {
@@ -144,9 +220,10 @@ onMounted(() => {
 
     loadPickedNumbersFromLocalStorage(); // Load from localStorage when the page reloads
 
-    // Call deletePickedNumbers if necessary (e.g., reset or cleanup on page load)
-    deletePickedNumbers();
+    
+    // deletePickedNumbers();
     startCheckoutTimer();
+    checkout();
 
 });
 
@@ -302,65 +379,6 @@ const winningNumbers = computed(() => {
 
 
 
-function checkout() {
-    if (pickedNumbers.value.length === 0) {
-        showResponse('Number Picked successfully!', 'bottom');
-        return;
-    }
-
-    const numbersData = pickedNumbers.value.map(picked => ({
-        number: picked.number,  // Ensure number is correctly formatted
-        price: parseFloat(picked.price),  // Ensure price is a number
-        dashboard_id: picked.lottery_dashboard_id
-    }));
-
-    const dashboardId = selectedLotteryDetails.value[0]?.id;
-
-    if (!dashboardId) {
-        // alert("Dashboard ID is missing!");
-        showResponse("Dashboard ID is missing!", "bottom");
-        return;
-    }
-
-    console.log("Checkout Data:", {
-        numbers: numbersData,
-        lottery_id: props.lotterie.id,
-        dashboard_id: dashboardId,
-        total_price: totalPrice.value,
-    });
-
-    axios.post('/api/checkout', {
-        numbers: numbersData,
-        lottery_id: props.lotterie.id,
-        dashboard_id: dashboardId,
-        total_price: totalPrice.value,
-    })
-        .then(response => {
-            showResponse("Number Picked", "bottom");
-            pickedNumbers.value = [];  // Clear picked numbers after checkout
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error("Checkout failed:", error.response.data.message);
-            // alert(error.response.data.message || "Checkout failed! Please try again.");
-            showResponse(error.response?.data?.message || "Checkout failed! Please try again.", "bottom");
-        });
-}
-
-
-
-
-function deletePickedNumbers() {
-    axios.post('/api/delete-picked-numbers')
-        .then(response => {
-            console.log(response.data.message);
-            pickedNumbers.value = []; // Clear the picked numbers locally
-            savePickedNumbersToLocalStorage(); // Save the updated empty list to localStorage
-        })
-        .catch(error => {
-            console.error('Error deleting picked numbers:', error.response?.data?.message || error.message);
-        });
-}
 
 
 const selectedNumber = ref(null);
