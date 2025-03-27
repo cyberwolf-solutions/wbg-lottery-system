@@ -27,7 +27,12 @@ class ResultsController extends Controller
 
     public function index()
     {
-        $lotteries = Lotteries::with('dashboards')->get();
+        $lotteries = Lotteries::with(['dashboards' => function ($query) {
+
+            $query->where('date', '<', now()->format('Y-m-d'))
+                ->where('status', 'deactive');
+                // ->orderBy('date', 'desc');
+        }])->get();
 
         $results = Results::with('lottery', 'dashboard')
             ->orderBy('lottery_id')
@@ -56,6 +61,9 @@ class ResultsController extends Controller
                     }
                 }
             }
+
+            // Re-index the array after unsetting elements
+            $lottery->dashboards = array_values($lottery->dashboards->toArray());
         }
 
         return Inertia::render('AdminDashboard/results', [
@@ -187,7 +195,7 @@ class ResultsController extends Controller
             // Process affiliate commission (10% of the winner's prize)
             $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
             Log::info('Data', ['affiliate' => $affiliate]);
-         
+
             // dd($affiliate);
 
             if ($affiliate) {

@@ -21,6 +21,28 @@
         <!-- Lottery Table Section -->
         <div class="lottery-table">
           <h3 class="mt-4">{{ lotteries.name }} Dashboard Details</h3>
+          
+          <!-- Pagination Controls - Top -->
+          <!-- <div class="pagination-controls">
+            <button 
+              @click="currentPage--" 
+              :disabled="currentPage === 1"
+              class="pagination-button"
+            >
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ currentPage }} of {{ totalPages }}
+            </span>
+            <button 
+              @click="currentPage++" 
+              :disabled="currentPage === totalPages"
+              class="pagination-button"
+            >
+              Next
+            </button>
+          </div>
+           -->
           <table>
             <thead>
               <tr>
@@ -28,30 +50,40 @@
                 <th>Price</th>
                 <th>Draw Date</th>
                 <th>Draw Number</th>
-                <th>Actions</th>
-
+                <th>Type</th>
               </tr>
             </thead>
-
             <tbody>
-              <tr v-for="dashboard in dashboards" :key="dashboard.id">
+              <tr v-for="dashboard in paginatedDashboards" :key="dashboard.id">
                 <td><a href="#">{{ dashboard.dashboard }}</a></td>
                 <td>{{ dashboard.price }}</td>
                 <td>{{ dashboard.date }}</td>
                 <td>{{ dashboard.draw_number }}</td>
-                <td>
-                  <button @click="editDashboard(dashboard)" class="btn btn-warning btn-sm">
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <button @click="confirmDelete(dashboard)" class="btn btn-danger btn-sm mx-2">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
+                <td>{{ dashboard.dashboardType }}</td>
               </tr>
             </tbody>
-
-
           </table>
+          
+          <!-- Pagination Controls - Bottom -->
+          <div class="pagination-controls">
+            <button 
+              @click="currentPage--" 
+              :disabled="currentPage === 1"
+              class="pagination-button"
+            >
+              Previous
+            </button>
+            <span class="page-info">
+              Page {{ currentPage }} of {{ totalPages }}
+            </span>
+            <button 
+              @click="currentPage++" 
+              :disabled="currentPage === totalPages"
+              class="pagination-button"
+            >
+              Next
+            </button>
+          </div>
         </div>
 
         <!-- Modal for Creating a Dashboard -->
@@ -86,7 +118,7 @@
                   <option value="USDT1000 Dashboard">USDT1000 Dashboard</option>
                 </select>
               </div>
-              
+
               <!-- <div class="form-group">
                 <label for="dashboardType">Dashboard Type:</label>
                 <select v-model="newDashboard.dashboardType" id="dashboardType" class="form-control" required>
@@ -175,7 +207,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';  // Import `ref` from Vue
+import { ref, computed } from 'vue';
 import Sidebar from '@/components/AdminSidebar.vue';
 
 export default {
@@ -192,6 +224,8 @@ export default {
       isModalOpen: false,
       isEditModalOpen: false,
       isDeleteModalOpen: false,
+      currentPage: 1,
+      itemsPerPage: 10,
       newDashboard: {
         dashboard: '',
         price: '',
@@ -200,14 +234,25 @@ export default {
         draw_number: '',
         lottery_id: '',
         id: '',
-       
-
       },
       editingDashboard: {},
-      responseMessage: ref(null),  // Use `ref` to make this reactive
+      responseMessage: ref(null),
       responseClass: ref('bottom-response'),
     };
   },
+
+  computed: {
+    totalPages() {
+      return Math.ceil(this.dashboards.length / this.itemsPerPage);
+    },
+
+    paginatedDashboards() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.dashboards.slice(start, end);
+    }
+  },
+
   mounted() {
     console.log("Lotteries received:", this.lotteries);
     console.log("Dashboards:", this.dashboards);
@@ -218,7 +263,6 @@ export default {
       this.responseMessage = message;
       this.responseClass = position === 'bottom' ? 'top-response' : 'bottom-response';
 
-      // Hide the message after 3 seconds
       setTimeout(() => {
         this.responseMessage = null;
       }, 3000);
@@ -273,13 +317,13 @@ export default {
     async createDashboard() {
       try {
         const response = await axios.post('/api/admin/dashboard/create', this.newDashboard);
-        this.dashboards.push(response.data); // Add the newly created dashboard
+        this.dashboards.push(response.data);
         this.closeModal();
-        this.showResponse('Dashboard Created', 'bottom');  // Call showResponse method
+        this.showResponse('Dashboard Created', 'bottom');
         window.location.reload();
       } catch (error) {
         console.error("Error creating dashboard: ", error);
-        this.showResponse('Failed to create dashboard. Please try again.', 'bottom'); // Call showResponse on error
+        this.showResponse('Failed to create dashboard. Please try again.', 'bottom');
       }
     }
   },
@@ -545,5 +589,31 @@ button.btn-danger {
 
 button:hover {
   opacity: 0.9;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  background-color: #60c8f2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-weight: bold;
 }
 </style>

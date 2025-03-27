@@ -61,7 +61,7 @@
 
             <!-- ------ -->
 
-            <div class="row d-flex justify-content-center align-items-center"
+            <div class="row d-flex justify-content-center align-items-center mb-0"
                 style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
                 <div class="col-12" style="background-color:#EAF4FC;">
 
@@ -135,7 +135,7 @@
 
 
 
-            <Footer />
+            <Footer  class="mt-1" />
     </AuthenticatedLayout>
 </template>
 

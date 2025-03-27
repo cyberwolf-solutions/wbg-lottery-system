@@ -62,16 +62,21 @@
                             <a :href="route('latest.index')" :active="route().current('latest.index')"
                                 class="nav-link">Latest results</a>
                         </li>
+                        <li class="nav-item mx-2">
+                            <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')"
+                                class="nav-link">Lotteries</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a :href="route('winner.index')" :active="route().current('winner.index')"
+                                class="nav-link">Winners</a>
+                        </li>
 
                         <li class="nav-item mx-2">
                             <a :href="route('contact.index')" :active="route().current('contact.index')"
                                 class="nav-link">Contact</a>
                         </li>
 
-                        <li class="nav-item mx-2">
-                            <a :href="route('winner.index')" :active="route().current('winner.index')"
-                                class="nav-link">Winners</a>
-                        </li>
+                        
                         <!-- Join Us & Log In Buttons -->
                         <li class="nav-item mx-5">
                             <template v-if="!$page.props.auth.user">

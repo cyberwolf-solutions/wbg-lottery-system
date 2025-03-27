@@ -20,7 +20,7 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Image</th>
-                                <th>Actions</th> <!-- New header for actions -->
+                                <th>Actions</th> 
                             </tr>
                         </thead>
                         <tbody>
@@ -32,12 +32,12 @@
                                 </td>
 
                                 <td>
-                                    <!-- Edit Button -->
-                                    <button @click="editLottery(lottery)" class="btn btn-warning btn-sm">
+                                    
+                                    <!-- <button @click="editLottery(lottery)" class="btn btn-warning btn-sm">
                                         <i class="fa fa-edit"></i>
-                                    </button>
+                                    </button> -->
 
-                                    <!-- Delete Button -->
+                                    
                                     <button @click="confirmDelete(lottery)" class="btn btn-danger btn-sm mx-2">
                                         <i class="fa fa-trash"></i>
                                     </button>

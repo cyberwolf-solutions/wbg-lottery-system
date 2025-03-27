@@ -38,16 +38,12 @@ import { Head } from '@inertiajs/vue3';
                     <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
                         <div class="card-body text-center">
                             <div class="row" style="height: 70px;">
-                                <div class="col-6">
-                                    <img :src="logoUrl" alt="Logo"
-                                        class="card-img-top" style="height: 100px;width: auto; object-fit: contain;">
+                                <div class="col-12 d-flex justify-content-center align-items-center">
+                                    <img :src="logoUrl" alt="Logo" class="card-img-top"
+                                        style="height: 100px; width: auto; object-fit: contain;">
                                 </div>
-                                <div class="col-6 d-flex align-items-center justify-content-center">
-                                    <button class="btn"
-                                        style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);">
-                                        PLAY NOW !
-                                    </button>
-                                </div>
+
+
                             </div>
                             <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
 
@@ -77,6 +73,7 @@ import { Head } from '@inertiajs/vue3';
                         <div class="draw-info" v-if="lottery.dashboardInfo">
                             <p>
                                 <span>Lottery:</span> <span>{{ lottery.name || 'N/A' }}</span>
+                                <br>
                                 <i class="fas fa-ticket-alt draw-icon"></i>
                                 <span>Type:</span> <span>{{ lottery.dashboardInfo.dashboardType || 'N/A' }}</span>
                                 <br />
@@ -93,7 +90,7 @@ import { Head } from '@inertiajs/vue3';
         </div>
 
 
-        <div class="row d-flex justify-content-center align-items-center"
+        <div class="row d-flex justify-content-center align-items-center mb-0"
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
@@ -126,10 +123,12 @@ import { Head } from '@inertiajs/vue3';
                                     </p>
 
                                     <div class="text-center mt-4" style="margin-bottom: 30px;">
-                                        <button class="btn"
-                                            style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
-                                            FAQs
-                                        </button>
+                                        <a :href="route('faq')" :active="route().current('faq')">
+                                            <button class="btn"
+                                                style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
+                                                FAQs
+                                            </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +144,7 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-        <Footer />
+        <Footer class="mt-1" />
     </AuthenticatedLayout>
 </template>
 
@@ -164,10 +163,10 @@ export default {
     },
     props: {
         lotteries: {
-      type: Array,
-      required: true,
-      default: () => []
-    }
+            type: Array,
+            required: true,
+            default: () => []
+        }
     },
 
     methods: {
