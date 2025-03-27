@@ -1,14 +1,18 @@
 <?php
 
-use App\Http\Controllers\AdminDashboardController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\roleController;
 use App\Http\Controllers\testController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ResultsController;
+use App\Http\Controllers\WinnersController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\NumberPickController;
 use App\Http\Controllers\WithdrawalController;
@@ -19,6 +23,7 @@ use Illuminate\Contracts\Foundation\Application;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CreditRequestController;
 use App\Http\Controllers\WalletHistoryController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -29,7 +34,6 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\WinnersController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -119,13 +123,13 @@ Route::middleware(['web'])->group(function () {
         return Inertia::render("AdminDashboard/Users");
     });
 
-    Route::get("/Roles", function () {
-        return Inertia::render("AdminDashboard/Roles");
-    });
+    // Route::get("/Roles", function () {
+    //     return Inertia::render("AdminDashboard/Roles");
+    // });
 
-    Route::get("/Roles/Add", function () {
-        return Inertia::render("AdminDashboard/CreateRole");
-    });
+    // Route::get("/Roles/Add", function () {
+    //     return Inertia::render("AdminDashboard/CreateRole");
+    // });
 
 
 
@@ -136,8 +140,21 @@ Route::middleware(['web'])->group(function () {
     });
 
 
+    Route::get('/admin/permissions', function () {
+        $admin = Auth::guard('admin')->user();
 
+        Log::info('Admin Accessed Permissions:', [
+            'id' => $admin ? $admin->id : null,
+            'name' => $admin ? $admin->name : null,
+            'email' => $admin ? $admin->email : null,
+           'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
+        ]);
 
+        return response()->json([
+            'admin_name' => $admin ? $admin->name : null,
+           'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
+        ]);
+    })->middleware('auth:admin');
 
 
     Route::prefix('admin')->group(function () {
@@ -209,6 +226,19 @@ Route::middleware(['web'])->group(function () {
             Route::post('/logout', [AdminAuthController::class, 'logout']);
 
 
+            Route::get('/Roles', [roleController::class, 'index']);
+            Route::get('/Roles/Add', [roleController::class, 'add']);
+            Route::post('/admin/roles', [roleController::class, 'store']);
+
+
+
+            Route::get('/users', [AdminUserController::class, 'index']);
+            Route::post('/users', [AdminUserController::class, 'store']);
+
+
+
+
+
 
             // Route::get('/dashboard', function () {
             //     return Inertia::render('AdminDashboard/Dashboard');
@@ -221,18 +251,6 @@ Route::middleware(['web'])->group(function () {
 
             Route::get("/customers", function () {
                 return Inertia::render("AdminDashboard/Customers");
-            });
-
-            Route::get("/users", function () {
-                return Inertia::render("AdminDashboard/Users");
-            });
-
-            Route::get("/Roles", function () {
-                return Inertia::render("AdminDashboard/Roles");
-            });
-
-            Route::get("/Roles/Add", function () {
-                return Inertia::render("AdminDashboard/CreateRole");
             });
         });
     });
