@@ -1,51 +1,49 @@
+
 <template>
     <div id="app" class="d-flex dark-theme">
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
-            <!-- Dashboard Widgets -->
             <div class="dashboard-banner">
-                <!-- Top Navbar Section -->
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Users</h2>
                     <button class="btn btn-primary" @click="openModal">
-                        <i class="fa fa-plus"></i>
+                        <i class="fa fa-plus"></i> Add User
                     </button>
                 </div>
 
-               
-                <!-- Transactions Cards Section -->
                 <div class="transactions-cards">
                     <h3 class="mt-4">User Details</h3>
                     <div class="card-container">
-                        <div class="transaction-card relative" v-for="(dashboard, index) in dashboards" :key="index">
+                        <div class="transaction-card relative" v-for="(admin, index) in admins" :key="admin.id">
                             <div class="card-header flex justify-between items-center">
-                                <span>{{ dashboard.name }}</span>
-                                <!-- Three dots button -->
+                                <span>{{ admin.name }}</span>
                                 <div class="relative">
                                     <button @click="toggleMenu(index)" class="text-gray-500 focus:outline-none">
-                                        &#8942; <!-- Three dots -->
+                                        &#8942;
                                     </button>
                                     <div v-if="menuIndex === index"
                                         class="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-lg border">
-                                        <button @click="editUser(dashboard)"
+                                        <button @click="editUser(admin)"
                                             class="block w-full text-left px-4 py-2 text-black text-sm hover:bg-gray-100">
                                             Edit
                                         </button>
-                                        <button @click="changePassword(dashboard)"
+                                        <button @click="changePassword(admin)"
                                             class="block w-full text-left px-4 py-2 text-black text-sm hover:bg-gray-100">
-                                            <span class=" text-sm">Change Password
-                                            </span>
+                                            Change Password
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <p><strong>Email:</strong> {{ dashboard.email }}</p>
-                                <p><strong>Role:</strong> {{ dashboard.Role }}</p>
+                                <p><strong>Email:</strong> {{ admin.email }}</p>
+                                <p><strong>Role:</strong> {{ admin.role }}</p>
                                 <p><strong>Status:</strong>
-                                    <span
-                                        :class="{ 'text-green-500': dashboard.Status === 'Active', 'text-red-500': dashboard.Status !== 'Active' }">
-                                        {{ dashboard.Status }}
+                                    <span :class="{ 
+                                        'text-green-500': admin.status === 'Active', 
+                                        'text-blue-500': admin.status === 'Super Admin',
+                                        'text-red-500': admin.status === 'Inactive' 
+                                    }">
+                                        {{ admin.status }}
                                     </span>
                                 </p>
                             </div>
@@ -71,90 +69,107 @@
                     <div class="form-group">
                         <label>Role</label>
                         <select v-model="newUser.role" class="form-control">
-                            <option value="Super Admin">Super Admin</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Cashier">Cashier</option>
+                            <option v-for="role in roles" :value="role" :key="role">
+                                {{ role }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" v-model="newUser.password" class="form-control"
-                            placeholder="Enter password" />
+                        <input type="password" v-model="newUser.password" class="form-control" 
+                               placeholder="Enter password" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" @click="createUser">Create</button>
+                    <button class="btn btn-success" @click="createUser" :disabled="isSubmitting">
+                        <span v-if="isSubmitting" class="spinner-border spinner-border-sm"></span>
+                        {{ isSubmitting ? 'Creating...' : 'Create' }}
+                    </button>
                     <button class="btn btn-danger" @click="closeModal">Cancel</button>
                 </div>
             </div>
         </div>
-
-        <router-view />
     </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 import Sidebar from '@/components/AdminSidebar.vue';
 
-export default {
-    components: {
-        Sidebar,
-    },
-    data() {
-        return {
-            isSidebarVisible: true,
-            isModalOpen: false,
-            newUser: {
-                name: '',
-                email: '',
-                role: 'Admin',
-                password: '',
-            },
-            dashboards: [
-                { name: 'User A', Role: 'Super Admin', Status: 'Active' },
-                { name: 'User B', Role: 'Admin', Status: 'Active' },
-                { name: 'User C', Role: 'Cashier', Status: 'Active' }
-            ],
-            menuIndex: null,
-        };
-    },
-    methods: {
-        handleSidebarToggle(isVisible) {
-            this.isSidebarVisible = isVisible;
-        },
-        openModal() {
-            this.isModalOpen = true;
-        },
-        closeModal() {
-            this.isModalOpen = false;
-            this.resetForm();
-        },
-        createUser() {
-            if (this.newUser.name && this.newUser.email && this.newUser.role && this.newUser.password) {
-                this.dashboards.push({
-                    name: this.newUser.name,
-                    Role: this.newUser.role,
-                    Status: 'Active'
-                });
-                this.closeModal();
-            } else {
-                alert('Please fill all fields!');
-            }
-        },
-        resetForm() {
-            this.newUser = { name: '', email: '', role: 'Admin', password: '' };
-        },
+const props = defineProps({
+    admins: Array,
+    roles: Array
+});
 
-        toggleMenu(index) {
-            this.menuIndex = this.menuIndex === index ? null : index;
-        },
-        editUser(user) {
-            alert("Edit");
-        },
-        changePassword(user) {
-            alert('Changing password');
+const isSidebarVisible = ref(true);
+const isModalOpen = ref(false);
+const menuIndex = ref(null);
+const isSubmitting = ref(false);
+
+const newUser = ref({
+    name: '',
+    email: '',
+    role: props.roles[0] || 'Admin',
+    password: ''
+});
+
+const handleSidebarToggle = (isVisible) => {
+    isSidebarVisible.value = isVisible;
+};
+
+const openModal = () => {
+    isModalOpen.value = true;
+};
+
+const closeModal = () => {
+    isModalOpen.value = false;
+    resetForm();
+};
+
+import axios from 'axios';
+
+const createUser = async () => {
+    isSubmitting.value = true;
+
+    try {
+        const response = await axios.post('/api/admin/users', newUser.value);
+        
+        // Handle success
+        closeModal();
+    } catch (error) {
+        if (error.response && error.response.data) {
+            alert(Object.values(error.response.data.errors || {}).join('\n'));
+        } else {
+            alert('An error occurred. Please try again.');
         }
+    } finally {
+        isSubmitting.value = false;
     }
+};
+
+
+const resetForm = () => {
+    newUser.value = { 
+        name: '', 
+        email: '', 
+        role: props.roles[0] || 'Admin', 
+        password: '' 
+    };
+};
+
+const toggleMenu = (index) => {
+    menuIndex.value = menuIndex.value === index ? null : index;
+};
+
+const editUser = (admin) => {
+    alert(`Editing user: ${admin.name}`);
+    menuIndex.value = null;
+};
+
+const changePassword = (admin) => {
+    alert(`Changing password for: ${admin.name}`);
+    menuIndex.value = null;
 };
 </script>
 

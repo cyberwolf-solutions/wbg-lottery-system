@@ -9,28 +9,32 @@ use Spatie\Permission\Models\Role;
 class PermissionSeeder extends Seeder
 {
     public function run(): void
-    {
-        $permissions = [
-            'manage users',
-            'create users',
-            'view users',
-            'edit users',
-            'delete users',
-            'manage roles',
-            'assign roles'
-        ];
+{
+    $permissions = [
+        'view users',
+        'view dashboard',
+        'manage users',
+        'manage roles',
+        'manage customers',
+        'manage lotteries',
+        'manage dashboards',
+        'view results',
+        'manage winners',
+        'manage credits',
+        'manage withdrawals',
+        'view purchases',
+        'view wallet history'
+    ];
 
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'admin']);
-        }
-
-        // Create Roles
-        $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'admin']);
-        $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'admin']);
-
-        // Assign Permissions to Roles
-        $adminRole->syncPermissions($permissions); // Assign all permissions to Admin
-        $editorRole->syncPermissions(['view users']); // Editor can only view users
+    foreach ($permissions as $permissionName) {
+        Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'admin']);
     }
-}
 
+    // Assign permissions to roles
+    $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'admin']);
+    $adminRole->syncPermissions($permissions);
+    
+    $editorRole = Role::firstOrCreate(['name' => 'Editor', 'guard_name' => 'admin']);
+    $editorRole->syncPermissions(['view dashboard', 'view users', 'view results']);
+}
+}
