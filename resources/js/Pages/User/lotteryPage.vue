@@ -1,12 +1,5 @@
-<!-- <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-
-
-</script> -->
-
 <template>
-
+    <Nav />
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -16,7 +9,7 @@ import { Head } from '@inertiajs/vue3';
             </h2>
         </template> -->
 
-        <div class="landing-page container-fluid px-0">
+        <div class="landing-page container-fluid px-0 mb-0">
             <div class="d-flex justify-content-center align-items-center mt-4"
                 style="height: auto; flex-direction: column; text-align: center;">
                 <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Lottery Page
@@ -35,230 +28,68 @@ import { Head } from '@inertiajs/vue3';
 
             <div class="container py-5">
                 <div class="row g-4 d-flex justify-content-center align-items-center">
-                    <!-- Card 1 -->
-
-                    <div class="col-md-6 col-lg-5">
+                    <!-- Loop through lotteries -->
+                    <div v-for="lottery in lotteries" :key="lottery.id" class="col-md-6 col-lg-5">
                         <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
                             <div class="card-body text-center">
                                 <div class="row" style="height: 70px;">
                                     <div class="col-6">
-                                        <img :src="logoUrl" alt="Logo" class="card-img-top"
+                                        <!-- Display lottery image -->
+                                        <img :src="lottery.image || logoUrl1" alt="Lottery Image" class="card-img-top"
                                             style="height: 100px;width: auto;">
                                     </div>
                                     <div class="col-6 d-flex align-items-center justify-content-center">
-                                        <button class="btn"
-                                            style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                            PLAY NOW !
+                                        <button class="btn text-white"
+                                            style="border-radius: 50px; padding: 8px 20px; font-size: 14px; background-color: rgb(96, 200, 242);"
+                                            @click="handlePlayNow(lottery.id)">
+                                            PLAY NOW!
                                         </button>
+
                                     </div>
                                 </div>
                                 <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
 
-                                <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
+                                <!-- Display lottery name -->
+                                <p style="font-size: 14px; color: #555; margin-bottom: 20px;">{{ lottery.name }}</p>
+
+                                <!-- Display winning numbers dynamically if you have this data -->
                                 <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <!-- You can display winning numbers here, if available -->
+                                    <span
+                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
+                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                         19
                                     </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <span
+                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
+                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                         31
                                     </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <span
+                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
+                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                         21
                                     </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <span
+                                        style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
+                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                         69
                                     </span>
                                 </div>
                             </div>
                             <!-- Bottom Blue Section -->
-                            <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
+                            <div :style="{ backgroundColor: lottery.color }" style="padding: 10px; text-align: center; 
                     border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-                                <p style="font-size: 14px; color: #fff; margin: 0;">
-                                    <i class="fas fa-clock"></i> 3 days left
-                                </p>
+
                             </div>
                         </div>
                     </div>
-
-                    <!-- Card 1 -->
-
-                    <div class="col-md-6 col-lg-5">
-                        <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                            <div class="card-body text-center">
-                                <div class="row" style="height: 70px;">
-                                    <div class="col-6">
-                                        <img :src="logoUrl2" alt="Logo" class="card-img-top"
-                                            style="height: 100px;width: auto;">
-                                    </div>
-                                    <div class="col-6 d-flex align-items-center justify-content-center">
-                                        <button class="btn"
-                                            style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                            PLAY NOW !
-                                        </button>
-                                    </div>
-                                </div>
-                                <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                                <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        31
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        21
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        69
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- Bottom Blue Section -->
-                            <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
-                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-                                <p style="font-size: 14px; color: #fff; margin: 0;">
-                                    <i class="fas fa-clock"></i> 3 days left
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 1 -->
-
-                    <div class="col-md-6 col-lg-5">
-                        <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                            <div class="card-body text-center">
-                                <div class="row" style="height: 70px;">
-                                    <div class="col-6">
-                                        <img :src="logoUrl1" alt="Logo" class="card-img-top"
-                                            style="height: 100px;width: auto;">
-                                    </div>
-                                    <div class="col-6 d-flex align-items-center justify-content-center">
-                                        <button class="btn"
-                                            style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                            PLAY NOW !
-                                        </button>
-                                    </div>
-                                </div>
-                                <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                                <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        31
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        21
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        69
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- Bottom Blue Section -->
-                            <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
-                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-                                <p style="font-size: 14px; color: #fff; margin: 0;">
-                                    <i class="fas fa-clock"></i> 3 days left
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 1 -->
-
-                    <div class="col-md-6 col-lg-5">
-                        <div class="card shadow" style="border-radius: 15px; border: none; overflow: hidden;">
-                            <div class="card-body text-center">
-                                <div class="row" style="height: 70px;">
-                                    <div class="col-6">
-                                        <img :src="logoUrl" alt="Logo" class="card-img-top"
-                                            style="height: 100px;width: auto;">
-                                    </div>
-                                    <div class="col-6 d-flex align-items-center justify-content-center">
-                                        <button class="btn"
-                                            style="border-radius: 50px; padding: 8px 20px; font-size: 14px;background-color: rgb(96, 200, 242);;">
-                                            PLAY NOW !
-                                        </button>
-                                    </div>
-                                </div>
-                                <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
-
-                                <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
-                                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        31
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        21
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
-                             border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        69
-                                    </span>
-                                </div>
-                            </div>
-                            <!-- Bottom Blue Section -->
-                            <div style="background-color: rgb(96, 200, 242);; padding: 10px; text-align: center; 
-                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-                                <p style="font-size: 14px; color: #fff; margin: 0;">
-                                    <i class="fas fa-clock"></i> 3 days left
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Add more cards as necessary -->
-                </div>
-
-                <div class="text-center mt-4">
-                    <button class="btn"
-                        style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;">Load
-                        More</button>
+                    <!-- End Loop -->
                 </div>
             </div>
 
 
-            <div class="row d-flex justify-content-center align-items-center"
+            <div class="row d-flex justify-content-center align-items-center mb-0"
                 style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
                 <div class="col-12" style="background-color:#EAF4FC;">
 
@@ -291,10 +122,12 @@ import { Head } from '@inertiajs/vue3';
                                         </p>
 
                                         <div class="text-center mt-4" style="margin-bottom: 30px;">
-                                            <button class="btn"
-                                                style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
-                                                FAQs
-                                            </button>
+                                            <a :href="route('faq')" :active="route().current('faq')">
+                                                <button class="btn"
+                                                    style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
+                                                    FAQs
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -308,21 +141,60 @@ import { Head } from '@inertiajs/vue3';
             </div>
 
         </div>
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h5 class="modal-title" id="registerModalLabel">Join Us</h5> -->
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <RegisterForm />
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
+        <Footer class="mt-1" />
 
     </AuthenticatedLayout>
 </template>
 
 <script>
+import { onMounted } from 'vue';
+import Footer from "@/components/Landing/footer.vue";
+import Nav from "@/components/Landing/nav.vue";
+import RegisterForm from '@/Pages/Auth/Register.vue';
 export default {
+    components: { Footer, Nav, RegisterForm, },
+    props: {
+        lotteries: Array, // Receive lotteries as a prop
+    },
     data() {
         return {
             logoUrl: '/assets/images/1.png', // Path to your logo
             logoUrl1: '/assets/images/2.png', // Path to your logo
             logoUrl2: '/assets/images/3.png', // Path to your logo
         };
+    },
+    methods: {
+        getImageUrl(image) {
+            return image.startsWith("http") ? image : `/storage/${image}`;
+        },
+        handlePlayNow(lotteryId) {
+            if (this.$page.props.auth.user) {
+                // Redirect to the lottery API if authenticated
+                window.location.href = `/api/lottery/${lotteryId}`;
+            } else {
+                // Trigger the register modal if not authenticated
+                const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+                registerModal.show();
+            }
+        },
     },
 };
 </script>

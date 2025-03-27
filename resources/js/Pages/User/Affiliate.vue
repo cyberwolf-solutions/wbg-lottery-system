@@ -47,7 +47,7 @@ const createChart = () => {
                 labels: [
                     'January', 'February', 'March', 'April', 'May', 'June',
                     'July', 'August', 'September', 'October', 'November', 'December'
-                ], 
+                ],
                 datasets: [{
                     label: 'Earnings',
                     data: getEarningsByMonth(), // Processed earnings data
@@ -59,7 +59,29 @@ const createChart = () => {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 90, // Rotate the x-axis labels if necessary
+                            minRotation: 45 // Ensure that the labels do not overflow
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        }
+                    }
+                }
             }
         });
     }
@@ -107,7 +129,7 @@ const props = defineProps({
                 <div
                     class="p-4 bg-white rounded-lg shadow flex flex-col items-center justify-center col-span-6 sm:col-span-1 md:col-span-3">
                     <p class="text-gray-500">Total Earnings</p>
-                    <h3 class="text-2xl font-bold">${{ totalEarnings }}</h3>
+                    <h3 class="text-2xl font-bold">USDT {{ totalEarnings }}</h3>
                 </div>
 
                 <div
@@ -120,13 +142,15 @@ const props = defineProps({
 
 
             <!-- Performance Chart -->
-            <div class="p-6 bg-white rounded-lg shadow mb-6" style="height: 300px;">
+            <div class="p-6 bg-white rounded-lg shadow mb-6" style="height: 600px; overflow: hidden;">
                 <h3 class="text-lg font-bold mb-4">Earnings Overview</h3>
-                <canvas ref="chartCanvas" class="w-full h-full"></canvas>
+                <canvas ref="chartCanvas" class="w-full h-[calc(100%-30px)]"></canvas>
+                
             </div>
 
+
             <!-- Referral Link & Recent Referrals -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 ">
                 <div class="p-6 bg-white rounded-lg shadow">
                     <h3 class="text-lg font-bold mb-4">Your Referral Link</h3>
                     <div class="flex items-center border rounded">

@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Wallet;
 use App\Models\Winner;
 use App\Models\Deposit;
+use App\Models\Affiliate;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
 use App\Models\WalletAdress;
@@ -65,6 +66,23 @@ class WalletController extends Controller
         $walletAddress = WalletAdress::all();
 
         // dd($wallet);
+        // Get all affiliate records where the current user is the referrer
+        $affiliateData = Affiliate::where('user_id', Auth::id())
+            ->with(['affiliateUser' => function ($query) {
+                // You can customize what user data to load
+                $query->select('id', 'name', 'email', 'created_at');
+            }])
+            ->get()
+            ->map(function ($affiliate) {
+                return [
+                    'id' => $affiliate->id,
+                    'affiliate_user' => $affiliate->affiliateUser, // This contains the user data
+                    'price' => $affiliate->price,
+                    'date' => $affiliate->date,
+                    // Add any other affiliate fields you need
+                ];
+            });
+        // dd($affiliateData);
 
         return Inertia::render('User/Wallet', [
             'status' => session('status'),
@@ -74,7 +92,8 @@ class WalletController extends Controller
             'deposit' => $deposit,
             'bank' => $bank,
             'walletAddress' => $walletAddress,
-            'winnings' =>  $winnings
+            'winnings' =>  $winnings,
+            'affiliateData' => $affiliateData
         ]);
     }
 

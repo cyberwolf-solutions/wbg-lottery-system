@@ -13,7 +13,11 @@
             BOOK YOUR NUMBER NOW
 
           </p>
-          <button class="custom-button mt-3">BOOK YOUR NUMBER NOW!</button>
+          <a :href="route('landinglottery.index')" class="nav-link">
+            <button class="custom-button mt-3">BOOK YOUR NUMBER NOW!</button>
+          </a>
+
+
         </div>
         <div class="hero-graphics d-flex justify-content-center mt-4 col-12 col-md-6">
           <img :src="image1" alt="Lottery Graphics" class="img-fluid" style="height: 400px; object-fit: cover;">
@@ -61,7 +65,9 @@
           <div class="mt-4 align-content-center text-center">
             <!-- <a class="nav-link fw-bold text-secondary" href="#">Home</a>
             <a class="nav-link mt-2 text-secondary text-decoration-underline" href="#">View All Offers</a> -->
-            <button class="custom-button mt-3">Book your lucky number</button>
+            <a :href="route('landinglottery.index')" class="nav-link">
+              <button class="custom-button mt-3">Book your lucky number</button>
+            </a>
           </div>
         </div>
       </div>
@@ -99,7 +105,10 @@
 
 
               </div>
-              <p class=" text-secondary text-center text-decoration-underline">See All Lotteries</p>
+              <a :href="route('landinglottery.index')" class="nav-link">
+                <p class=" text-secondary text-center text-decoration-underline">See All Lotteries</p>
+              </a>
+
             </div>
           </div>
 
@@ -125,7 +134,7 @@
                 <div class="col-md-6 mt-4 d-flex">
                   <div class="card shadow flex-fill">
                     <div class="card-header bg-white">
-                      <h5 class="fw-bold">This area will update as per new development</h5>
+                      <h5 class="fw-bold">This area will update as per new draw</h5>
                     </div>
                     <div class="card-body">
                       <div style="overflow-x: auto; white-space: nowrap;">
@@ -134,7 +143,7 @@
                             <tr>
                               <th>Lottery</th>
                               <th>Draw Date</th>
-                              <th>Winning Numbers</th>
+                              <th style="text-align: center;">Winning Numbers</th> <!-- Centered -->
                             </tr>
                           </thead>
                           <tbody>
@@ -146,11 +155,9 @@
                                 <i class="bi bi-heart-fill text-danger me-2"></i>{{ winningResult.lottery_name }}
                               </td>
                               <td>{{ winningResult.date }}</td>
-                              <td colspan="3">
-                                <!-- Iterate over winning numbers for each draw -->
+                              <td colspan="3" style="text-align: center;">
                                 <div v-for="(numbers, drawNumber) in winningResult.winning_numbers" :key="drawNumber">
-
-                                  <span>{{ Object.values(numbers).join(', ') }}</span>
+                                  <span>{{ Object.values(numbers).join(' ') }}</span>
                                 </div>
                               </td>
                             </tr>
@@ -171,7 +178,7 @@
                 <div class="col-md-4 mt-4 d-flex">
                   <div class="card shadow flex-fill">
                     <div class="card-header bg-white">
-                      <h5 class="fw-bold">Win board details and amounts</h5>
+                      <h5 class="fw-bold">Winners details and amounts</h5>
                     </div>
                     <div class="card-body">
                       <ul class="list-group list-group-flush">
@@ -183,7 +190,7 @@
                             <i class="bi bi-flag-fill text-primary me-2"></i> {{ winner.name }}
                             <small class="d-block text-muted">{{ winner.lottery }}</small>
                           </div>
-                          <span class="text-success fw-bold">€{{ winner.amount }}</span>
+                          <span class="text-success fw-bold">USDT {{ winner.amount }}</span>
                         </li>
                       </ul>
                     </div>
@@ -194,9 +201,10 @@
 
             </div>
             <div class="text-center mt-5 mb-5">
-              <button class="custom-button mt-3">All results</button>
-
-              <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
+              <!-- <button class="custom-button mt-3">All results</button> -->
+              <a :href="route('latest.index')" class="nav-link">
+                <button class="custom-button mt-3" style="margin-left: 10px;">Latest results</button>
+              </a>
 
               <!-- <a href="#" class="text-primary text-decoration-none text-decoration-underline">See All Results</a> -->
             </div>
@@ -231,7 +239,7 @@
               <div class="col-6 col-md-4" style="height: 250px;">
                 <div class="feature-box text-center border rounded-3 p-3">
                   <i class="bi bi-trophy text-primary fs-2"></i>
-                  <p class="fw-bold mt-2">:Biggest Rewards</p>
+                  <p class="fw-bold mt-2">Biggest Rewards</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
@@ -241,11 +249,9 @@
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
-                <div class="feature-box text-center border rounded-3 p-3" style="background-color: #63b5f6;">
-                  <p class="text-light">
-                    Community-Based: Built and managed by a team of dedicated individuals from various
-                    backgrounds.
-                  </p>
+                <div class="feature-box text-center border rounded-3 p-3">
+                  <i class="bi bi-bar-chart text-primary fs-2"></i>
+                  <p class="fw-bold mt-2">Clear & Balanced</p>
                 </div>
               </div>
               <div class="col-6 col-md-4" style="height: 250px;">
@@ -304,8 +310,8 @@
                     <tr>
                       <th>Lottery</th>
                       <th>Prize</th>
-                      <th>Time</th>
-                      <th>Sold</th>
+                      <!-- <th>Time</th>
+                      <th>Sold</th> -->
                       <th>Buy</th>
                       <!-- <th>Status</th> -->
                     </tr>
@@ -320,7 +326,7 @@
                       <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>
 
                       <!-- <td>€{{ ((parseFloat(dashboard.prize) / 100) || 0).toFixed(2) }}</td> -->
-                      <td>
+                      <!-- <td>
                         <div class="d-flex justify-content-center">
                           <div class="text-center me-2">
                             <span class="badge badgecol2 border">{{ formatTimeRemaining(dashboard.date).days }}</span>
@@ -351,9 +357,10 @@
                           </div>
                         </div>
                         <small>{{ dashboard.pickedNumbers?.length || 0 }}/100 numbers sold</small>
-                      </td>
-                      <td>
-                        <button class="btn btn-primary btn-sm">Buy Tickets</button>
+                      </td> -->
+                      <td><a :href="route('landinglottery.index')" class="nav-link"><button
+                            class="btn btn-primary btn-sm">Buy Tickets</button></a>
+
                       </td>
                     </tr>
                   </tbody>
@@ -361,7 +368,10 @@
               </div>
             </div>
             <div class="text-center mt-5 mb-5">
-              <a href="#" class="btn btn-link text-primary">View All Lotteries</a>
+              <a :href="route('landinglottery.index')" class="nav-link">
+                <p class=" text-secondary text-center text-decoration-underline">See All Lotteries</p>
+              </a>
+
             </div>
           </div>
         </div>
@@ -518,7 +528,7 @@ export default {
 
 
   },
-  
+
   mounted() {
     setInterval(() => {
       this.now = new Date();

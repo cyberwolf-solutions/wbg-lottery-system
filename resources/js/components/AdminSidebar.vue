@@ -57,7 +57,7 @@ export default {
                 {
                     id: 1,
                     name: "Dashboard",
-                    link: "/api/admin/adminDash",
+                    link: "/api/admin/dashboard",
                     isOpen: false,
 
                 },

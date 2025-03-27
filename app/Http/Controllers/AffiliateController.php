@@ -26,6 +26,8 @@ class AffiliateController extends Controller
             ->take(3)
             ->get();
 
+            // dd($recentReferrals);
+
         // Group earnings by month
         $earningsByMonth = $affiliates->groupBy(function ($item) {
             return Carbon::parse($item->date)->format('F'); // Get full month name (January, February, etc.)
