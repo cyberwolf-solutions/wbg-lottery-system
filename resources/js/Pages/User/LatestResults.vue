@@ -39,7 +39,7 @@ import { Head } from '@inertiajs/vue3';
                         <div class="card-body text-center">
                             <div class="row" style="height: 70px;">
                                 <div class="col-12 d-flex justify-content-center align-items-center">
-                                    <img :src="logoUrl" alt="Logo" class="card-img-top"
+                                    <img :src="`/${lottery.image}`" alt="Logo" class="card-img-top"
                                         style="height: 100px; width: auto; object-fit: contain;">
                                 </div>
 
@@ -103,7 +103,7 @@ import { Head } from '@inertiajs/vue3';
                                     style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
                                 <!-- <i class="bi bi-patch-question-fil" ></i> -->
 
-                                <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;">
+                                <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
                             </div>
                             <div class="col-6">
                                 <h1

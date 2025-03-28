@@ -5,6 +5,7 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 
 // Define props using defineProps in the <script setup> syntax
 const props = defineProps({
@@ -16,6 +17,10 @@ const props = defineProps({
     },
     user: Object,
 });
+
+const form = useForm({
+    image: null,
+})
 
 // Bind the affiliate link to a reactive variable
 const affiliateLink = ref(props.user.user_affiliate_link); // Use the affiliate link from the user data
@@ -29,7 +34,9 @@ const copyToClipboard = () => {
 };
 
 // Mocked user profile picture URL
-const profilePicture = ref('/path/to/profile-picture.jpg');
+const profilePicture = ref(props.user?.image
+    ? `/${props.user.image}`
+    : '/default-profile.jpg');
 
 // Temporary variable to hold the uploaded file
 const uploadedFile = ref(null);
@@ -38,28 +45,37 @@ const uploadedFile = ref(null);
 const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-        uploadedFile.value = file; // Save the file to be uploaded
+        uploadedFile.value = file;
+        form.image = file; 
+        
         const reader = new FileReader();
         reader.onload = (e) => {
-            profilePicture.value = e.target.result; // Display preview of the uploaded image
+            profilePicture.value = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 };
 
-// Save profile picture (dummy function for now)
 const saveProfilePicture = () => {
-    if (!uploadedFile.value) {
-        alert('Please upload an image before saving.');
+    if (!form.image) {
+        alert('Please select an image first');
         return;
     }
 
-    // Here, you can send the `uploadedFile.value` to the backend using Inertia's form or any API logic
-    alert('Profile picture saved successfully!');
+    form.post(route('profile.image.update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Update the profile picture display after successful upload
+            if (usePage().props.user?.image) {
+                profilePicture.value = `/${usePage().props.user.image}`;
+            }
+        },
+    });
 };
 </script>
 
 <template>
+
     <Head title="Profile" />
 
     <AuthenticatedLayout>
@@ -76,50 +92,32 @@ const saveProfilePicture = () => {
                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8 flex flex-col items-center">
                     <div class="relative w-32 h-32">
                         <!-- Profile Picture -->
-                        <img
-                            :src="profilePicture"
-                            alt="Profile Picture"
-                            class="w-32 h-32 rounded-full shadow-md object-cover"
-                        />
-                        
+                        <img :src="profilePicture" alt="Profile Picture"
+                            class="w-32 h-32 rounded-full shadow-md object-cover" />
+
                         <!-- Upload Button -->
-                        <label
-                            for="profile-upload"
-                            class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-blue-600 transition"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 013.536 3.536L9.5 20.5H5v-4.5l11.232-11.232z" />
+                        <label for="profile-upload"
+                            class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-blue-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 013.536 3.536L9.5 20.5H5v-4.5l11.232-11.232z" />
                             </svg>
                         </label>
-                        <input
-                            id="profile-upload"
-                            type="file"
-                            class="hidden"
-                            accept="image/*"
-                            @change="handleImageUpload"
-                        />
+                        <input id="profile-upload" type="file" class="hidden" accept="image/*"
+                            @change="handleImageUpload" />
                     </div>
 
-                    <p class="text-gray-600 mt-4 text-sm">
-                        Upload a profile picture (max 2MB)
-                    </p>
-
-                    <!-- Save Button -->
-                    <button
-                        @click="saveProfilePicture" 
-                        class="mt-6 px-6 py-2 bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition"
-                    >
+                    <button @click="saveProfilePicture"
+                        class="mt-6 px-6 py-2 bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition">
                         Save
                     </button>
                 </div>
 
                 <!-- Update Profile Information -->
                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
+                    <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status"
+                        class="max-w-xl" />
                 </div>
 
                 <!-- Update Password -->
@@ -135,19 +133,13 @@ const saveProfilePicture = () => {
 
                         <!-- Affiliate Link Display -->
                         <div class="mt-4 w-full max-w-xs">
-                            <input
-                                type="text"
-                                v-model="affiliateLink"
-                                readonly
-                                class="block w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-800"
-                            />
+                            <input type="text" v-model="affiliateLink" readonly
+                                class="block w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-800" />
                         </div>
 
                         <!-- Copy Button -->
-                        <button
-                            @click="copyToClipboard"
-                            class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
-                        >
+                        <button @click="copyToClipboard"
+                            class="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition">
                             Copy Link
                         </button>
                     </div>

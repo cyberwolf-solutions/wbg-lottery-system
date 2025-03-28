@@ -32,13 +32,18 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-    
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/image', [ProfileController::class, 'updateImage'])
+        ->name('profile.image.update');
 });
 
+
+
+// ->middleware(['auth']);
 
 Route::get('/prize', [PrizesController::class, 'index'])->name('prize.index');
 Route::get('/winners', [PrizesController::class, 'index'])->name('prize.index');
@@ -61,4 +66,4 @@ Route::post('/send-contact-email', [ContactController::class, 'sendEmail']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
