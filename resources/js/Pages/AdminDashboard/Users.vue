@@ -22,7 +22,7 @@
                                         &#8942;
                                     </button>
                                     <div v-if="menuIndex === index"
-                                        class="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-lg border">
+                                        <!-- class="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-lg border">
                                         <button @click="editUser(admin)"
                                             class="block w-full text-left px-4 py-2 text-black text-sm hover:bg-gray-100">
                                             Edit
@@ -30,7 +30,7 @@
                                         <button @click="changePassword(admin)"
                                             class="block w-full text-left px-4 py-2 text-black text-sm hover:bg-gray-100">
                                             Change Password
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                             </div>

@@ -40,12 +40,11 @@ Route::middleware('guest')->group(function () {
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store'])->middleware('recaptcha');
-    // Route::post('register', [RegisteredUserController::class, 'store']);
+
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login')->middleware('recaptcha');
-    // Route::get('login', [AuthenticatedSessionController::class, 'create'])
-    //     ->name('login');
+
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -61,7 +60,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
-    // Route::post('/pick-number', [LotteryDashboardController::class, 'pickNumber']);
 });
 
 
@@ -123,18 +121,7 @@ Route::middleware(['web'])->group(function () {
         return Inertia::render("AdminDashboard/Users");
     });
 
-    // Route::get("/Roles", function () {
-    //     return Inertia::render("AdminDashboard/Roles");
-    // });
-
-    // Route::get("/Roles/Add", function () {
-    //     return Inertia::render("AdminDashboard/CreateRole");
-    // });
-
-
-
-    //fetch lotteries to nav
-    // Route::get('/lotteriesdropdown' ,[PublicController::class , 'index'] );
+   
     Route::get('/lotteriesdropdown', function () {
         return Lotteries::all();
     });

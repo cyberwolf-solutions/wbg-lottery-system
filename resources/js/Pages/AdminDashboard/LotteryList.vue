@@ -28,7 +28,7 @@
                                 <td><a href="#">{{ lottery.id }}</a></td>
                                 <td><a href="#">{{ lottery.name }}</a></td>
                                 <td>{{ lottery.description }}</td>
-                                <td> <img :src="`public/${lottery.image}`" alt="Lottery Image" width="50" height="50" />
+                                <td> <img :src="`/${lottery.image}`" alt="Lottery Image" width="50" height="50" />
                                 </td>
 
                                 <td>
@@ -335,7 +335,7 @@ export default {
         },
         async deleteLottery() {
             try {
-                const response = await axios.delete(`http://127.0.0.1:8000/api/admin/lottery/delete/${this.editingLottery.id}`, {
+                const response = await axios.delete(`/api/admin/lottery/delete/${this.editingLottery.id}`, {
                     headers: {
                         'X-CSRF-TOKEN': this.csrfToken,
                     },

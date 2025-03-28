@@ -92,7 +92,7 @@
                 <div v-for="lottery in lotteries" :key="lottery.id" class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
-                    <img class="card-logo rounded-circle mb-3" :src="image2" style="height: 80px;" alt="Logo">
+                    <img class="card-logo rounded-circle mb-3" :src="`/${lottery.image}`" style="height: 80px;" alt="Logo">
                     <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
                     <p class="card-title title mb-2">{{ lottery.name }}</p>
                     <p class="card-description text-muted mb-4">
@@ -320,7 +320,7 @@
                     <tr v-for="(dashboard, index) in upcomingDraws" :key="dashboard.id"
                       :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                       <td>
-                        <img :src="image2" alt="Flag" class="me-2" style="width: 30px; height: 20px;">
+                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2" style="width: 30px; height: 20px;">
                         {{ dashboard.name || 'Unknown Lottery' }}
                       </td>
                       <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>

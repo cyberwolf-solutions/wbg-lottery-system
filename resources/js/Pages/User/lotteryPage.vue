@@ -35,7 +35,7 @@
                                 <div class="row" style="height: 70px;">
                                     <div class="col-6">
                                         <!-- Display lottery image -->
-                                        <img :src="lottery.image || logoUrl1" alt="Lottery Image" class="card-img-top"
+                                        <img :src="`/${lottery.image}`|| logoUrl1" alt="Lottery Image" class="card-img-top"
                                             style="height: 100px;width: auto;">
                                     </div>
                                     <div class="col-6 d-flex align-items-center justify-content-center">

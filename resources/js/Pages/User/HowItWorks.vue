@@ -28,13 +28,86 @@ import { Head } from '@inertiajs/vue3';
         </div>
 
         <div class="container py-5">
-            <div class="row g-4 d-flex justify-content-center align-items-center">
+            <div class="row g-4">
+                <!-- Video Section -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-0">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/dbH5eJ0Bb28" title="How to play lottery"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="text-center mb-3">How to Play & Win</h4>
+                                <p class="text-muted text-center">
+                                    Watch our quick guide to understand how to participate and win big!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: auto;">
+                <!-- Steps Section -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h3 class="text-center mb-4">Simple Steps to Win</h3>
 
+                            <!-- Step 1 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    1
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-1">Choose your lottery & pick your numbers</h5>
+                                    <p class="text-muted mb-0">Select from our exciting lottery options</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    2
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-1">Buy</h5>
+                                    <p class="text-muted mb-0">Secure your tickets with our easy payment system</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    3
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-1">Complete your purchase</h5>
+                                    <p class="text-muted mb-0">Get instant confirmation of your tickets</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="d-flex">
+                                <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    4
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-1">Win</h5>
+                                    <p class="text-muted mb-0">Start dreaming, you're almost there</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
         <div class="row d-flex justify-content-center align-items-center"
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
@@ -179,6 +252,19 @@ export default {
 </script>
 
 <style>
+
+.step-number {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.card {
+  border: none;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;

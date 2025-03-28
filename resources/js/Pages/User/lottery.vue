@@ -4,133 +4,148 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import axios from 'axios';
+import { router } from '@inertiajs/vue3';
 
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-
-const responseMessage = ref(null);  // To hold the response message
-const responseClass = ref('bottom-response');  // Class for positioning (top/bottom)
-const countdownTime = ref(600); // 10 minutes in seconds
+const responseMessage = ref(null);
+const responseClass = ref('bottom-response');
+const countdownTime = ref(600);
 const countdownInterval = ref(null);
-
+const isCheckingOut = ref(false);
 
 function showResponse(message, position = 'bottom') {
     responseMessage.value = message;
     responseClass.value = position === 'bottom' ? 'top-response' : 'bottom-response';
 
-    // Hide the message after 5 seconds
     setTimeout(() => {
         responseMessage.value = null;
     }, 3000);
 }
 
-
-
 const authToken = localStorage.getItem('auth_token');
 console.log('Auth Token:', authToken);
 let checkoutTimeout;
 
-
-
-
-function checkout() {
-    if (pickedNumbers.value.length === 0) {
-        showResponse('Number Picked successfully!', 'bottom');
-        return;
-    }
-
-    const numbersData = pickedNumbers.value.map(picked => ({
-        number: picked.number,  // Ensure number is correctly formatted
-        price: parseFloat(picked.price),  // Ensure price is a number
-        dashboard_id: picked.lottery_dashboard_id
-    }));
-
-    const dashboardId = selectedLotteryDetails.value[0]?.id;
-
-    if (!dashboardId) {
-        // alert("Dashboard ID is missing!");
-        showResponse("Dashboard ID is missing!", "bottom");
-        return;
-    }
-
-    console.log("Checkout Data:", {
-        numbers: numbersData,
-        lottery_id: props.lotterie.id,
-        dashboard_id: dashboardId,
-        total_price: totalPrice.value,
-    });
-
-    axios.post('/api/checkout', {
-        numbers: numbersData,
-        lottery_id: props.lotterie.id,
-        dashboard_id: dashboardId,
-        total_price: totalPrice.value,
-    })
-        .then(response => {
-            showResponse("Number Picked", "bottom");
-            pickedNumbers.value = [];  // Clear picked numbers after checkout
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error("Checkout failed:", error.response.data.message);
-            // alert(error.response.data.message || "Checkout failed! Please try again.");
-            showResponse(error.response?.data?.message || "Checkout failed! Please try again.", "bottom");
-        });
-}
-
-
-
-
-function deletePickedNumbers() {
-    axios.post('/api/delete-picked-numbers')
-        .then(response => {
-            console.log(response.data.message);
-            pickedNumbers.value = []; // Clear the picked numbers locally
-            savePickedNumbersToLocalStorage(); // Save the updated empty list to localStorage
-        })
-        .catch(error => {
-            console.error('Error deleting picked numbers:', error.response?.data?.message || error.message);
-        });
-}
-
-
-
-
-
-
-
-
+const isManualAction = ref(false);
 
 //call checkout function after 10 mins
 function startCountdownTimer() {
+    // Clear any existing interval
+    if (countdownInterval.value) {
+        clearInterval(countdownInterval.value);
+    }
+
+    // Reset countdown time
+    countdownTime.value = 600; // 10 minutes
+
     countdownInterval.value = setInterval(() => {
         if (countdownTime.value > 0) {
             countdownTime.value--;
         } else {
             clearInterval(countdownInterval.value);
-            checkout(); // Trigger checkout when time is up
+            // Only checkout if we have numbers
+            if (pickedNumbers.value.length > 0) {
+                checkout();
+            }
         }
     }, 1000);
 }
+
 const formattedCountdown = computed(() => {
     const minutes = Math.floor(countdownTime.value / 60);
     const seconds = countdownTime.value % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 });
-onMounted(() => {
-    startCountdownTimer();
-    router.beforeEach((to, from, next) => {
-        checkout();
-        next();
+
+// Handle beforeunload event
+const handleBeforeUnload = (event) => {
+    if (pickedNumbers.value.length > 0 && !isCheckingOut.value) {
+        event.preventDefault();
+        event.returnValue = 'You have unsaved number selections. Are you sure you want to leave?';
+
+        // Show alert to user
+        const confirmation = confirm('You have unsaved number selections. Do you want to checkout before leaving?');
+
+        if (confirmation) {
+            isCheckingOut.value = true;
+            checkout().finally(() => {
+                // Allow the unload to proceed after checkout completes
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+                window.location.reload(); // or let the navigation proceed
+            });
+            return false;
+        } else {
+            // User chose to leave without saving - now we'll checkout instead of delete
+            checkout().finally(() => {
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+                window.location.reload();
+            });
+            return false;
+        }
+    }
+};
+
+// Setup navigation guard and beforeunload handler
+const setupNavigationHandlers = () => {
+    // Inertia.js navigation guard
+    router.on('before', (event) => {
+        if (pickedNumbers.value.length > 0 && !isCheckingOut.value) {
+            event.preventDefault();
+
+            const confirmation = confirm('You have unsaved number selections. Do you want to checkout before leaving?');
+
+            if (confirmation) {
+                isCheckingOut.value = true;
+                checkout().finally(() => {
+                    isCheckingOut.value = false;
+                    router.visit(event.detail.visit.url); // Proceed with navigation after checkout
+                });
+            } else {
+                // User chose to leave without saving - now we'll checkout instead of delete
+                isCheckingOut.value = true;
+                checkout().finally(() => {
+                    isCheckingOut.value = false;
+                    router.visit(event.detail.visit.url);
+                });
+            }
+        }
     });
+
+    // Standard beforeunload for page reload/close
+    window.addEventListener('beforeunload', handleBeforeUnload);
+};
+
+onMounted(() => {
+    // Load data first
+    loadPickedNumbersFromLocalStorage();
+
+    // Then start the timer
+    startCountdownTimer();
+
+    // Setup navigation handlers
+    setupNavigationHandlers();
+
+    window.Echo.channel('lottery')
+        .listen('NumberPicked', (event) => {
+            // Push number and its price when picked
+            pickedNumbers.value.push({
+                number: event.pickedNumber.picked_number,
+                price: event.pickedNumber.price
+            });
+        });
+
+    startCheckoutTimer();
 });
+
 onUnmounted(() => {
     if (countdownInterval.value) {
         clearInterval(countdownInterval.value);
     }
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    router.off('before'); // Remove Inertia navigation guard
 });
-
 
 // Pagination variables
 const currentPage = ref(1);
@@ -169,8 +184,6 @@ function prevPage() {
     }
 }
 
-
-
 Pusher.logToConsole = true;
 window.Echo = new Echo({
     broadcaster: 'pusher',
@@ -193,41 +206,41 @@ const totalPrice = computed(() => {
     return pickedPrice.toFixed(2); // Return the total price
 });
 
-// Store picked numbers in localStorage
+// Store picked numbers in localStorage with additional metadata
 function savePickedNumbersToLocalStorage() {
-    localStorage.setItem('pickedNumbers', JSON.stringify(pickedNumbers.value));
+    const data = {
+        numbers: pickedNumbers.value,
+        lottery_id: props.lotterie.id,
+        dashboard_id: selectedLotteryDetails.value[0]?.id,
+        timestamp: new Date().getTime()
+    };
+    localStorage.setItem('pickedNumbers', JSON.stringify(data));
 }
 
-// Retrieve picked numbers from localStorage
+// Retrieve picked numbers from localStorage with validation
 function loadPickedNumbersFromLocalStorage() {
-    const storedPickedNumbers = localStorage.getItem('pickedNumbers');
-    if (storedPickedNumbers) {
-        pickedNumbers.value = JSON.parse(storedPickedNumbers);
+    const storedData = localStorage.getItem('pickedNumbers');
+    if (storedData) {
+        try {
+            const data = JSON.parse(storedData);
+            // Check if data is not too old (e.g., within 24 hours)
+            if (data.timestamp && (new Date().getTime() - data.timestamp) < 86400000) {
+                pickedNumbers.value = data.numbers || [];
+                return true;
+            }
+        } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+        }
     }
+    return false;
 }
 
-
-
-onMounted(() => {
-    window.Echo.channel('lottery')
-        .listen('NumberPicked', (event) => {
-            // Push number and its price when picked
-            pickedNumbers.value.push({
-                number: event.pickedNumber.picked_number,
-                price: event.pickedNumber.price
-            });
-        });
-
-    loadPickedNumbersFromLocalStorage(); // Load from localStorage when the page reloads
-
-    
-    // deletePickedNumbers();
-    startCheckoutTimer();
-    checkout();
-
+const props = defineProps({
+    lotterie: Object,
+    lotterydashboards: Array,
+    pickedNumbers: Array,
+    wallet: Array
 });
-
-
 
 const storedNumbers = ref([...Array(100).keys()].map(n => n.toString().padStart(2, '0')));
 
@@ -238,29 +251,24 @@ function confirmPickNumber(number, dashboardId) {
 }
 
 function pickNumberConfirmed() {
-    console.log('Confirming pick for number:', numberToPick.value);
-    console.log('Dashboard ID:', dashboardIdToPick.value); // Use the correct dashboard ID
-
     axios.post('/api/pick-number', {
         number: numberToPick.value,
-        lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
+        lottery_dashboard_id: dashboardIdToPick.value,
         lottery_id: props.lotterie.id,
     })
         .then(response => {
-            console.log('Full Response:', response);
-            if (response.data && response.data.number) {
+            if (response.data?.number) {
                 pickedNumbers.value.push({
-                    number: response.data.number,  // Ensure number is stored properly
-                    price: selectedLotteryDetails.value[0]?.price || 0,  // Store price
-                    lottery_dashboard_id: dashboardIdToPick.value, // Use the correct dashboard ID
+                    number: response.data.number,
+                    price: selectedLotteryDetails.value[0]?.price || 0,
+                    lottery_dashboard_id: dashboardIdToPick.value
                 });
 
-                showResponse('Number allocated successfully!', 'bottom');
-            } else {
-                console.error('Response data is missing or malformed');
-            }
+                // Save immediately after adding
+                savePickedNumbersToLocalStorage();
 
-            console.log("ok" + pickedNumbers);
+                showResponse('Number allocated successfully!', 'bottom');
+            }
         })
         .catch(error => {
             showResponse(error.response?.data?.message || error.message, 'bottom');
@@ -268,18 +276,10 @@ function pickNumberConfirmed() {
         .finally(() => {
             showConfirmModal.value = false;
             numberToPick.value = null;
-            dashboardIdToPick.value = null; showResponse(error.response?.data?.message || error.message, 'bottom');
+            dashboardIdToPick.value = null;
         });
 }
 
-
-
-const props = defineProps({
-    lotterie: Object,
-    lotterydashboards: Array,
-    pickedNumbers: Array,
-    wallet: Array
-});
 function isNumberPicked(number, dashboardId) {
     return props.pickedNumbers.some(picked =>
         picked.picked_number === number && picked.lottery_dashboard_id === dashboardId
@@ -348,18 +348,6 @@ function startCountdown() {
     });
 }
 
-// Function to send API request to deactivate dashboard
-// function deactivateDashboard(dashboardId) {
-//     axios.post('/api/deactivate-dashboard', { dashboard_id: dashboardId })
-//         .then(response => {
-//             console.log('Dashboard deactivated:', response.data);
-//         })
-//         .catch(error => {
-//             console.error('Error deactivating dashboard:', error.response?.data || error);
-//         });
-// }
-
-
 const formatNumber = (num) => num.toString().padStart(2, '0');
 
 const winningNumbers = computed(() => {
@@ -376,15 +364,7 @@ const winningNumbers = computed(() => {
     return numbersMap;
 });
 
-
-
-
-
-
 const selectedNumber = ref(null);
-
-
-
 
 const pickedPercentage = computed(() => {
     const percentages = {};
@@ -397,6 +377,91 @@ const pickedPercentage = computed(() => {
     });
     return percentages;
 });
+
+async function checkout() {
+    try {
+        // First ensure we have loaded data from localStorage
+        loadPickedNumbersFromLocalStorage();
+
+        // Then check if we have valid data
+        if (pickedNumbers.value.length === 0) {
+            console.log("No numbers picked to checkout");
+            return true; // Return true since there's nothing to checkout
+        }
+
+        const numbersData = pickedNumbers.value.map(picked => ({
+            number: picked.number,
+            price: parseFloat(picked.price || selectedLotteryDetails.value[0]?.price || 0),
+            dashboard_id: picked.lottery_dashboard_id || selectedLotteryDetails.value[0]?.id
+        }));
+
+        const dashboardId = numbersData[0]?.dashboard_id || selectedLotteryDetails.value[0]?.id;
+
+        if (!dashboardId) {
+            console.error("Dashboard ID is missing!");
+            return false;
+        }
+
+        console.log("Checkout Data:", {
+            numbers: numbersData,
+            lottery_id: props.lotterie.id,
+            dashboard_id: dashboardId,
+            total_price: totalPrice.value,
+        });
+
+        const response = await axios.post('/api/checkout', {
+            numbers: numbersData,
+            lottery_id: props.lotterie.id,
+            dashboard_id: dashboardId,
+            total_price: totalPrice.value,
+        });
+
+        showResponse("Checkout successful", "bottom");
+        pickedNumbers.value = [];
+        localStorage.removeItem('pickedNumbers');
+        window.location.reload();
+        return true;
+
+    } catch (error) {
+        console.error("Checkout failed:", error.response?.data?.message || error.message);
+        showResponse(error.response?.data?.message || "Checkout failed! Please try again.", "bottom");
+        return false;
+    } finally {
+        isCheckingOut.value = false;
+    }
+}
+
+function deletePickedNumbers() {
+    // Don't proceed if no numbers are picked
+    if (pickedNumbers.value.length === 0) return;
+
+    // Show loading state for automatic deletions
+    if (!isManualAction.value) {
+        showResponse("Clearing your number selections...", "bottom");
+    }
+
+    axios.post('/api/delete-picked-numbers')
+        .then(response => {
+            console.log(response.data.message);
+            pickedNumbers.value = [];
+            localStorage.removeItem('pickedNumbers');
+
+            if (!isManualAction.value) {
+                showResponse("Your number selections have been cleared", "bottom");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error.response?.data?.message || error.message);
+            showResponse("Failed to clear selections", "bottom");
+        });
+}
+
+// For manual cancel button clicks
+function handleManualDelete() {
+    isManualAction.value = true;
+    deletePickedNumbers();
+    setTimeout(() => isManualAction.value = false, 1000);
+}
 </script>
 
 <template>
@@ -455,7 +520,7 @@ const pickedPercentage = computed(() => {
                     </div>
                     <!-- Modal Footer -->
                     <div class="modal-footer justify-content-center border-0 pb-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
+                        <button type="button" class="font-bold text-white rounded-lg ml-4" @click="handleManualDelete">
                             Cancel
                         </button>
                         <button type="button" class="btn btn-danger px-4 py-2 rounded-pill">
@@ -470,13 +535,14 @@ const pickedPercentage = computed(() => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div  class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <!-- Loop through paginated tickets -->
                             <div v-for="ticket in paginatedTickets" :key="ticket.draw_number"
                                 class="border rounded-lg p-4 relative">
-                                <h2  class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
+                                <h2 class="text-lg font-semibold titlelot mb-4">Pick Your Lucky Number</h2>
 
-                                <div :style="{backgroundColor: selectedLotteryDetails[0]?.lottery?.color }" class="info-container p-3 rounded shadow-sm">
+                                <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }"
+                                    class="info-container p-3 rounded shadow-sm">
                                     <!-- Additional ticket details -->
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
@@ -536,7 +602,7 @@ const pickedPercentage = computed(() => {
                                 Prev
                             </button>
                             <span class="px-4 py-2">{{ currentPage }} / {{ totalPages }}</span>
-                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color}"
+                            <button :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }"
                                 @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
                                 class="px-4 py-2 bg-blue-500 text-white rounded">
                                 Next
@@ -561,7 +627,7 @@ const pickedPercentage = computed(() => {
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Winning Chances</p>
                                 <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-1">
-                                    <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color}"
+                                    <div :style="{ backgroundColor: selectedLotteryDetails[0]?.lottery?.color }"
                                         class="absolute top-0 left-0 h-full bg-blue-500" style="width: 100%;"></div>
                                 </div>
                             </div>
@@ -574,7 +640,7 @@ const pickedPercentage = computed(() => {
                                 <p class="text-sm text-gray-500">
                                     Allocated Numbers:
                                     <span class="text-blue-500">{{pickedNumbers.map(picked => picked.number).join(', ')
-                                        }}</span>
+                                    }}</span>
 
                                 </p>
                             </div>
@@ -721,6 +787,7 @@ const pickedPercentage = computed(() => {
     text-align: center;
     width: 400px;
 }
+
 .modal-container1 {
     background-color: rgba(255, 255, 255, 0.9);
     /* Transparent white */
@@ -744,21 +811,28 @@ const pickedPercentage = computed(() => {
 /* Button Row */
 .button-row {
     display: flex;
-    flex-direction: row;  /* Align items in a row */
-    gap: 1rem;            /* Spacing between buttons */
-    flex-wrap: wrap;      /* Allow buttons to wrap to the next line if needed */
+    flex-direction: row;
+    /* Align items in a row */
+    gap: 1rem;
+    /* Spacing between buttons */
+    flex-wrap: wrap;
+    /* Allow buttons to wrap to the next line if needed */
 }
 
 
 .button-row {
     display: flex;
-    flex-wrap: wrap;               /* Allow wrapping to the next line */
-    gap: 1rem;                     /* Space between buttons */
-    justify-content: space-between; /* Ensure equal distribution of buttons */
+    flex-wrap: wrap;
+    /* Allow wrapping to the next line */
+    gap: 1rem;
+    /* Space between buttons */
+    justify-content: space-between;
+    /* Ensure equal distribution of buttons */
 }
 
 .lottery-button {
-    width: calc(25% - 0.75rem); /* Each button takes up 25% of the container width minus the gap */
+    width: calc(25% - 0.75rem);
+    /* Each button takes up 25% of the container width minus the gap */
     padding: 0.75rem 1.5rem;
     border: 2px solid transparent;
     border-radius: 50px;

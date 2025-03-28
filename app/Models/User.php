@@ -22,7 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'user_affiliate_link',
-        'affiliate_link'
+        'affiliate_link',
+        'image'
     ];
 
     /**
