@@ -35,8 +35,8 @@
                             <div v-if="dashboard.winners && dashboard.winners.length > 0">
                                 <div v-for="winner in dashboard.winners" :key="winner.id" class="winner-card">
                                     <div class="winner-image-container">
-                                        <img :src="logoUrl" alt="Winner" class="winner-image">
-                                        <div class="winner-badge">${{ winner.price }}</div>
+                                        <img :src="`/${winner.user.image}`|| logoUrl1"  alt="Winner" class="winner-image">
+                                        <div class="winner-badge">USDT {{ winner.price }}</div>
                                     </div>
                                     <div class="winner-details">
                                         <h3>{{ winner.user.name }}</h3>
@@ -247,7 +247,7 @@
 
     .winner-image-container {
         position: relative;
-        height: 200px;
+        height: 300px;
         overflow: hidden;
     }
 
@@ -255,7 +255,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 1s ease;
     }
 
     .winner-card:hover .winner-image {

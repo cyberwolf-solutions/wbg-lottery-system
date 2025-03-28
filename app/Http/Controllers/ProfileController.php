@@ -62,4 +62,35 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+
+    public function updateImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        // Create directory if it doesn't exist
+        $directory = public_path('assets/images/profile');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        // Delete old image if exists
+        if ($user->image && file_exists(public_path($user->image))) {
+            unlink(public_path($user->image));
+        }
+
+        // Store new image
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move($directory, $imageName);
+
+        // Save path in database
+        $user->image = 'assets/images/profile/' . $imageName;
+        $user->save();
+
+        return back()->with('status', 'profile-image-updated');
+    }
 }

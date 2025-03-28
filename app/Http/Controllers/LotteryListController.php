@@ -37,7 +37,9 @@ class LotteryListController extends Controller
 
         $imageName = time() . '_' . $image->getClientOriginalName();
 
-        $destinationPath = public_path('images/lotteryimages');
+        $destinationPath = public_path('assets/images/lotteryimages');
+
+        
 
         if (!File::exists($destinationPath)) {
             File::makeDirectory($destinationPath, 0777, true);
@@ -46,6 +48,9 @@ class LotteryListController extends Controller
         $image->move($destinationPath, $imageName);
 
         $imagePath = 'assets/images/lotteryimages/' . $imageName;
+
+        Log::info('hehe ' . $imagePath . ' ,  ' . $destinationPath);
+        // dd($imagePath + $destinationPath );
 
         $adminId = auth('sanctum')->id();
         Log::debug($adminId);

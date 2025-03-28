@@ -73,7 +73,7 @@ export default {
                     subItems: [
                         { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
                         { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
-                        { id: 5, name: "Customers", link: "/api/customers", permission: "manage customers" }
+                        // { id: 5, name: "Customers", link: "/api/customers", permission: "manage customers" }
                     ],
                 },
                 {
