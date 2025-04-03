@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
 
-            \App\Http\Middleware\ValidateSessionCookie::class, 
+            \App\Http\Middleware\ValidateSessionCookie::class,
         ]);
         // Register Admin Middleware
         $middleware->alias([
@@ -37,9 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-
-        
-    })    ->withExceptions(function (Exceptions $exceptions) {
+    })->withExceptions(function (Exceptions $exceptions) {
         //
     })
     ->booted(function (Application $app) {
@@ -50,5 +48,5 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $schedule->command('generate:dashboard')->dailyAt('00:00');
     })
-    
+
     ->create();

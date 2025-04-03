@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Models\PickedNumber;
@@ -9,7 +10,7 @@ use Illuminate\Console\Command;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use App\Notifications\LotteryRefundNotification;
 
 class CheckLotteryParticipation extends Command
 {
@@ -38,7 +39,7 @@ class CheckLotteryParticipation extends Command
                     Log::info("Lottery Dashboard ID {$dashboard->id} was cancelled due to low participation.");
 
                     // Fetch all picked numbers and refund users
-                    $pickedNumbers = PickedNumber::where('lottery_dashboard_id', $dashboard->id)->get();
+                    $pickedNumbers = PickedNumber::with('user')->where('lottery_dashboard_id', $dashboard->id)->get();
 
                     foreach ($pickedNumbers as $pick) {
                         $wallet = Wallet::where('user_id', $pick->user_id)->first();
@@ -46,7 +47,7 @@ class CheckLotteryParticipation extends Command
                             $wallet->increment('available_balance', $dashboard->price);
 
                             // Log the refund transaction
-                            Transaction::create([
+                            $transaction = Transaction::create([
                                 'user_id' => $pick->user_id,
                                 'amount' => $dashboard->price,
                                 'type' => 'refund',
@@ -57,9 +58,20 @@ class CheckLotteryParticipation extends Command
                                 'lottery_dashboard_id' => $dashboard->id, 
                                 'picked_number' => $pick->number, 
                             ]);
-                            
 
                             Log::info("Refunded user {$pick->user_id} amount {$dashboard->price}.");
+
+                            // Send notification to user
+                            if ($pick->user) {
+                                $pick->user->notify(new LotteryRefundNotification(
+                                    $dashboard->lottery->name,
+                                    $dashboard->draw_number,
+                                    $dashboard->price,
+                                    $pick->number
+                                ));
+                                
+                                Log::info("Notification sent to user {$pick->user_id} about refund.");
+                            }
                         }
                     }
 
@@ -74,4 +86,5 @@ class CheckLotteryParticipation extends Command
 
         Log::info('Lottery check participation command completed.');
         return Command::SUCCESS;
-    }}
+    }
+}

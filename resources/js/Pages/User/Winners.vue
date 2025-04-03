@@ -135,7 +135,7 @@
 
 
 
-            <Footer  class="mt-1" />
+            <Footer   />
     </AuthenticatedLayout>
 </template>
 
@@ -339,14 +339,14 @@
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f8f9fa;
+        background-color: white;
     }
 
     a:hover {
         transform: scale(1.1);
     }
 
-    .container {
+    /* .container {
         width: 90%;
         max-width: 1200px;
         margin: 20px auto;
@@ -354,7 +354,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
-    }
+    } */
 
     .header {
         display: flex;

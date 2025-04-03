@@ -22,8 +22,8 @@
 
                     <!-- Right Section: Email -->
                     <div class="col-md-6 col-12 text-center text-md-end">
-                        <a href="mailto:Info@wbglottery.com" class="text-decoration-none text-secondary">
-                            <i class="bi bi-envelope"></i> Info@wbglottery.com
+                        <a href="mailto:info@winboardgame.com" class="text-decoration-none text-secondary">
+                            <i class="bi bi-envelope"></i> info@winboardgame.com
                         </a>
                     </div>
                 </div>

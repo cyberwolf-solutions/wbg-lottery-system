@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Notifications\DepositStatusNotification;
 
 class CreditRequestController extends Controller
 {
@@ -31,6 +32,7 @@ class CreditRequestController extends Controller
     {
         $deposit = Deposit::findOrFail($id);
 
+        
         if ($deposit->status == 1) {
             return response()->json(['message' => 'Already approved'], 400);
         }
@@ -56,17 +58,39 @@ class CreditRequestController extends Controller
             'picked_number' => null
         ]);
 
+        $user = $wallet->user;
+        if ($user) {
+            $user->notify(new DepositStatusNotification('approved', $deposit->amount));
+            Log::info('Deposit approval notification sent', [
+                'user_id' => $user->id,
+                'deposit_id' => $deposit->id,
+                'amount' => $deposit->amount
+            ]);
+        }
+
         return response()->json(['message' => 'Deposit approved successfully']);
     }
 
     public function decline(Request $request, $id)
     {
         $deposit = Deposit::findOrFail($id);
+        $declineReason = $request->reason ?? 'No reason provided';
 
         $deposit->update([
             'status' => 2,
-            'decline_reason' => $request->reason ?? 'No reason provided',
+            'decline_reason' => $declineReason,
         ]);
+
+        $user = $deposit->wallet->user;
+        if ($user) {
+            $user->notify(new DepositStatusNotification('declined', $deposit->amount, $declineReason));
+            Log::info('Deposit decline notification sent', [
+                'user_id' => $user->id,
+                'deposit_id' => $deposit->id,
+                'amount' => $deposit->amount,
+                'reason' => $declineReason
+            ]);
+        }
 
         // $deposit->delete();
 

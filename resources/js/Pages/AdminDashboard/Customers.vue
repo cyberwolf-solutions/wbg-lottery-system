@@ -4,54 +4,110 @@
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
             <div class="dashboard-banner">
                 <div class="navbar">
-                    <h2 class="lottery-name fw-bold text-danger">Cutomer Details</h2>
+                    <h2 class="lottery-name fw-bold text-danger">Player Details</h2>
                 </div>
+
                 <div class="lottery-table">
-                    <h3 class="mt-4">Customer List</h3>
+                    <h3 class="mt-4">Players List</h3>
+
+                    <!-- Search Bar -->
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        class="form-control mb-3"
+                        placeholder="Search by user name..."
+                    />
+
                     <table>
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>ID</th>
                                 <th>Name</th>
-                                <th>Wallet Details</th>
-                                <th>Total Earning</th>
-                                <th>View</th>
-                                <th>Action</th>
+                                <th>Email</th>
+                                <th>Wallet Balance</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dashboard, index) in dashboards" :key="index">
-                                <td><a href="#">{{ dashboard.id }}</a></td>
-                                <td>{{ dashboard.name }}</td>
+                            <tr v-for="user in paginatedUsers" :key="user.id">
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>${{ safeFormatBalance(user.wallet?.available_balance) }}</td>
                                 <td>
-                                    <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
+                                    <button @click="openWalletModal(user)" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> View Wallet
                                     </button>
-
-                                </td>
-                                <td>{{ calculatePercentage(dashboard.price) }}%</td>
-                                <td>
-                                    <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-
-                                </td>
-                                <td>
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Pagination Controls -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-sm btn-primary">
+                            Previous
+                        </button>
+                        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-sm btn-primary">
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div v-if="isDeleteModalOpen" class="modal-overlay">
-            <div class="modal-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this transaction?</p>
-                <button @click="deleteTransaction" class="btn btn-danger">Delete</button>
-                <button @click="isDeleteModalOpen = false" class="btn btn-secondary">Cancel</button>
+        <!-- Wallet Details Modal -->
+        <div v-if="showWalletModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h3>Wallet Details for {{ selectedUser?.name }}</h3>
+                    <button @click="closeModal" class="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Summary</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p><strong>Available Balance:</strong> ${{
+                                        safeFormatBalance(selectedUser?.wallet?.available_balance) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Recent Transactions</h5>
+                            <div class="transaction-list">
+                                <div v-if="!selectedUser?.wallet?.transactions?.length" class="alert alert-info">
+                                    No transactions found
+                                </div>
+                                <table v-else class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="tx in selectedUser?.wallet?.transactions" :key="tx.id">
+                                            <td>{{ formatDate(tx.created_at) }}</td>
+                                            <td>{{ tx.type }}</td>
+                                            <td :class="{ 'text-success': tx.amount > 0, 'text-danger': tx.amount < 0 }">
+                                                ${{ safeFormatBalance(Math.abs(tx.amount)) }}
+                                            </td>
+                                            <td>{{ tx.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @click="closeModal" class="btn btn-secondary">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -64,39 +120,119 @@ export default {
     components: {
         Sidebar,
     },
+    props: {
+        users: {
+            type: Array,
+            required: true,
+            default: () => []
+        }
+    },
     data() {
         return {
             isSidebarVisible: true,
-            isDeleteModalOpen: false,
-            selectedDashboard: null,
-            dashboards: [
-                { id: 1, name: 'User 1', price: 10, date: '2025-02-05', draw: '1' },
-                { id: 2, name: 'User 2', price: 20, date: '2025-02-05', draw: '2' },
-                { id: 3, name: 'User 3', price: 50, date: '2025-02-05', draw: '3' },
-            ],
+            showWalletModal: false,
+            selectedUser: null,
+            searchQuery: "",
+            currentPage: 1,
+            perPage: 10
         };
     },
-    methods: {
-        calculatePercentage(price) {
-            const total = this.dashboards.reduce((sum, item) => sum + item.price, 0);
-            return total ? ((price / total) * 100).toFixed(2) : 0;
+    computed: {
+        // Filter users based on search query
+        filteredUsers() {
+            return this.users.filter(user => 
+                user.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+            );
         },
-        viewDetails(dashboard) {
-            alert(`Viewing details for: ${dashboard.name}`);
+
+        // Paginate the filtered users
+        paginatedUsers() {
+            const start = (this.currentPage - 1) * this.perPage;
+            return this.filteredUsers.slice(start, start + this.perPage);
         },
-        confirmDelete(dashboard) {
-            this.selectedDashboard = dashboard;
-            this.isDeleteModalOpen = true;
-        },
-        deleteTransaction() {
-            this.dashboards = this.dashboards.filter(d => d.id !== this.selectedDashboard.id);
-            this.isDeleteModalOpen = false;
-        },
+
+        // Calculate total number of pages
+        totalPages() {
+            return Math.ceil(this.filteredUsers.length / this.perPage);
+        }
     },
+    methods: {
+        safeFormatBalance(value) {
+            if (value === null || value === undefined) return '0.00';
+            const num = Number(value);
+            return isNaN(num) ? '0.00' : num.toFixed(2);
+        },
+
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        },
+
+        handleSidebarToggle(isVisible) {
+            this.isSidebarVisible = isVisible;
+        },
+
+        openWalletModal(user) {
+            this.selectedUser = user;
+            this.showWalletModal = true;
+        },
+
+        closeModal() {
+            this.showWalletModal = false;
+            this.selectedUser = null;
+        },
+
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        }
+    }
 };
 </script>
 
 <style scoped>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.transaction-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.text-success {
+    color: green;
+}
+
+.text-danger {
+    color: red;
+}
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;
