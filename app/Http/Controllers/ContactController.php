@@ -26,11 +26,11 @@ class ContactController extends Controller
             'email' => $validated['email'],
             'message' => $validated['message'],
         ];
-
+ 
         Log::info($data);
 
         // Send using the Mailable
-        Mail::to('info@WBG.com')
+        Mail::to('info@winboardgame.com')
             ->send(new ContactMail($data));
 
         return response()->json(['message' => 'Email sent successfully!']);

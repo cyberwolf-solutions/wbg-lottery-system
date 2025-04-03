@@ -114,11 +114,11 @@ const walletBalance = computed(() => {
                             <p class="text-2xl font-bold">USDT {{ walletBalance }}</p>
                         </div>
                         <div class="bg-green-50 p-4 rounded-lg">
-                            <h4 class="text-sm font-medium text-gray-500">Total Withdrawals</h4>
+                            <h4 class="text-sm font-medium text-gray-500">Total Deposits</h4>
                             <p class="text-2xl font-bold">USDT {{ deposits.total_amount }}</p>
                         </div>
                         <div class="bg-green-50 p-4 rounded-lg">
-                            <h4 class="text-sm font-medium text-gray-500">Total Deposits</h4>
+                            <h4 class="text-sm font-medium text-gray-500">Total Withdrawals</h4>
                             <p class="text-2xl font-bold">USDT {{ withdrawals.total_amount }}</p>
                         </div>
                     </div>

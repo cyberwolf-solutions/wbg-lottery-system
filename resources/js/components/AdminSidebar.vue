@@ -73,7 +73,7 @@ export default {
                     subItems: [
                         { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
                         { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
-                        // { id: 5, name: "Customers", link: "/api/customers", permission: "manage customers" }
+                        { id: 5, name: "Customers", link: "/api/admin/players", permission: "manage players" }
                     ],
                 },
                 {
@@ -265,7 +265,6 @@ export default {
 }
 
 
-
 .sidebar {
     width: 250px;
     position: fixed;
@@ -275,6 +274,29 @@ export default {
     color: #fff;
     transition: transform 0.3s ease;
     z-index: 1000;
+    /* Add these properties for scrollable behavior */
+    overflow-y: auto;
+    overflow-x: hidden;
+    top: 0;
+    left: 0;
+}
+
+/* Optional: Style the scrollbar to match your design */
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #2c2c2c;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }
 
 .sidebar.sidebar-hidden {

@@ -3,9 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class WinnerNotification extends Notification implements ShouldQueue
 {
@@ -18,6 +19,8 @@ class WinnerNotification extends Notification implements ShouldQueue
 
     public function __construct($lotteryName, $pickedNumber, $drawNumber, $price)
     {
+
+
         $this->lotteryName = $lotteryName;
         $this->pickedNumber = $pickedNumber;
         $this->drawNumber = $drawNumber;
@@ -34,7 +37,45 @@ class WinnerNotification extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         Log::info('Sending WinnerNotification via database', ['notifiable' => $notifiable]);
-        return ['database'];
+        Log::info('Sending WinnerNotification via channels', [
+            'channels' => ['mail', 'database'],
+            'recipient' => $notifiable->email
+        ]);
+        return ['mail', 'database'];
+    }
+    public function toMail($notifiable)
+    {
+        Log::info('Attempting to send winner email notification', [
+            'recipient' => $notifiable->email,
+            'lottery' => $this->lotteryName,
+            'picked_number' => $this->pickedNumber,
+            'price' => $this->price,
+        ]);
+    
+        try {
+            $mail = (new MailMessage)
+                ->subject('Congratulations! You Won!')
+                ->line("Congratulations! You have won $ {$this->price} from {$this->lotteryName} lottery.")
+                ->line("Winning Number: {$this->pickedNumber}")
+                ->line("Draw Number: {$this->drawNumber}")
+                ->action('Claim Your Prize', url('/dashboard'))
+                ->line('Thank you for participating!');
+    
+            Log::info('Winner email notification prepared successfully', [
+                'recipient' => $notifiable->email,
+                'subject' => 'Congratulations! You Won!'
+            ]);
+    
+            return $mail;
+    
+        } catch (\Exception $e) {
+            Log::error('Failed to prepare winner email notification', [
+                'error' => $e->getMessage(),
+                'recipient' => $notifiable->email,
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     public function toArray($notifiable)

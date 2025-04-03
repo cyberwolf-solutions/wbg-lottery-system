@@ -52,8 +52,9 @@
                         <p style="margin-bottom: 20px; margin-top: 20px; font-weight: bolder; font-size: 20px;">
                             <strong>Contact Us</strong>
                         </p>
-                        <p><i class="fas fa-phone-alt"></i> 012 345 6789</p>
-                        <p><i class="fas fa-envelope"></i> info@WBG.com</p>
+                        <p><i class="fas fa-phone-alt"></i> +971 52 130 9541</p>
+                        <p><i class="fas fa-envelope"></i> info@winboardgame.com</p>
+                        <p><i class="fas fa-address-book"></i>  Al Jabri Tower , Al Quisais Bubai ,<br>    United Arab Emirates.</p>
                     </div>
                 </div>
 
@@ -154,7 +155,7 @@ export default {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7faff;
+    background-color: white;
     margin: 0;
     padding: 20px;
 }
