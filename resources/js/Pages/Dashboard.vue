@@ -154,7 +154,7 @@ const walletBalance = computed(() => {
 
 
             <!-- Notices Section -->
-            <!-- <div class="card col-8 shadow-lg mb-4" style="border: none;">
+            <div class="card col-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
                     <h3 class="text-lg font-semibold mb-4">🛎️ Your Notices</h3>
 
@@ -222,7 +222,7 @@ const walletBalance = computed(() => {
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
 
             <!-- Purchase History -->
             <div class="card col-8 shadow-lg" style="border: none;">

@@ -15,14 +15,14 @@
                 <!-- Lottery Table Section -->
                 <div class="lottery-table">
                     <h3 class="mt-4">Role Details</h3>
-                    <table class="table table-striped">
+                    <table class="table table-striped table-dark">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Role Name</th>
                                 <th>Permissions</th>
                                 <th>Created At</th>
-                                <th>Actions</th>
+                                <!-- <th>Actions</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -31,14 +31,12 @@
                                 <td>{{ role.name }}</td>
                                 <td>{{ role.permissions }}</td>
                                 <td>{{ role.created_at }}</td>
-                                <td>
-                                    <!-- <button @click="editRole(role)" class="btn btn-sm btn-warning mx-1">
-                                        <i class="fa fa-edit"></i>
-                                    </button> -->
+                                <!-- <td>
+                                   
                                     <button @click="confirmDelete(role)" class="btn btn-sm btn-danger mx-1">
                                         <i class="fa fa-trash"></i>
                                     </button>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>
