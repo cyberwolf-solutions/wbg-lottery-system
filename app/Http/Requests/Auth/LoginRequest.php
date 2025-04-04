@@ -49,6 +49,12 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (Auth::user()->status != 1) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account is inactive. Please contact support.',
+            ]);
+        }
         RateLimiter::clear($this->throttleKey());
     }
 
