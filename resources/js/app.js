@@ -35,7 +35,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(VueReCaptcha, { 
-                siteKey: '6LfREPQqAAAAAHiHpgRxp2pWCfkPeAkMAlnjBasJ' 
+                siteKey: '6LdM2wkrAAAAAGxBDb3_rnTHEdSA1ZPzJsjviKRA' 
             })
             .mount(el);
     },
