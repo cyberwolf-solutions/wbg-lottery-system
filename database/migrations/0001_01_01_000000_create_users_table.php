@@ -20,6 +20,7 @@ return new class extends Migration
             $table->String('user_affiliate_link')->unique();
             $table->string('password');
             $table->string('image')->nullable();
+            $table->tinyInteger('status')->default(1); 
             $table->rememberToken();
             $table->timestamps();
             $table->string('google_id')->nullable();

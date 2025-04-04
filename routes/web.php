@@ -2,8 +2,10 @@
 
 use Inertia\Inertia;
 use App\Http\Controllers\Contact;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\HowItWorks;
 use App\Http\Controllers\UserPannel;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\LangingPage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -65,5 +67,71 @@ Route::post('/send-contact-email', [ContactController::class, 'sendEmail']);
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+
+
+
+Route::get('/test-email', function() {
+    $recipientEmail = 'nipun.sankalana@gmail.com';
+    
+    Log::info('Attempting to send test email', [
+        'recipient' => $recipientEmail,
+        'mail_config' => [
+            'driver' => config('mail.default'),
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port'),
+            'username' => config('mail.mailers.smtp.username'),
+            'from_address' => config('mail.from.address'),
+            'from_name' => config('mail.from.name')
+        ],
+        'time' => now()->toDateTimeString()
+    ]);
+
+    try {
+        Mail::raw('Test email content', function($message) use ($recipientEmail) {
+            $message->to($recipientEmail)
+                   ->subject('Test Email');
+            
+            Log::info('Email message prepared', [
+                'recipient' => $recipientEmail,
+                'subject' => 'Test Email',
+                'time' => now()->toDateTimeString()
+            ]);
+        });
+
+        Log::info('Email sent successfully', [
+            'recipient' => $recipientEmail,
+            'time' => now()->toDateTimeString()
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Email sent successfully',
+            'details' => [
+                'to' => $recipientEmail,
+                'config' => config('mail.mailers.smtp')
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Failed to send test email', [
+            'recipient' => $recipientEmail,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'time' => now()->toDateTimeString()
+        ]);
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Email sending failed',
+            'error' => $e->getMessage(),
+            'details' => [
+                'to' => $recipientEmail,
+                'config' => config('mail.mailers.smtp')
+            ]
+        ], 500);
+    }
+});
+
 
 require __DIR__ . '/auth.php';

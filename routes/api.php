@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminAffiliateController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CreditRequestController;
 use App\Http\Controllers\WalletHistoryController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminPlayersController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -59,7 +61,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-
 });
 
 
@@ -121,7 +122,7 @@ Route::middleware(['web'])->group(function () {
         return Inertia::render("AdminDashboard/Users");
     });
 
-   
+
     Route::get('/lotteriesdropdown', function () {
         return Lotteries::all();
     });
@@ -134,12 +135,12 @@ Route::middleware(['web'])->group(function () {
             'id' => $admin ? $admin->id : null,
             'name' => $admin ? $admin->name : null,
             'email' => $admin ? $admin->email : null,
-           'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
+            'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
         ]);
 
         return response()->json([
             'admin_name' => $admin ? $admin->name : null,
-           'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
+            'permissions' => $admin ? $admin->roles->flatMap->permissions->pluck('name')->unique() : []
         ]);
     })->middleware('auth:admin');
 
@@ -223,9 +224,18 @@ Route::middleware(['web'])->group(function () {
             Route::post('/users', [AdminUserController::class, 'store']);
 
 
+            Route::get('/players', [AdminPlayersController::class, 'index']);
+
+            Route::put('/users/{user}/activate', [AdminPlayersController::class, 'activate'])
+                ->name('admin.users.activate');
+
+            Route::put('/users/{user}/deactivate', [AdminPlayersController::class, 'deactivate'])
+                ->name('admin.users.deactivate');
 
 
 
+
+            Route::get('/affiliate', [AdminAffiliateController::class, 'index']);
 
             // Route::get('/dashboard', function () {
             //     return Inertia::render('AdminDashboard/Dashboard');
@@ -236,9 +246,9 @@ Route::middleware(['web'])->group(function () {
                 return Inertia::render('AdminDashboard/Lotteries');
             });
 
-            Route::get("/customers", function () {
-                return Inertia::render("AdminDashboard/Customers");
-            });
+            // Route::get("/customers", function () {
+            //     return Inertia::render("AdminDashboard/Customers");
+            // });
         });
     });
 });

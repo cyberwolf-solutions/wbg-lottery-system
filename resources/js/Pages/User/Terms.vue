@@ -233,14 +233,7 @@ body {
     color: #333;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+
 
 h1,
 h2 {
@@ -274,13 +267,19 @@ a:hover {
 }
 
 .container {
-    width: 90%;
+    /* width: 90%; */
     max-width: 1200px;
-    margin: 20px auto;
+    /* margin: 20px auto; */
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    /* border-radius: 10px; */
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    /* padding: 20px; */
+    /* max-width: 800px; */
+    /* margin: 0 auto; */
+    background: white;
+    /* padding: 20px; */
+    /* border-radius: 8px; */
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 }
 
 .header {

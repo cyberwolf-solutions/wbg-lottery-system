@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'user_affiliate_link',
         'affiliate_link',
-        'image'
+        'image',
+        'status'
     ];
 
     /**
@@ -55,5 +56,16 @@ class User extends Authenticatable
     public function pickedNumbers()
     {
         return $this->hasMany(PickedNumber::class);
+    }
+
+
+    public function affiliates()
+    {
+        return $this->hasMany(Affiliate::class, 'user_id');
+    }
+
+    public function referredUsers()
+    {
+        return $this->hasMany(Affiliate::class, 'affiliate_user_id');
     }
 }

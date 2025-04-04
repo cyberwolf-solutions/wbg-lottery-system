@@ -1,12 +1,5 @@
-<!-- <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-
-
-</script> -->
-
 <template>
-    <Nav />
+    <Nav  />
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
@@ -16,7 +9,7 @@ import { Head } from '@inertiajs/vue3';
             </h2>
         </template>
 
-        <div class="d-flex justify-content-center align-items-center mt-4"
+        <div class="container d-flex justify-content-center align-items-center mt-4"
             style="height: auto; flex-direction: column; text-align: center;">
             <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">How it works
             </p>
@@ -108,7 +101,7 @@ import { Head } from '@inertiajs/vue3';
                 </div>
             </div>
         </div>
-        <div class="row d-flex justify-content-center align-items-center"
+        <div class="row d-flex justify-content-center align-items-center mb-0"
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
@@ -116,10 +109,10 @@ import { Head } from '@inertiajs/vue3';
                     <div class="col-10 text-center">
                         <h1
                             style="margin-top: 50px;color: #333; margin-bottom: 20px;font-size: 30px;font-weight: bold;">
-                            Lucky rewards</h1>
+                            Win Board Game Rewards</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
-                                Winners updated daily.Prize value is 70 times of the initial value of that selected
+                                Winners will be updated daily. Prize value is 70 times of the initial value of that selected
                                 board
                                 Purchase
                                 user id shown where applicable. All Prizes are 100% commission-FREE.
@@ -178,7 +171,7 @@ import { Head } from '@inertiajs/vue3';
             </div>
         </div>
 
-        <div class="row d-flex justify-content-center align-items-center"
+        <div class="row d-flex justify-content-center align-items-center mt-0"
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
 
@@ -275,7 +268,7 @@ body {
 a:hover {
     transform: scale(1.1);
 }
-
+/* 
 .container {
     width: 90%;
     max-width: 1200px;
@@ -284,7 +277,7 @@ a:hover {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-}
+} */
 
 .header {
     display: flex;

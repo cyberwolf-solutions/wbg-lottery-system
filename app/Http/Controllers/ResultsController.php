@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\WinnerNotification;
+use App\Notifications\AffiliateCommissionNotification;
 
 class ResultsController extends Controller
 {
@@ -31,7 +32,7 @@ class ResultsController extends Controller
 
             $query->where('date', '<', now()->format('Y-m-d'))
                 ->where('status', 'deactive');
-                // ->orderBy('date', 'desc');
+            // ->orderBy('date', 'desc');
         }])->get();
 
         $results = Results::with('lottery', 'dashboard')
@@ -192,6 +193,22 @@ class ResultsController extends Controller
                 'picked_number' => $pickedNumber->picked_number,
             ]);
 
+
+            $user = User::find($pickedNumber->user_id);
+            $lottery = Lotteries::find($validatedData['lottery_id']);
+
+            if ($user) {
+                $user->notify(new WinnerNotification(
+                    $lottery->name,
+                    $pickedNumber->picked_number,
+                    $dashboard->draw_number,
+                    $winningPrice
+                ));
+                Log::info('Notification sent to user', ['user_id' => $user->id]);
+            } else {
+                Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
+            }
+
             // Process affiliate commission (10% of the winner's prize)
             $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
             Log::info('Data', ['affiliate' => $affiliate]);
@@ -222,25 +239,17 @@ class ResultsController extends Controller
                     'date' => Carbon::now(),
                 ]);
 
+                $affiliate->notify(new AffiliateCommissionNotification(
+                    $user->name,
+                    $affiliateCommission,
+                    $lottery->name
+                ));
+
+
                 Log::info('Affiliate commission added', [
                     'affiliate_user_id' => $affiliate->user_id,
                     'commission' => $affiliateCommission,
                 ]);
-            }
-
-            $user = User::find($pickedNumber->user_id);
-            $lottery = Lotteries::find($validatedData['lottery_id']);
-
-            if ($user) {
-                $user->notify(new WinnerNotification(
-                    $lottery->name,
-                    $pickedNumber->picked_number,
-                    $dashboard->draw_number,
-                    $winningPrice
-                ));
-                Log::info('Notification sent to user', ['user_id' => $user->id]);
-            } else {
-                Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
             }
         }
     }

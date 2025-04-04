@@ -20,6 +20,7 @@
     });
 
     const activeTab = ref('login');
+    const agreeterms = ref(false);
 
 
 
@@ -29,12 +30,15 @@
         email: '',
         password: '',
         password_confirmation: '',
+        affiliate_link: '',
+        errors: {}
     });
 
     const loginForm = useForm({
         email: '',
         password: '',
         remember: false,
+        errors: {}
     });
 
 
@@ -42,36 +46,51 @@
 
     const submit = async () => {
         try {
-            const recaptchaToken = await executeRecaptcha('register');
-            console.log('reCAPTCHA Token:', recaptchaToken);
- 
-            // Create a FormData object and append all form fields
-            const formData = new FormData();
-            formData.append('name', form.name);
-            formData.append('email', form.email);
-            formData.append('password', form.password);
-            formData.append('password_confirmation', form.password_confirmation);
-            formData.append('affilate_link', form.affiliate_link);
-            formData.append('recaptcha_token', recaptchaToken);
-
-            // for (let [key, value] of formData.entries()) {
-            //    alert(key + ': ' + value);
-            // }
 
 
-            axios.post(route('register'), formData, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-                .then(response => {
-                    console.log('Registration successful');
-                    window.location.href = route('dashboard');
+            if (!agreeterms.value) {
+                form.errors.terms = "You must agree to the terms and conditions";
+                // alert("Agree krpan hto");
+                return;
+            } else {
+                const recaptchaToken = await executeRecaptcha('register');
+                console.log('reCAPTCHA Token:', recaptchaToken);
+
+                // Create a FormData object and append all form fields
+                const formData = new FormData();
+                formData.append('name', form.name);
+                formData.append('email', form.email);
+                formData.append('password', form.password);
+                formData.append('password_confirmation', form.password_confirmation);
+                formData.append('affilate_link', form.affiliate_link);
+                formData.append('recaptcha_token', recaptchaToken);
+
+                // for (let [key, value] of formData.entries()) {
+                //    alert(key + ': ' + value);
+                // }
+
+
+                axios.post(route('register'), formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'multipart/form-data',
+                    },
                 })
-                .catch(error => {
-                    console.error('Registration failed:', error.response.data);
-                });
+                    .then(response => {
+                        console.log('Registration successful');
+                        window.location.href = route('dashboard');
+                    })
+                    .catch(error => {
+                        console.error('Registration failed:', error.response.data);
+                        if (error.response && error.response.data.errors) {
+                            form.errors = error.response.data.errors;
+                        }
+                    });
+
+            }
+
+
+
 
         } catch (error) {
             console.error('Recaptcha error:', error);
@@ -103,7 +122,9 @@
                 })
                 .catch(error => {
                     console.error('Login failed:', error.response.data);
-                    // Handle errors (e.g., display error messages to the user)
+                    if (error.response && error.response.data.errors) {
+                        loginForm.errors = error.response.data.errors;
+                    }
                 });
 
         } catch (error) {
@@ -207,6 +228,14 @@
                             class=" block w-full rounded-md border-gray-300 shadow-sm" v-model="form.affiliate_link"
                             autocomplete="affiliate link"></TextInput>
                     </div>
+                    <div class="flex items-center mb-6 mt-2">
+                        <input type="checkbox" id="terms" v-model="agreeterms" class="mr-2" />
+                        <label for="terms" class="text-sm text-gray-500">
+                            I agree with the Terms of Use
+                        </label>
+                        <InputError class="mt-2" :message="form.errors.name || ''" />
+
+                    </div>
 
 
                     <div class="mt-4 block d-flex justify-content-center">
@@ -217,12 +246,7 @@
                         </PrimaryButton>
                     </div>
 
-                    <div class="flex items-center mb-6 mt-2">
-                        <input type="checkbox" id="terms" class="mr-2" />
-                        <label for="terms" class="text-sm text-gray-500">
-                            I agree with the Terms of Use
-                        </label>
-                    </div>
+
                 </form>
             </div>
             <div v-else>

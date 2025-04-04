@@ -90,9 +90,9 @@ import { Head } from '@inertiajs/vue3';
         </div>
 
 
-        <div class="row d-flex justify-content-center align-items-center mb-0"
+        <div class="row d-flex justify-content-center align-items-center "
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
-            <div class="col-12" style="background-color:#EAF4FC;">
+            <div class="col-12 mb-0" style="background-color:#EAF4FC;">
 
                 <div class="row d-flex mt-4">
                     <div class="col-10 text-center">
@@ -144,7 +144,7 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-        <Footer class="mt-1" />
+        <Footer  class="mt-0" />
     </AuthenticatedLayout>
 </template>
 
@@ -193,7 +193,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: white;
 }
 
 .draw-info {
@@ -230,7 +230,7 @@ a:hover {
     transform: scale(1.1);
 }
 
-.container {
+/* .container {
     width: 90%;
     max-width: 1200px;
     margin: 20px auto;
@@ -238,7 +238,7 @@ a:hover {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-}
+} */
 
 .header {
     display: flex;

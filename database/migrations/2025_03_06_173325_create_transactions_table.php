@@ -17,12 +17,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('wallet_id')->constrained()->onDelete('cascade'); // Reference to Wallet table
+            $table->foreignId('wallet_id')->constrained()->onDelete('cascade'); 
             $table->decimal('amount', 15, 2);
             $table->string('picked_number', 15)->nullable();
-            $table->enum('type', ['deposit', 'withdrawal', 'transfer','refund' ,'Number pick','winning','Affiliate Commission']); // Type of transaction
-            $table->foreignId('lottery_id')->constrained('lotteries')->onDelete('cascade')->nullable(); // Add foreign key for lottery
-            $table->foreignId('lottery_dashboard_id')->constrained('lottery_dashboards')->onDelete('cascade')->nullable(); // Add foreign key for lottery dashboard
+            $table->enum('type', ['deposit', 'withdrawal', 'transfer','refund' ,'Number pick','winning','Affiliate Commission']); 
+            $table->foreignId('lottery_id')->constrained('lotteries')->onDelete('cascade')->nullable(); 
+            $table->foreignId('lottery_dashboard_id')->constrained('lottery_dashboards')->onDelete('cascade')->nullable(); 
             $table->date('transaction_date'); 
             $table->softDeletes(); // Soft delete column
             $table->timestamps();

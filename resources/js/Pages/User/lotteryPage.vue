@@ -12,13 +12,12 @@
         <div class="landing-page container-fluid px-0 mb-0">
             <div class="d-flex justify-content-center align-items-center mt-4"
                 style="height: auto; flex-direction: column; text-align: center;">
-                <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Lottery Page
+                <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Lotteries Page
                 </p>
-                <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Our biggest winners have
-                    won
-                    lottery
-                    jackpots
-                    and million dollar prizes. Read their storie below.
+                <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Explore exciting lottery
+                    games
+                    and book your lucky numbers to win big prizes with WinBoard Game
+
                 </p>
             </div>
 
@@ -35,8 +34,8 @@
                                 <div class="row" style="height: 70px;">
                                     <div class="col-6">
                                         <!-- Display lottery image -->
-                                        <img :src="`/${lottery.image}`|| logoUrl1" alt="Lottery Image" class="card-img-top"
-                                            style="height: 100px;width: auto;">
+                                        <img :src="`/${lottery.image}` || logoUrl1" alt="Lottery Image"
+                                            class="card-img-top" style="height: 100px;width: auto;">
                                     </div>
                                     <div class="col-6 d-flex align-items-center justify-content-center">
                                         <button class="btn text-white"
@@ -54,27 +53,71 @@
 
                                 <!-- Display winning numbers dynamically if you have this data -->
                                 <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <!-- You can display winning numbers here, if available -->
-                                    <span
-                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        19
-                                    </span>
-                                    <span
-                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        31
-                                    </span>
-                                    <span
-                                        style="width: 35px; height: 35px; background-color: #f0f0f0; 
-                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        21
-                                    </span>
-                                    <span
-                                        style="width: 35px; height: 35px; background-color: rgb(96, 200, 242);; color: #fff; 
-                                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                        69
-                                    </span>
+                                    <!-- Winning numbers section -->
+                                    <template v-if="lottery.dashboards && lottery.dashboards.length > 0">
+                                        <!-- Display countdown if draw date is in the future -->
+                                        <div v-if="new Date(lottery.dashboards[0].date) > new Date()"
+                                            style="display: flex; flex-direction: column; align-items: center;">
+                                            <p style="font-size: 12px; color: #555; margin-bottom: 5px;">
+                                                Next Draw: {{ formatDrawDate(lottery.dashboards[0].date) }} at 8:00 PM
+                                            </p>
+                                            <!-- <p style="font-size: 10px; color: red;">Debug: {{ lottery.dashboards[0].date
+                                                }} | Now: {{ new Date() }}</p> -->
+                                            <p style="font-size: 12px; color: #555; margin-bottom: 5px;">Time Remaining:
+                                            </p>
+                                            <div style="display: flex; gap: 5px;">
+                                                <span
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <span style="font-size: 16px; font-weight: bold;">
+                                                        {{ countdowns[lottery.id]?.days || '00' }}
+                                                    </span>
+                                                    <span style="font-size: 10px;">Days</span>
+                                                </span>
+                                                <span
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <span style="font-size: 16px; font-weight: bold;">
+                                                        {{ countdowns[lottery.id]?.hours || '00' }}
+                                                    </span>
+                                                    <span style="font-size: 10px;">Hours</span>
+                                                </span>
+                                                <span
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <span style="font-size: 16px; font-weight: bold;">
+                                                        {{ countdowns[lottery.id]?.minutes || '00' }}
+                                                    </span>
+                                                    <span style="font-size: 10px;">Minutes</span>
+                                                </span>
+                                                <span
+                                                    style="display: flex; flex-direction: column; align-items: center;">
+                                                    <span style="font-size: 16px; font-weight: bold;">
+                                                        {{ countdowns[lottery.id]?.seconds || '00' }}
+                                                    </span>
+                                                    <span style="font-size: 10px;">Seconds</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- Display winning numbers if draw date has passed -->
+                                        <template v-else>
+                                            <span
+                                                v-for="(num, index) in lottery.dashboards[0].winning_numbers.split(',')"
+                                                :key="index" :style="{
+                                                    width: '35px',
+                                                    height: '35px',
+                                                    backgroundColor: index === lottery.dashboards[0].winning_numbers.split(',').length - 1 ? 'rgb(96, 200, 242)' : '#f0f0f0',
+                                                    color: index === lottery.dashboards[0].winning_numbers.split(',').length - 1 ? '#fff' : '#000',
+                                                    borderRadius: '50%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }">
+                                                {{ num }}
+                                            </span>
+                                        </template>
+                                    </template>
+                                    <!-- Fallback if no dashboard data -->
+                                    <template v-else>
+                                        <span style="font-size: 14px; color: #888;">No upcoming draws</span>
+                                    </template>
                                 </div>
                             </div>
                             <!-- Bottom Blue Section -->
@@ -159,7 +202,7 @@
 
 
 
-        <Footer class="mt-1" />
+        <Footer />
 
     </AuthenticatedLayout>
 </template>
@@ -179,6 +222,8 @@ export default {
             logoUrl: '/assets/images/1.png', // Path to your logo
             logoUrl1: '/assets/images/2.png', // Path to your logo
             logoUrl2: '/assets/images/3.png', // Path to your logo
+            countdowns: {},
+            interval: null
         };
     },
     methods: {
@@ -195,6 +240,89 @@ export default {
                 registerModal.show();
             }
         },
+
+        initializeCountdowns() {
+            this.lotteries.forEach(lottery => {
+                if (lottery.dashboards && lottery.dashboards.length > 0) {
+                    const dashboard = lottery.dashboards[0];
+                    // Ensure date is parsed correctly
+                    const drawDate = new Date(dashboard.date);
+                    console.log(`Initializing countdown for ${lottery.name}:`, drawDate);
+                    this.$set(this.countdowns, lottery.id, this.calculateTimeRemaining(drawDate));
+                }
+            });
+        },
+
+        calculateTimeRemaining(drawDate) {
+            const now = new Date();
+            const diff = drawDate - now;
+
+            if (diff <= 0) {
+                return {
+                    days: '00',
+                    hours: '00',
+                    minutes: '00',
+                    seconds: '00',
+                    expired: true
+                };
+            }
+
+            const seconds = Math.floor((diff / 1000) % 60);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            return {
+                days: days.toString().padStart(2, '0'),
+                hours: hours.toString().padStart(2, '0'),
+                minutes: minutes.toString().padStart(2, '0'),
+                seconds: seconds.toString().padStart(2, '0'),
+                expired: false
+            };
+        },
+
+        startCountdown() {
+            // Clear any existing interval
+            if (this.interval) clearInterval(this.interval);
+
+            // Initial update
+            this.updateCountdowns();
+
+            // Update countdown every second
+            this.interval = setInterval(() => {
+                this.updateCountdowns();
+            }, 1000);
+        },
+
+        updateCountdowns() {
+            this.lotteries.forEach(lottery => {
+                if (lottery.dashboards && lottery.dashboards.length > 0) {
+                    const dashboard = lottery.dashboards[0];
+                    const drawDate = new Date(dashboard.date);
+                    this.countdowns[lottery.id] = this.calculateTimeRemaining(drawDate);
+
+                    // Debug output - remove after testing
+                    console.log(`Countdown for ${lottery.name}:`, this.countdowns[lottery.id]);
+                }
+            });
+        },
+        formatDrawDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    },
+    mounted() {
+        this.initializeCountdowns();
+        this.startCountdown();
+    },
+    beforeDestroy() {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     },
 };
 </script>
@@ -204,14 +332,14 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: white;
 }
 
 a:hover {
     transform: scale(1.1);
 }
 
-.container {
+/* .container {
     width: 90%;
     max-width: 1200px;
     margin: 20px auto;
@@ -219,7 +347,7 @@ a:hover {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-}
+} */
 
 .header {
     display: flex;

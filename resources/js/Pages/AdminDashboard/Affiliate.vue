@@ -22,7 +22,7 @@
                                 <th>Email</th>
                                 <th>Wallet Balance</th>
                                 <th>View</th>
-                                <th>Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -32,19 +32,14 @@
                                 <td>{{ user.email }}</td>
                                 <td>${{ safeFormatBalance(user.wallet?.available_balance) }}</td>
                                 <td>
-                                    <button @click="openWalletModal(user)" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i> View Wallet
-                                    </button>
-                                </td>
                                 <td>
-                                    <button v-if="user.status === 1" @click="deactivateUser(user.id)"
-                                        class="btn btn-sm btn-warning">
-                                        Deactivate
-                                    </button>
-                                    <button v-else @click="activateUser(user.id)" class="btn btn-sm btn-success">
-                                        Activate
+                                    <button @click="openAffiliateModal(user)" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-people"></i> View Affiliates
                                     </button>
                                 </td>
+
+                                </td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -63,60 +58,42 @@
             </div>
         </div>
 
-        <!-- Wallet Details Modal -->
-        <div v-if="showWalletModal" class="modal-overlay">
+        <!-- Affiliates Modal -->
+        <div v-if="showAffiliateModal" class="modal-overlay">
             <div class="modal-content" style="max-width: 800px;">
                 <div class="modal-header">
-                    <h3>Wallet Details for {{ selectedUser?.name }}</h3>
-                    <button @click="closeModal" class="btn-close"></button>
+                    <h3>Affiliates for {{ selectedUser?.name }}</h3>
+                    <button @click="closeAffiliateModal" class="btn-close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5>Summary</h5>
-                            <div class="card">
-                                <div class="card-body">
-                                    <p><strong>Available Balance:</strong> ${{
-                                        safeFormatBalance(selectedUser?.wallet?.available_balance) }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Recent Transactions</h5>
-                            <div class="transaction-list">
-                                <div v-if="!selectedUser?.wallet?.transactions?.length" class="alert alert-info">
-                                    No transactions found
-                                </div>
-                                <table v-else class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Amount</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="tx in selectedUser?.wallet?.transactions" :key="tx.id">
-                                            <td>{{ formatDate(tx.created_at) }}</td>
-                                            <td>{{ tx.type }}</td>
-                                            <td
-                                                :class="{ 'text-success': tx.amount > 0, 'text-danger': tx.amount < 0 }">
-                                                ${{ safeFormatBalance(Math.abs(tx.amount)) }}
-                                            </td>
-                                            <td>{{ tx.description }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                    <table v-if="selectedUser?.affiliates?.length" class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Earnings</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="affiliate in selectedUser.affiliates" :key="affiliate.id">
+                                <td>{{ affiliate.id }}</td>
+                                <td>{{ affiliate.name }}</td>
+                                <td>{{ affiliate.email }}</td>
+                                <td>${{ safeFormatBalance(affiliate.earnings) }}</td>
+                                <td>{{ formatDate(affiliate.date) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div v-else class="alert alert-info">No affiliates found</div>
                 </div>
                 <div class="modal-footer">
-                    <button @click="closeModal" class="btn btn-secondary">Close</button>
+                    <button @click="closeAffiliateModal" class="btn btn-secondary">Close</button>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -137,7 +114,7 @@ export default {
     data() {
         return {
             isSidebarVisible: true,
-            showWalletModal: false,
+            showAffiliateModal: false,
             selectedUser: null,
             searchQuery: "",
             currentPage: 1,
@@ -180,16 +157,15 @@ export default {
             this.isSidebarVisible = isVisible;
         },
 
-        openWalletModal(user) {
+        openAffiliateModal(user) {
             this.selectedUser = user;
-            this.showWalletModal = true;
+            this.showAffiliateModal = true;
         },
 
-        closeModal() {
-            this.showWalletModal = false;
+        closeAffiliateModal() {
+            this.showAffiliateModal = false;
             this.selectedUser = null;
         },
-
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -201,39 +177,7 @@ export default {
                 this.currentPage++;
             }
         },
-        activateUser(userId) {
-            if (confirm('Are you sure you want to activate this user?')) {
-                axios.put(`/api/admin/users/${userId}/activate`)
-                    .then(response => {
-                        // Find and update the user in the local array
-                        const userIndex = this.users.findIndex(u => u.id === userId);
-                        if (userIndex !== -1) {
-                            this.users[userIndex].status = 1;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error activating user:', error);
-                        alert('Failed to activate user');
-                    });
-            }
-        },
 
-        deactivateUser(userId) {
-            if (confirm('Are you sure you want to deactivate this user?')) {
-                axios.put(`/api/admin/users/${userId}/deactivate`)
-                    .then(response => {
-                        // Find and update the user in the local array
-                        const userIndex = this.users.findIndex(u => u.id === userId);
-                        if (userIndex !== -1) {
-                            this.users[userIndex].status = 0;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deactivating user:', error);
-                        alert('Failed to deactivate user');
-                    });
-            }
-        }
     }
 };
 </script>
