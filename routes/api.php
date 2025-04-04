@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminAffiliateController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -17,15 +16,17 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\LotteriesController;
 use App\Http\Controllers\NumberPickController;
 use App\Http\Controllers\WithdrawalController;
+use App\Http\Controllers\AdminNoticeController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\LotteryListController;
+use App\Http\Controllers\AdminPlayersController;
 use App\Http\Controllers\PurchaseListController;
 use Illuminate\Contracts\Foundation\Application;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CreditRequestController;
 use App\Http\Controllers\WalletHistoryController;
+use App\Http\Controllers\AdminAffiliateController;
 use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\AdminPlayersController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -236,6 +237,11 @@ Route::middleware(['web'])->group(function () {
 
 
             Route::get('/affiliate', [AdminAffiliateController::class, 'index']);
+
+
+            Route::get('/notices', [AdminNoticeController::class, 'index']);
+            Route::post('/notices/store', [AdminNoticeController::class, 'store']);
+
 
             // Route::get('/dashboard', function () {
             //     return Inertia::render('AdminDashboard/Dashboard');

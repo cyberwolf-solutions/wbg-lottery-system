@@ -5,11 +5,13 @@ import { ref, computed } from 'vue';
 
 const props = defineProps({
     purchaseHistory: Array,
-    wallet: Object, 
-    pickedNumbers: Array, 
-    lotteryDashboards: Array, 
+    wallet: Object,
+    pickedNumbers: Array,
+    lotteryDashboards: Array,
     deposits: Array,
-    withdrawals: Array
+    withdrawals: Array,
+    generalNotices: Array,
+    userNotices: Array,
 });
 
 // Cart functionality
@@ -17,6 +19,30 @@ const cartItems = ref(props.pickedNumbers || []);
 const selectedLottery = ref(null);
 const selectedNumbers = ref([]);
 
+const userPage = ref(1)
+const userPerPage = 3
+
+const paginatedUserNotices = computed(() => {
+    const start = (userPage.value - 1) * userPerPage
+    return props.userNotices.slice(start, start + userPerPage)
+})
+
+const totalUserPages = computed(() =>
+    Math.ceil(props.userNotices.length / userPerPage)
+)
+
+// General Notices Pagination
+const generalPage = ref(1)
+const generalPerPage = 3
+
+const paginatedGeneralNotices = computed(() => {
+    const start = (generalPage.value - 1) * generalPerPage
+    return props.generalNotices.slice(start, start + generalPerPage)
+})
+
+const totalGeneralPages = computed(() =>
+    Math.ceil(props.generalNotices.length / generalPerPage)
+)
 // Add to cart function
 const addToCart = (lottery) => {
     if (selectedNumbers.value.length > 0) {
@@ -125,84 +151,72 @@ const walletBalance = computed(() => {
                 </div>
             </div>
 
-            <!-- Cart Section -->
+
+
+            <!-- Notices Section -->
             <!-- <div class="card col-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
-                    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px;">
-                        <div
-                            style="width: 100%; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
-                            <h3 class="text-lg font-semibold mb-3">Your Cart</h3>
-                            <table style="width: 100%; border-collapse: collapse; font-size: 12px; color: #6c757d;">
-                                <thead>
-                                    <tr style="border-bottom: 2px solid #eee;">
-                                        <th style="text-align: left; padding: 10px;">ITEM</th>
-                                        <th style="text-align: center; padding: 10px;">NUMBERS</th>
-                                        <th style="text-align: center; padding: 10px;">QUANTITY</th>
-                                        <th style="text-align: center; padding: 10px;">COST</th>
-                                        <th style="text-align: center; padding: 10px;">REMOVE</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(item, index) in cartItems" :key="index"
-                                        style="border-bottom: 1px solid #eee;">
-                                        <td style="padding: 10px;">{{ item.lottery_name }}</td>
-                                        <td style="text-align: center; padding: 10px;">
-                                            <span v-for="(num, i) in item.numbers" :key="i">
-                                                {{ num }}{{ i < item.numbers.length - 1 ? ', ' : '' }} </span>
-                                        </td>
-                                        <td style="text-align: center; padding: 10px;">{{ item.quantity }} Line(s)</td>
-                                        <td style="text-align: center; padding: 10px;">€{{ (item.price *
-                                            item.quantity).toFixed(2) }}</td>
-                                        <td style="text-align: center; padding: 10px;">
-                                            <button @click="removeFromCart(index)"
-                                                style="background: none; border: none; color: red; cursor: pointer; font-size: 14px;">🗑️</button>
-                                        </td>
-                                    </tr>
-                                    <tr v-if="cartItems.length === 0">
-                                        <td colspan="5" style="text-align: center; padding: 20px;">Your cart is empty
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <h3 class="text-lg font-semibold mb-4">🛎️ Your Notices</h3>
 
-                            <div v-if="cartItems.length > 0" class="mt-3 text-right">
-                                <p class="font-semibold">Total: €{{ cartTotal.toFixed(2) }}</p>
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Proceed to
-                                    Checkout</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       
+                        <div class="flex flex-col">
+                            <div>
+                                <h4 class="text-md font-bold text-blue-700 mb-2">🎯 Direct to You</h4>
+                                <div v-if="props.userNotices.length" class="space-y-3">
+                                    <div v-for="notice in paginatedUserNotices" :key="notice.id"
+                                        class="bg-blue-100 p-3 rounded-lg shadow">
+                                        <h5 class="font-semibold text-blue-900">{{ notice.title }}</h5>
+                                        <p class="text-sm text-blue-800">{{ notice.message }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            {{ new Date(notice.created_at).toLocaleString() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div v-else class="text-sm text-gray-500">No personal notices.</div>
                             </div>
 
-                            <Link :href="route('wallet.index')"
-                                class="block w-full text-center text-blue-400 hover:text-blue-600 mt-4">
-                            View wallet details
-                            </Link>
+                           
+                            <div v-if="props.userNotices.length" class="flex justify-between mt-auto pt-4 text-sm">
+                                <button class="text-blue-700 hover:underline" :disabled="userPage === 1"
+                                    @click="userPage--">
+                                    ⬅️ Prev
+                                </button>
+                                <span>Page {{ userPage }} / {{ totalUserPages }}</span>
+                                <button class="text-blue-700 hover:underline" :disabled="userPage === totalUserPages"
+                                    @click="userPage++">
+                                    Next ➡️
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div> -->
 
-            <!-- Quick Pick Widget -->
-            <!-- <div class="card col-8 shadow-lg mb-4" style="border: none;">
-                <div class="card-body">
-                    <h3 class="text-lg font-semibold mb-3">Quick Pick</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Select Lottery</label>
-                            <select v-model="selectedLottery" class="w-full border-gray-300 rounded-md shadow-sm">
-                                <option v-for="dashboard in lotteryDashboards" :key="dashboard.id" :value="dashboard">
-                                    {{ dashboard.lottery.name }} - €{{ dashboard.price }}
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pick Numbers</label>
-                            <div class="flex items-center">
-                                <input v-model="selectedNumbers" type="text"
-                                    placeholder="Enter numbers separated by commas"
-                                    class="flex-1 border-gray-300 rounded-md shadow-sm">
-                                <button @click="addToCart(selectedLottery)"
-                                    :disabled="!selectedLottery || selectedNumbers.length === 0"
-                                    class="ml-2 bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300">
-                                    Add to Cart
+                      
+                        <div class="flex flex-col">
+                            <div>
+                                <h4 class="text-md font-bold text-gray-800 mb-2">🌐 Notices for Everyone</h4>
+                                <div v-if="props.generalNotices.length" class="space-y-3">
+                                    <div v-for="notice in paginatedGeneralNotices" :key="notice.id"
+                                        class="bg-gray-100 p-3 rounded-lg shadow">
+                                        <h5 class="font-semibold text-gray-900">{{ notice.title }}</h5>
+                                        <p class="text-sm text-gray-700">{{ notice.message }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            {{ new Date(notice.created_at).toLocaleString() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div v-else class="text-sm text-gray-500">No general notices.</div>
+                            </div>
+
+                           
+                            <div v-if="props.generalNotices.length" class="flex justify-between mt-auto pt-4 text-sm">
+                                <button class="text-gray-700 hover:underline" :disabled="generalPage === 1"
+                                    @click="generalPage--">
+                                    ⬅️ Prev
+                                </button>
+                                <span>Page {{ generalPage }} / {{ totalGeneralPages }}</span>
+                                <button class="text-gray-700 hover:underline"
+                                    :disabled="generalPage === totalGeneralPages" @click="generalPage++">
+                                    Next ➡️
                                 </button>
                             </div>
                         </div>
@@ -248,6 +262,7 @@ const walletBalance = computed(() => {
                                     </span>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
 
@@ -261,6 +276,9 @@ const walletBalance = computed(() => {
                     </div>
                 </div>
             </div>
+
+
+
         </div>
     </AuthenticatedLayout>
 </template>

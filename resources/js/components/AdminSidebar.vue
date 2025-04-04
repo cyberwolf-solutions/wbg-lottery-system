@@ -74,8 +74,17 @@ export default {
                         { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
                         { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
                         { id: 5, name: "Players", link: "/api/admin/players", permission: "manage players" },
-                        { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" }
+                        { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" },
+                        
                     ],
+                },
+
+                {
+                    id: 10,
+                    name: "Notices",
+                    link: "/api/admin/notices",
+                    isOpen: false,
+                    permission: "manage notices"
                 },
 
 
@@ -90,7 +99,7 @@ export default {
                     id: 3,
                     name: "Lottery Dashboards",
                     link: "#",
-                    isOpen: false, 
+                    isOpen: false,
                     permission: "manage dashboards",
                     subItems: []
                 },
