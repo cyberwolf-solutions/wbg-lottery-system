@@ -100,34 +100,35 @@ class NumberPickController extends Controller
         ]);
 
 
-        // Check if all numbers are picked
-        $pickedCount = PickedNumber::where('lottery_dashboard_id', $validated['lottery_dashboard_id'])->count();
+        // // Check if all numbers are picked
+        // $pickedCount = PickedNumber::where('lottery_dashboard_id', $validated['lottery_dashboard_id'])->count();
 
-        Log::info('Picked Count:', ['picked_count' => $pickedCount]);
+        // Log::info('Picked Count:', ['picked_count' => $pickedCount]);
 
-        if ($pickedCount >= 100) {
-            // Close the current dashboard
-            $dashboard = LotteryDashboards::find($validated['lottery_dashboard_id']);
-            $dashboard->update(['status' => 'closed']);
+        // if ($pickedCount >= 100) {
+        //     // Close the current dashboard
+        //     $dashboard = LotteryDashboards::find($validated['lottery_dashboard_id']);
+        //     $dashboard->update(['status' => 'closed']);
 
-            // Create a new dashboard with the same details
-            $newDashboard = LotteryDashboards::create([
-                'lottery_id' => $dashboard->lottery_id,
-                'dashboard' => $dashboard->dashboard,
-                'price' => $dashboard->price,
-                'date' => $dashboard->date,
-                'draw' => $dashboard->draw,
-                'draw_number' => $dashboard->draw_number,
-                'winning_numbers' => $dashboard->winning_numbers,
-                'status' => 'active',
+        //     // Create a new dashboard with the same details
+        //     $newDashboard = LotteryDashboards::create([
+        //         'lottery_id' => $dashboard->lottery_id,
+        //         'dashboard' => $dashboard->dashboard,
+        //         'price' => $dashboard->price,
+        //         'date' => $dashboard->date,
+        //         'draw' => $dashboard->draw,
+        //         'draw_number' => $dashboard->draw_number,
+        //         'winning_numbers' => $dashboard->winning_numbers,
+        //         'dashboardType' => $dashboard->dashboardType,
+        //         'status' => 'active',
 
-            ]);
+        //     ]);
 
-            return response()->json([
-                'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
-                'new_dashboard_id' => $newDashboard->id
-            ]);
-        }
+        //     return response()->json([
+        //         'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
+        //         'new_dashboard_id' => $newDashboard->id
+        //     ]);
+        // }
 
 
 
@@ -210,6 +211,35 @@ class NumberPickController extends Controller
 
             // Dispatch Job
             PickNumberJob::dispatch($pickedNumber, $dashboardId, $lotteryId, $user->id);
+        }
+        // Check if all numbers are picked
+        $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
+
+        Log::info('Picked Count:', ['picked_count' => $pickedCount]);
+
+        if ($pickedCount >= 100) {
+            // Close the current dashboard
+            $dashboard = LotteryDashboards::find($dashboardId);
+            $dashboard->update(['status' => 'closed']);
+
+            // Create a new dashboard with the same details
+            $newDashboard = LotteryDashboards::create([
+                'lottery_id' => $dashboard->lottery_id,
+                'dashboard' => $dashboard->dashboard,
+                'price' => $dashboard->price,
+                'date' => $dashboard->date,
+                'draw' => $dashboard->draw,
+                'draw_number' => $dashboard->draw_number,
+                'winning_numbers' => $dashboard->winning_numbers,
+                'dashboardType' => $dashboard->dashboardType,
+                'status' => 'active',
+
+            ]);
+
+            return response()->json([
+                'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
+                'new_dashboard_id' => $newDashboard->id
+            ]);
         }
 
         session()->forget('cart');

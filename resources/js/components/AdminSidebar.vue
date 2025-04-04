@@ -69,13 +69,16 @@ export default {
                     name: "Users",
                     link: "#",
                     isOpen: false,
-                    permission: "manage users",
+                    permission: "manage ",
                     subItems: [
                         { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
                         { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
-                        { id: 5, name: "Customers", link: "/api/admin/players", permission: "manage players" }
+                        { id: 5, name: "Players", link: "/api/admin/players", permission: "manage players" },
+                        { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" }
                     ],
                 },
+
+
                 {
                     id: 8,
                     name: "Lotteries",
@@ -87,7 +90,7 @@ export default {
                     id: 3,
                     name: "Lottery Dashboards",
                     link: "#",
-                    isOpen: false,
+                    isOpen: false, 
                     permission: "manage dashboards",
                     subItems: []
                 },
@@ -158,9 +161,12 @@ export default {
     },
     methods: {
         hasPermission(permission) {
-            if (!permission) return true; // Show if no permission required
-            return this.userPermissions.includes(permission);
-        },
+            if (!permission) return true;
+            const hasPerm = this.userPermissions.includes(permission);
+            console.log(`Checking permission: ${permission}, hasPermission: ${hasPerm}`);
+            return hasPerm;
+        }
+        ,
         isActive(link) {
             return window.location.href.includes(link);
         },
@@ -171,7 +177,7 @@ export default {
             // Save the updated state to localStorage
             localStorage.setItem('sidebarMenuState', JSON.stringify(this.menuItems));
         }
-,
+        ,
         toggleSidebar() {
             this.isSidebarVisible = !this.isSidebarVisible;
             this.$emit("sidebar-toggle", this.isSidebarVisible);
@@ -181,6 +187,10 @@ export default {
                 const response = await axios.get('/api/admin/permissions');
                 this.userPermissions = response.data.permissions || [];
                 console.log('User Permissions:', this.userPermissions);
+                console.log('Checking "manage players":', this.hasPermission('manage players'));
+                console.log('User Permissions:', this.userPermissions);
+                console.log('Checking if manage players exists:', this.userPermissions.includes('manage players'));
+                console.log('Checking if manage affiliates exists:', this.userPermissions.includes('manage affiliates'));
 
             } catch (error) {
                 console.error('Error fetching permissions:', error);
@@ -230,15 +240,16 @@ export default {
         },
     },
     async mounted() {
-    await this.fetchUserPermissions();
-    this.fetchLotteryData();
+        await this.fetchUserPermissions();
+        console.log(this.userPermissions);
+        this.fetchLotteryData();
 
-    // Load the sidebar state from localStorage if it exists
-    const savedState = localStorage.getItem('sidebarMenuState');
-    if (savedState) {
-        this.menuItems = JSON.parse(savedState);
+        // Load the sidebar state from localStorage if it exists
+        const savedState = localStorage.getItem('sidebarMenuState');
+        if (savedState) {
+            this.menuItems = JSON.parse(savedState);
+        }
     }
-}
 
 };
 </script>

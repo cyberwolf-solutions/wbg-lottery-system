@@ -55,7 +55,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'affiliate_link' => $request->affilate_link,
-            'user_affiliate_link' => $affiliateLink
+            'user_affiliate_link' => $affiliateLink,
+            'status' => 1
         ]);
 
         event(new Registered($user));

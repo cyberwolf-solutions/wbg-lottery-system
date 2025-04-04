@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
         'view users',
         'view dashboard',
         'manage users',
+        'manage affiliates',
         'manage roles',
         'manage players',
         'manage lotteries',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminAffiliateController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -225,8 +226,16 @@ Route::middleware(['web'])->group(function () {
 
             Route::get('/players', [AdminPlayersController::class, 'index']);
 
+            Route::put('/users/{user}/activate', [AdminPlayersController::class, 'activate'])
+                ->name('admin.users.activate');
+
+            Route::put('/users/{user}/deactivate', [AdminPlayersController::class, 'deactivate'])
+                ->name('admin.users.deactivate');
 
 
+
+
+            Route::get('/affiliate', [AdminAffiliateController::class, 'index']);
 
             // Route::get('/dashboard', function () {
             //     return Inertia::render('AdminDashboard/Dashboard');
