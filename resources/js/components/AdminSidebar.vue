@@ -1,267 +1,324 @@
 <template>
     <div>
-        <!-- Toggle Button for Small Screens -->
-        <button @click="toggleSidebar" class="sidebar-toggle-btn">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <!-- Sidebar -->
-        <div :class="['sidebar', { 'sidebar-hidden': !isSidebarVisible }]">
-            <!-- Sidebar Header with Profile -->
-            <div class="sidebar-header">
-                <h2 class="fs-6 ms-5">Hello! Admin</h2>
-                <img :src="logoUrl" alt="Profile Photo" class="profile-photo" />
-            </div>
-
-            <!-- Sidebar Menu -->
-            <ul class="nav flex-column mt-5">
-                <li v-for="item in filteredMenuItems" :key="item.id" class="nav-item">
-                    <a v-if="!item.subItems" :href="item.link" class="nav-link" :class="{ active: isActive(item.link) }"
-                        :aria-label="'Go to ' + item.name" v-show="hasPermission(item.permission)">
-                        {{ item.name }}
-                    </a>
-                    <a v-else href="#" @click="toggleDropdown(item.id)" class="nav-link"
-                        :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name"
-                        v-show="hasPermission(item.permission)">
-                        {{ item.name }}
-                        <!-- Icon Toggle -->
-                        <i v-if="!item.isOpen" class="fas fa-chevron-down float-end"></i>
-                        <i v-if="item.isOpen" class="fas fa-chevron-up float-end"></i>
-                    </a>
-
-                    <!-- Submenu Items with smooth transition -->
-                    <transition name="submenu-transition">
-                        <ul v-if="item.isOpen && item.subItems && item.subItems.length" class="nav flex-column ms-3">
-                            <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
-                                <a :href="subItem.link" class="nav-link" v-show="hasPermission(subItem.permission)">{{
-                                    subItem.name }}</a>
-                            </li>
-                        </ul>
-                    </transition>
-                </li>
-                <li class="nav-item">
-                    <button @click="logout" class="nav-link logout-btn" aria-label="Logout">
-                        <i class="fas fa-sign-out-alt me-2"></i> Logout
-                    </button>
-                </li>
-            </ul>
+      <!-- Toggle Button for Small Screens -->
+      <button @click="toggleSidebar" class="sidebar-toggle-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+  
+      <!-- Sidebar -->
+      <div :class="['sidebar', { 'sidebar-hidden': !isSidebarVisible }]">
+        <!-- Sidebar Header with Profile -->
+        <div class="sidebar-header">
+          <h2 class="fs-6 ms-5">Hello! Admin</h2>
+          <img :src="logoUrl" alt="Profile Photo" class="profile-photo" />
         </div>
+  
+        <!-- Sidebar Menu -->
+        <ul class="nav flex-column mt-5" v-if="!loading.permissions">
+          <template v-for="item in visibleMenuItems" :key="item.id">
+            <li class="nav-item">
+              <!-- Main Menu Item -->
+              <a v-if="!item.subItems || !item.subItems.length" 
+                 :href="item.link" 
+                 class="nav-link" 
+                 :class="{ active: isActive(item.link) }"
+                 :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+              </a>
+              
+              <!-- Dropdown Menu Item -->
+              <template v-else>
+                <a href="#" 
+                   @click.prevent="toggleDropdown(item.id)" 
+                   class="nav-link" 
+                   :class="{ active: isDropdownActive(item) }"
+                   :aria-label="'Go to ' + item.name">
+                  {{ item.name }}
+                  <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+                </a>
+                
+                <!-- Submenu Items -->
+                <transition name="submenu-transition">
+                  <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                    <li v-for="subItem in item.subItems" 
+                        :key="subItem.id" 
+                        class="nav-item">
+                      <a :href="subItem.link" 
+                         class="nav-link" 
+                         :class="{ active: isActive(subItem.link) }">
+                        {{ subItem.name }}
+                      </a>
+                    </li>
+                  </ul>
+                </transition>
+              </template>
+            </li>
+          </template>
+          
+          <!-- Logout Button -->
+          <li class="nav-item">
+            <button @click="logout" class="nav-link logout-btn" aria-label="Logout">
+              <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </button>
+          </li>
+        </ul>
+        
+        <!-- Loading State -->
+        <div v-if="loading.permissions" class="text-center p-4">
+          <i class="fas fa-spinner fa-spin"></i> Loading menu...
+        </div>
+      </div>
     </div>
-</template>
-
-<script>
-export default {
+  </template>
+  
+  <script>
+  export default {
     name: "Sidebar",
     data() {
-        return {
-            isSidebarVisible: true,
-            userPermissions: [],
-            menuItems: [
-                {
-                    id: 1,
-                    name: "Dashboard",
-                    link: "/api/admin/dashboard",
-                    isOpen: false,
-                    permission: "view dashboard"
-                },
-                {
-                    id: 2,
-                    name: "Users",
-                    link: "#",
-                    isOpen: false,
-                    permission: "manage ",
-                    subItems: [
-                        { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
-                        { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
-                        { id: 5, name: "Players", link: "/api/admin/players", permission: "manage players" },
-                        { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" },
-                        
-                    ],
-                },
-
-                {
-                    id: 10,
-                    name: "Notices",
-                    link: "/api/admin/notices",
-                    isOpen: false,
-                    permission: "manage notices"
-                },
-
-
-                {
-                    id: 8,
-                    name: "Lotteries",
-                    link: "/api/admin/list",
-                    isOpen: false,
-                    permission: "manage lotteries"
-                },
-                {
-                    id: 3,
-                    name: "Lottery Dashboards",
-                    link: "#",
-                    isOpen: false,
-                    permission: "manage dashboards",
-                    subItems: []
-                },
-                {
-                    id: 9,
-                    name: "Results",
-                    link: "/api/admin/results",
-                    isOpen: false,
-                    permission: "view results"
-                },
-                {
-                    id: 4,
-                    name: "Winners",
-                    link: "#",
-                    isOpen: false,
-                    permission: "manage winners",
-                    subItems: [
-                        { id: 6, name: "Lottery 2", link: "/api/adminWin", permission: "manage winners" },
-                    ],
-                },
-                {
-                    id: 5,
-                    name: "Credit Request",
-                    link: "#",
-                    isOpen: false,
-                    permission: "manage credits",
-                    subItems: [
-                        { id: 7, name: "Credit Requests", link: "/api/admin/creditReq", permission: "manage credits" },
-                        { id: 8, name: "Withdrawal Requests", link: "/api/admin/transactions", permission: "manage withdrawals" },
-                    ],
-                },
-                {
-                    id: 6,
-                    name: "Purchase List",
-                    link: "#",
-                    isOpen: false,
-                    permission: "view purchases",
-                    subItems: [
-                        { id: 7, name: "Lottery 1", link: "/api/purchase", permission: "view purchases" },
-                    ],
-                },
-                {
-                    id: 7,
-                    name: "Wallet History",
-                    link: "#",
-                    isOpen: false,
-                    permission: "view wallet history",
-                    subItems: [
-                        { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
-                    ],
-                },
+      return {
+        isSidebarVisible: true,
+        userPermissions: [],
+        loading: {
+          permissions: true,
+          lotteries: false
+        },
+        menuItems: [
+          {
+            id: 1,
+            name: "Dashboard",
+            link: "/api/admin/dashboard",
+            isOpen: false,
+            permission: "view dashboard"
+          },
+          {
+            id: 2,
+            name: "Users",
+            link: "#",
+            isOpen: false,
+            permission: "manage users",
+            subItems: [
+              { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
+              { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
+              { id: 5, name: "Players", link: "/api/admin/players", permission: "manage players" },
+              { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" },
             ],
-            logoUrl: '/assets/images/profile.png',
-        };
+          },
+          {
+            id: 10,
+            name: "Notices",
+            link: "/api/admin/notices",
+            isOpen: false,
+            permission: "manage notices" 
+          },
+          {
+            id: 8,
+            name: "Lotteries",
+            link: "/api/admin/list",
+            isOpen: false,
+            permission: "manage lotteries"
+          },
+          {
+            id: 3,
+            name: "Lottery Dashboards",
+            link: "#",
+            isOpen: false,
+            permission: "manage dashboards",
+            subItems: []
+          },
+          {
+            id: 9,
+            name: "Results",
+            link: "/api/admin/results",
+            isOpen: false,
+            permission: "view results"
+          },
+          {
+            id: 4,
+            name: "Winners",
+            link: "#",
+            isOpen: false,
+            permission: "manage winners",
+            subItems: [
+              { id: 6, name: "Lottery 2", link: "/api/adminWin", permission: "manage winners" },
+            ],
+          },
+          {
+            id: 5,
+            name: "Credit Request",
+            link: "#",
+            isOpen: false,
+            permission: "manage credits",
+            subItems: [
+              { id: 7, name: "Credit Requests", link: "/api/admin/creditReq", permission: "manage credits" },
+              { id: 8, name: "Withdrawal Requests", link: "/api/admin/transactions", permission: "manage withdrawals" },
+            ],
+          },
+          {
+            id: 6,
+            name: "Purchase List",
+            link: "#",
+            isOpen: false,
+            permission: "view purchases",
+            subItems: [
+              { id: 7, name: "Lottery 1", link: "/api/purchase", permission: "view purchases" },
+            ],
+          },
+          {
+            id: 7,
+            name: "Wallet History",
+            link: "#",
+            isOpen: false,
+            permission: "view wallet history",
+            subItems: [
+              { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
+            ],
+          },
+        ],
+        logoUrl: '/assets/images/profile.png',
+      };
     },
     computed: {
-        filteredMenuItems() {
-            return this.menuItems.map(item => {
-                if (item.subItems) {
-                    return {
-                        ...item,
-                        subItems: item.subItems.filter(subItem => this.hasPermission(subItem.permission))
-                    };
-                }
-                return item;
-            });
-        }
+      visibleMenuItems() {
+        return this.menuItems.filter(item => {
+          // Check if user has permission for the main item
+          const hasMainPermission = this.hasPermission(item.permission);
+          
+          // If it has subItems, check if any are visible
+          if (item.subItems && item.subItems.length) {
+            const visibleSubItems = item.subItems.filter(subItem => 
+              this.hasPermission(subItem.permission)
+            );
+            return hasMainPermission || visibleSubItems.length > 0;
+          }
+          
+          return hasMainPermission;
+        }).map(item => {
+          // Filter subItems based on permissions
+          if (item.subItems && item.subItems.length) {
+            return {
+              ...item,
+              subItems: item.subItems.filter(subItem => 
+                this.hasPermission(subItem.permission)
+        )};
+          }
+          return item;
+        });
+      }
     },
     methods: {
-        hasPermission(permission) {
-            if (!permission) return true;
-            const hasPerm = this.userPermissions.includes(permission);
-            console.log(`Checking permission: ${permission}, hasPermission: ${hasPerm}`);
-            return hasPerm;
+      hasPermission(permission) {
+        if (!permission) return true;
+        return this.userPermissions.some(
+          p => p.trim().toLowerCase() === permission.trim().toLowerCase()
+        );
+      },
+      isActive(link) {
+        return window.location.pathname === link;
+      },
+      isDropdownActive(item) {
+        return item.subItems?.some(subItem => this.isActive(subItem.link));
+      },
+      toggleDropdown(id) {
+        const menuItem = this.menuItems.find(item => item.id === id);
+        if (menuItem) {
+          menuItem.isOpen = !menuItem.isOpen;
+          this.saveSidebarState();
         }
-        ,
-        isActive(link) {
-            return window.location.href.includes(link);
-        },
-        toggleDropdown(id) {
-            const menuItem = this.menuItems.find((item) => item.id === id);
-            menuItem.isOpen = !menuItem.isOpen;
-
-            // Save the updated state to localStorage
-            localStorage.setItem('sidebarMenuState', JSON.stringify(this.menuItems));
-        }
-        ,
-        toggleSidebar() {
-            this.isSidebarVisible = !this.isSidebarVisible;
-            this.$emit("sidebar-toggle", this.isSidebarVisible);
-        },
-        async fetchUserPermissions() {
-            try {
-                const response = await axios.get('/api/admin/permissions');
-                this.userPermissions = response.data.permissions || [];
-                console.log('User Permissions:', this.userPermissions);
-                console.log('Checking "manage players":', this.hasPermission('manage players'));
-                console.log('User Permissions:', this.userPermissions);
-                console.log('Checking if manage players exists:', this.userPermissions.includes('manage players'));
-                console.log('Checking if manage affiliates exists:', this.userPermissions.includes('manage affiliates'));
-
-            } catch (error) {
-                console.error('Error fetching permissions:', error);
-            }
-        },
-        async fetchLotteryData() {
-            try {
-                const response = await axios.get("/api/admin/sidebar/lotteries");
-                const lotteries = response.data;
-
-                const lotteryDashboard = this.menuItems.find(item => item.name === "Lottery Dashboards");
-                lotteryDashboard.subItems = lotteries.map(lottery => ({
-                    id: lottery.id,
-                    name: lottery.name,
-                    link: `/api/admin/lottery/dashboard/${lottery.id}`,
-                    permission: "manage dashboards"
-                }));
-
-                const purchaseList = this.menuItems.find(item => item.name === "Purchase List");
-                purchaseList.subItems = lotteries.map(lottery => ({
-                    id: lottery.id,
-                    name: lottery.name,
-                    link: `/api/admin/purchase/${lottery.id}`,
-                    permission: "view purchases"
-                }));
-
-                const winnersSection = this.menuItems.find(item => item.name === "Winners");
-                winnersSection.subItems = lotteries.map(lottery => ({
-                    id: lottery.id,
-                    name: lottery.name,
-                    link: `/api/admin/adminWin/${lottery.id}`,
-                    permission: "manage winners"
-                }));
-            } catch (error) {
-                console.error("Error fetching lottery data:", error);
-            }
-        },
-        async logout() {
-            try {
-                const response = await axios.post('/api/admin/logout');
-                if (response.status === 200 && response.data.redirect_url) {
-                    window.location.href = response.data.redirect_url;
-                }
-            } catch (error) {
-                console.error('Logout failed:', error);
-            }
-        },
-    },
-    async mounted() {
-        await this.fetchUserPermissions();
-        console.log(this.userPermissions);
-        this.fetchLotteryData();
-
-        // Load the sidebar state from localStorage if it exists
+      },
+      toggleSidebar() {
+        this.isSidebarVisible = !this.isSidebarVisible;
+        this.$emit("sidebar-toggle", this.isSidebarVisible);
+      },
+      saveSidebarState() {
+        localStorage.setItem('sidebarMenuState', JSON.stringify(this.menuItems));
+      },
+      loadSidebarState() {
         const savedState = localStorage.getItem('sidebarMenuState');
         if (savedState) {
-            this.menuItems = JSON.parse(savedState);
+          try {
+            const parsedState = JSON.parse(savedState);
+            this.menuItems = this.menuItems.map(item => {
+              const savedItem = parsedState.find(si => si.id === item.id);
+              return savedItem ? { ...item, isOpen: savedItem.isOpen } : item;
+            });
+          } catch (e) {
+            console.error('Failed to parse saved sidebar state', e);
+          }
         }
+      },
+      async fetchUserPermissions() {
+        try {
+          const response = await axios.get('/api/admin/permissions');
+          this.userPermissions = response.data.permissions || [];
+        } catch (error) {
+          console.error('Error fetching permissions:', error);
+        } finally {
+          this.loading.permissions = false;
+        }
+      },
+      async fetchLotteryData() {
+        this.loading.lotteries = true;
+        try {
+          const response = await axios.get("/api/admin/sidebar/lotteries");
+          const lotteries = response.data;
+  
+          // Update menu items with lottery data
+          this.updateMenuWithLotteries(lotteries);
+        } catch (error) {
+          console.error("Error fetching lottery data:", error);
+        } finally {
+          this.loading.lotteries = false;
+        }
+      },
+      updateMenuWithLotteries(lotteries) {
+        const lotteryMenuUpdates = [
+          {
+            name: "Lottery Dashboards",
+            permission: "manage dashboards",
+            linkTemplate: "/api/admin/lottery/dashboard/{id}"
+          },
+          {
+            name: "Purchase List",
+            permission: "view purchases",
+            linkTemplate: "/api/admin/purchase/{id}"
+          },
+          {
+            name: "Winners",
+            permission: "manage winners",
+            linkTemplate: "/api/admin/adminWin/{id}"
+          }
+        ];
+  
+        lotteryMenuUpdates.forEach(menuUpdate => {
+          const menuItem = this.menuItems.find(item => item.name === menuUpdate.name);
+          if (menuItem) {
+            menuItem.subItems = lotteries.map(lottery => ({
+              id: lottery.id,
+              name: lottery.name,
+              link: menuUpdate.linkTemplate.replace('{id}', lottery.id),
+              permission: menuUpdate.permission
+            }));
+          }
+        });
+      },
+      async logout() {
+        try {
+          const response = await axios.post('/api/admin/logout');
+          if (response.status === 200 && response.data.redirect_url) {
+            window.location.href = response.data.redirect_url;
+          }
+        } catch (error) {
+          console.error('Logout failed:', error);
+        }
+      },
+    },
+    async created() {
+      await this.fetchUserPermissions();
+      this.loadSidebarState();
+      this.fetchLotteryData();
     }
-
-};
-</script>
+  };
+  </script>
 <style scoped>
 .logout-btn {
     background: none;
