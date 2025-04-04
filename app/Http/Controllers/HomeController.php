@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Wallet;
 use App\Models\Deposit;
+use App\Models\Notices;
 use App\Models\Withdrawal;
 use App\Models\PickedNumber;
 use Illuminate\Http\Request;
@@ -40,8 +41,21 @@ class HomeController extends Controller
         // Get withdrawal summary
         $withdrawals = Withdrawal::where('wallet_id', $wallet->id)
             ->selectRaw('SUM(amount) as total_amount, COUNT(*) as count')
-            ->where('status', '1') 
+            ->where('status', '1')
             ->first();
+
+
+        // Fetch general notices (user_id is null)
+        $generalNotices = Notices::whereNull('user_id')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Fetch user-specific notices
+        $userNotices = Notices::where('user_id', Auth::id())
+            ->latest()
+            ->take(5)
+            ->get();
 
 
         // dd($deposits);
@@ -58,6 +72,8 @@ class HomeController extends Controller
                 'total_amount' => $withdrawals->total_amount ?? 0,
                 'count' => $withdrawals->count ?? 0
             ],
+            'generalNotices' => $generalNotices,
+            'userNotices' => $userNotices,
         ]);
     }
 }
