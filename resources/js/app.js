@@ -24,7 +24,7 @@ axios.get('/sanctum/csrf-cookie').then(() => {
 
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? `${title} - Winboard Game` : 'Winboard Game',
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
