@@ -4,11 +4,11 @@
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
             <div class="dashboard-banner">
                 <div class="navbar">
-                    <h2 class="lottery-name fw-bold text-danger">Player Details</h2>
+                    <h2 class="lottery-name fw-bold text-danger">Player Affiliate Details</h2>
                 </div>
 
                 <div class="lottery-table">
-                    <h3 class="mt-4">Players List</h3>
+                    <h3 class="mt-4">Affiliate List</h3>
 
                     <!-- Search Bar -->
                     <input v-model="searchQuery" type="text" class="form-control mb-3"
