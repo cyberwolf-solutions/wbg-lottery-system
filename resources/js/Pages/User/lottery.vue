@@ -535,7 +535,8 @@ function handleManualDelete() {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        <!-- <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"> -->
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                             <!-- Loop through paginated tickets -->
                             <div v-for="ticket in paginatedTickets" :key="ticket.draw_number"
                                 class="border rounded-lg p-4 relative">
@@ -581,7 +582,7 @@ function handleManualDelete() {
                                 <!-- Number Buttons -->
                                 <div class="mt-4">
                                     <h3 class="text-sm font-semibold">Pick a Number</h3>
-                                    <div class="grid grid-cols-6 gap-3 mt-4">
+                                    <div class="grid grid-cols-5 sm:grid-cols-6 gap-2 sm:gap-3 mt-4">
                                         <div v-for="number in storedNumbers" :key="number" :class="{
                                             'bg-gray-100 cursor-pointer hover:bg-gray-300': !isNumberPicked(number, ticket.id),
                                             'bg-gray-400 cursor-not-allowed opacity-50': isNumberPicked(number, ticket.id)
