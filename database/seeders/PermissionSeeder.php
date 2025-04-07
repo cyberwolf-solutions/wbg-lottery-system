@@ -25,7 +25,8 @@ class PermissionSeeder extends Seeder
             'manage credits',
             'manage withdrawals',
             'view purchases',
-            'view wallet history'
+            'view wallet history',
+            'manage reports'
         ];
 
         foreach ($permissions as $permissionName) {

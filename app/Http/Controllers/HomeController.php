@@ -45,17 +45,10 @@ class HomeController extends Controller
             ->first();
 
 
-        // Fetch general notices (user_id is null)
-        $generalNotices = Notices::whereNull('user_id')
+        $allNotices = Notices::where('user_id', Auth::id())
+            ->orWhereNull('user_id')
             ->latest()
-            ->take(5)
-            ->get();
-
-        // Fetch user-specific notices
-        $userNotices = Notices::where('user_id', Auth::id())
-            ->latest()
-            ->take(5)
-            ->get();
+            ->paginate(2);
 
 
         // dd($deposits);
@@ -72,8 +65,7 @@ class HomeController extends Controller
                 'total_amount' => $withdrawals->total_amount ?? 0,
                 'count' => $withdrawals->count ?? 0
             ],
-            'generalNotices' => $generalNotices,
-            'userNotices' => $userNotices,
+            'allNotices' => $allNotices,
         ]);
     }
 }

@@ -52,8 +52,8 @@ class CreateDailyDashboard extends Command
                     'dashboard' => $dashboardField,
                     'price' => $price,
                     'date' => $newDate,
-                    'draw' => $newDrawNumber, // Save as 1, 2, 3...
-                    'draw_number' => $formattedDrawNumber, // Save as 001, 002, 003...
+                    'draw' => $newDrawNumber, 
+                    'draw_number' => $formattedDrawNumber, 
                     'winning_numbers' => json_encode($winningNumbers),
                     'status' => 'active',
                 ]);

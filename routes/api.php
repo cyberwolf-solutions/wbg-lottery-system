@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiveInactiveController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -37,6 +38,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\ReportsController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -242,6 +244,17 @@ Route::middleware(['web'])->group(function () {
             Route::get('/notices', [AdminNoticeController::class, 'index']);
             Route::post('/notices/store', [AdminNoticeController::class, 'store']);
 
+
+
+            Route::get('/player-reports', [ReportsController::class, 'player']);
+            Route::get('/Admin-reports', [ReportsController::class, 'adminReport']);
+            Route::get('/Lottery-reports', [ReportsController::class, 'lotteriesReport']);
+            Route::get('/Lottery-Expired', [ReportsController::class, 'deactiveLotteryDashboardsReport']);
+            Route::get('/Lottery-Cancelled', [ReportsController::class, 'cancelledLotteryDashboardsReport']);
+
+            // Route::get('/Lottery-Expired', [ActiveInactiveController::class, 'deactiveLotteryDashboardsReport']);
+
+            
 
             // Route::get('/dashboard', function () {
             //     return Inertia::render('AdminDashboard/Dashboard');

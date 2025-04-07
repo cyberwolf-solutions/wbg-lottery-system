@@ -9,6 +9,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { VueReCaptcha } from 'vue-recaptcha-v3';
 
 
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 

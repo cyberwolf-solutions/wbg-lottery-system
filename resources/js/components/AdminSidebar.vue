@@ -129,6 +129,7 @@ export default {
           permission: "manage dashboards",
           subItems: []
         },
+        
         {
           id: 9,
           name: "Results",
@@ -175,6 +176,22 @@ export default {
           permission: "view wallet history",
           subItems: [
             { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
+          ],
+        },
+        {
+          id: 13,
+          name: "Reports",
+          link: "#",
+          isOpen: false,
+          permission: "manage reports",
+          subItems: [
+            { id: 3, name: "Players", link: "/api/admin/player-reports", permission: "manage reports" },
+            { id: 4, name: "Admins", link: "/api/admin/Admin-reports", permission: "manage reports" },
+            { id: 5, name: "Lotteries", link: "/api/admin/Lottery-reports", permission: "manage reports" },
+            { id: 6, name: "Expired Dashboards", link: "/api/admin/Lottery-Expired", permission: "manage reports" },
+            { id: 6, name: "Cancelled Dashboards", link: "/api/admin/Lottery-Cancelled", permission: "manage reports" },
+        
+            
           ],
         },
       ],
