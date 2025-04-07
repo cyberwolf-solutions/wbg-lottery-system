@@ -10,8 +10,8 @@ const props = defineProps({
     lotteryDashboards: Array,
     deposits: Array,
     withdrawals: Array,
-    generalNotices: Array,
-    userNotices: Array,
+
+    allNotices: Array,
 });
 
 // Cart functionality
@@ -93,6 +93,18 @@ const countdown = ref({
     minutes: '00',
     seconds: '00'
 });
+// Add these methods to your script setup
+const prevPage = () => {
+    if (props.allNotices.current_page > 1) {
+        window.location.href = props.allNotices.prev_page_url;
+    }
+};
+
+const nextPage = () => {
+    if (props.allNotices.current_page < props.allNotices.last_page) {
+        window.location.href = props.allNotices.next_page_url;
+    }
+};
 
 // Initialize countdown
 const updateCountdown = () => {
@@ -129,9 +141,10 @@ const walletBalance = computed(() => {
             </h2>
         </template>
 
-        <div class="row d-flex justify-content-center align-items-center mt-4">
+        <div class="flex-grow row d-flex justify-content-center align-items-center mt-4 mb-0">
+
             <!-- Wallet Summary Widget -->
-            <div class="card col-8 shadow-lg mb-4" style="border: none;">
+            <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
                     <h3 class="text-lg font-semibold mb-3">Wallet Summary</h3>
                     <div class="grid grid-cols-3 gap-4">
@@ -154,78 +167,87 @@ const walletBalance = computed(() => {
 
 
             <!-- Notices Section -->
-            <div class="card col-8 shadow-lg mb-4" style="border: none;">
+
+            <!-- Notices Section -->
+            <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
-                    <h3 class="text-lg font-semibold mb-4">🛎️ Your Notices</h3>
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <span class="bg-blue-100 p-2 rounded-full mr-2">📢</span>
+                        All Notices
+                    </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                       
-                        <div class="flex flex-col">
-                            <div>
-                                <h4 class="text-md font-bold text-blue-700 mb-2">🎯 Direct to You</h4>
-                                <div v-if="props.userNotices.length" class="space-y-3">
-                                    <div v-for="notice in paginatedUserNotices" :key="notice.id"
-                                        class="bg-blue-100 p-3 rounded-lg shadow">
-                                        <h5 class="font-semibold text-blue-900">{{ notice.title }}</h5>
-                                        <p class="text-sm text-blue-800">{{ notice.message }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">
+                    <div v-if="props.allNotices.data.length" class="space-y-3">
+                        <div v-for="notice in props.allNotices.data" :key="notice.id"
+                            class="p-4 rounded-lg shadow-sm border" :class="{
+                                'border-blue-200 bg-blue-50': notice.user_id,
+                                'border-gray-200 bg-gray-50': !notice.user_id
+                            }">
+                            <div class="flex items-start">
+                                <span v-if="notice.user_id" class="text-blue-500 mr-2">🔔</span>
+                                <span v-else class="text-gray-500 mr-2">🌐</span>
+                                <div>
+                                    <h5 class="font-semibold" :class="{
+                                        'text-blue-800': notice.user_id,
+                                        'text-gray-800': !notice.user_id
+                                    }">
+                                        {{ notice.title }}
+                                    </h5>
+                                    <p class="text-sm mt-1" :class="{
+                                        'text-blue-700': notice.user_id,
+                                        'text-gray-700': !notice.user_id
+                                    }">
+                                        {{ notice.message }}
+                                    </p>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <span class="text-xs" :class="{
+                                            'text-blue-600': notice.user_id,
+                                            'text-gray-600': !notice.user_id
+                                        }">
                                             {{ new Date(notice.created_at).toLocaleString() }}
-                                        </p>
+                                        </span>
+                                        <span v-if="notice.user_id"
+                                            class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                            Personal
+                                        </span>
                                     </div>
                                 </div>
-                                <div v-else class="text-sm text-gray-500">No personal notices.</div>
-                            </div>
-
-                           
-                            <div v-if="props.userNotices.length" class="flex justify-between mt-auto pt-4 text-sm">
-                                <button class="text-blue-700 hover:underline" :disabled="userPage === 1"
-                                    @click="userPage--">
-                                    ⬅️ Prev
-                                </button>
-                                <span>Page {{ userPage }} / {{ totalUserPages }}</span>
-                                <button class="text-blue-700 hover:underline" :disabled="userPage === totalUserPages"
-                                    @click="userPage++">
-                                    Next ➡️
-                                </button>
                             </div>
                         </div>
 
-                      
-                        <div class="flex flex-col">
-                            <div>
-                                <h4 class="text-md font-bold text-gray-800 mb-2">🌐 Notices for Everyone</h4>
-                                <div v-if="props.generalNotices.length" class="space-y-3">
-                                    <div v-for="notice in paginatedGeneralNotices" :key="notice.id"
-                                        class="bg-gray-100 p-3 rounded-lg shadow">
-                                        <h5 class="font-semibold text-gray-900">{{ notice.title }}</h5>
-                                        <p class="text-sm text-gray-700">{{ notice.message }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            {{ new Date(notice.created_at).toLocaleString() }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div v-else class="text-sm text-gray-500">No general notices.</div>
-                            </div>
+                        <!-- Pagination Controls -->
+                        <div class="flex justify-between items-center mt-4">
+                            <button @click="prevPage" :disabled="props.allNotices.current_page === 1"
+                                class="px-4 py-2 rounded-lg border" :class="{
+                                    'bg-gray-100 text-gray-400 cursor-not-allowed': props.allNotices.current_page === 1,
+                                    'bg-white text-blue-600 hover:bg-blue-50': props.allNotices.current_page > 1
+                                }">
+                                Previous
+                            </button>
 
-                           
-                            <div v-if="props.generalNotices.length" class="flex justify-between mt-auto pt-4 text-sm">
-                                <button class="text-gray-700 hover:underline" :disabled="generalPage === 1"
-                                    @click="generalPage--">
-                                    ⬅️ Prev
-                                </button>
-                                <span>Page {{ generalPage }} / {{ totalGeneralPages }}</span>
-                                <button class="text-gray-700 hover:underline"
-                                    :disabled="generalPage === totalGeneralPages" @click="generalPage++">
-                                    Next ➡️
-                                </button>
-                            </div>
+                            <span class="text-sm text-gray-600">
+                                Page {{ props.allNotices.current_page }} of {{ props.allNotices.last_page }}
+                            </span>
+
+                            <button @click="nextPage"
+                                :disabled="props.allNotices.current_page === props.allNotices.last_page"
+                                class="px-4 py-2 rounded-lg border" :class="{
+                                    'bg-gray-100 text-gray-400 cursor-not-allowed': props.allNotices.current_page === props.allNotices.last_page,
+                                    'bg-white text-blue-600 hover:bg-blue-50': props.allNotices.current_page < props.allNotices.last_page
+                                }">
+                                Next
+                            </button>
                         </div>
+                    </div>
+
+                    <div v-else class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-2">📭</div>
+                        <p>No notices available at the moment.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Purchase History -->
-            <div class="card col-8 shadow-lg" style="border: none;">
+            <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
                     <h3 class="text-lg font-semibold mb-3">Purchase History</h3>
                     <table class="min-w-full bg-white">
@@ -284,6 +306,56 @@ const walletBalance = computed(() => {
 </template>
 
 <style>
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grid.grid-cols-3 {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .min-w-full.bg-white {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .text-2xl {
+        font-size: 1.25rem;
+    }
+}
+
+/* Table responsiveness */
+@media (max-width: 640px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th,
+    td {
+        min-width: 120px;
+    }
+}
+
+/* Add this to your style section */
+.min-h-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
