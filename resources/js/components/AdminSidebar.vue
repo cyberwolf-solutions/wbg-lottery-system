@@ -168,16 +168,24 @@ export default {
             { id: 7, name: "Lottery 1", link: "/api/purchase", permission: "view purchases" },
           ],
         },
+
         {
           id: 7,
           name: "Wallet History",
-          link: "#",
+          link: "/api/admin/walletHistory",
           isOpen: false,
-          permission: "view wallet history",
-          subItems: [
-            { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
-          ],
+          permission: "view wallet history"
         },
+        // {
+        //   id: 7,
+        //   name: "Wallet History",
+        //   link: "#",
+        //   isOpen: false,
+        //   permission: "view wallet history",
+        //   subItems: [
+        //     { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
+        //   ],
+        // },
         {
           id: 13,
           name: "Reports",

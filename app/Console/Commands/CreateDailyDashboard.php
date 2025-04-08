@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\NewDashboardCreatedNotification;
 
 class CreateDailyDashboard extends Command
 {
@@ -59,6 +61,17 @@ class CreateDailyDashboard extends Command
                 ]);
 
                 Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, with draw number: {$newDrawNumber}");
+
+                $users = User::all(); 
+                foreach ($users as $user) {
+                    $user->notify(new NewDashboardCreatedNotification(
+                        $lotteryId,
+                        $dashboardField,
+                        $formattedDrawNumber,
+                        $newDate
+                    ));
+                    Log::info("Notification sent to user: {$user->email} about new dashboard creation");
+                }
             }
 
             // Output a success message

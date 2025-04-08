@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Transaction;
@@ -21,10 +22,14 @@ class CheckLotteryParticipation extends Command
     {
         Log::info('Lottery check participation command started.');
 
-        $totalNumbers = 100; // The total numbers available from 00 to 99
-        $threshold = 0.8; // 80% threshold
+        $totalNumbers = 100;
+        $threshold = 0.8;
 
-        $dashboards = LotteryDashboards::where('status', 'active')->get();
+        $dashboards = LotteryDashboards::where('status', 'active')
+            ->whereDate('date', Carbon::today())
+            ->get();
+
+        Log::info('Active Dashboards for Today:', $dashboards->toArray());
 
         foreach ($dashboards as $dashboard) {
             $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboard->id)->count();
@@ -54,9 +59,9 @@ class CheckLotteryParticipation extends Command
                                 'description' => 'Refund for cancelled lottery',
                                 'wallet_id' => $wallet->id,
                                 'transaction_date' => now(),
-                                'lottery_id' => $dashboard->lottery_id,  
-                                'lottery_dashboard_id' => $dashboard->id, 
-                                'picked_number' => $pick->number, 
+                                'lottery_id' => $dashboard->lottery_id,
+                                'lottery_dashboard_id' => $dashboard->id,
+                                'picked_number' => $pick->number,
                             ]);
 
                             Log::info("Refunded user {$pick->user_id} amount {$dashboard->price}.");
@@ -69,7 +74,7 @@ class CheckLotteryParticipation extends Command
                                     $dashboard->price,
                                     $pick->number
                                 ));
-                                
+
                                 Log::info("Notification sent to user {$pick->user_id} about refund.");
                             }
                         }
