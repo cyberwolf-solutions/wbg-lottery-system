@@ -21,8 +21,8 @@ class CreateTransactionsTable extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('picked_number', 15)->nullable();
             $table->enum('type', ['deposit', 'withdrawal', 'transfer','refund' ,'Number pick','winning','Affiliate Commission']); 
-            $table->foreignId('lottery_id')->constrained('lotteries')->onDelete('cascade')->nullable(); 
-            $table->foreignId('lottery_dashboard_id')->constrained('lottery_dashboards')->onDelete('cascade')->nullable(); 
+            $table->foreignId('lottery_id')->nullable()->constrained('lotteries')->onDelete('cascade'); 
+            $table->foreignId('lottery_dashboard_id')->nullable()->constrained('lottery_dashboards')->onDelete('cascade'); 
             $table->date('transaction_date'); 
             $table->softDeletes(); // Soft delete column
             $table->timestamps();

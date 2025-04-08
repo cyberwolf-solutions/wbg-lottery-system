@@ -33,7 +33,14 @@
                                 <td><a href="#">{{ deposit.wallet?.user?.name || 'N/A' }}</a></td>
                                 <td>{{ deposit.deposit_date }}</td>
                                 <td>{{ deposit.amount }}</td>
-                                <td><a :href="deposit.image" target="_blank">View</a></td>
+                                <td>
+
+                                    <img v-if="deposit.image" :src="'/' + deposit.image" alt="Attachment Image"
+                                        style="max-width: 100px; max-height: 100px;">
+
+                                    <!-- If no image URL, show a default message -->
+                                    <span v-else>No Image</span>
+                                </td>
                                 <td>
                                     <!-- Approve Button -->
                                     <button v-if="deposit.status === 0" @click="editDashboard(deposit)"

@@ -18,27 +18,44 @@ class AffiliateController extends Controller
             ->with('affiliateUser')
             ->get();
 
+        $userlink = Auth::user()->user_affiliate_link;
+
+        // dd($userlink);
+
+        $affiliate = User::where('affiliate_link', $userlink)->get();
+
         $totalEarnings = $affiliates->sum('price');
-        $activeReferrals = $affiliates->count();
+        $activeReferrals = $affiliate->count();
+        // dd($affiliates);
 
         $recentReferrals = User::where('affiliate_link', $user->user_affiliate_link)
             ->latest()
             ->take(3)
             ->get();
 
-            // dd($recentReferrals);
+        // dd($recentReferrals);
 
         // Group earnings by month
         $earningsByMonth = $affiliates->groupBy(function ($item) {
             return Carbon::parse($item->date)->format('F'); // Get full month name (January, February, etc.)
         })->map(function ($month) {
-            return $month->sum('price'); 
+            return $month->sum('price');
         });
 
         // Fill in missing months with zero earnings
         $months = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
         ];
 
         foreach ($months as $month) {

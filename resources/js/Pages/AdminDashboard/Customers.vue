@@ -39,7 +39,7 @@
                                 <td>
                                     <button v-if="user.status === 1" @click="deactivateUser(user.id)"
                                         class="btn btn-sm btn-warning">
-                                        Deactivate
+                                        Suspend
                                     </button>
                                     <button v-else @click="activateUser(user.id)" class="btn btn-sm btn-success">
                                         Activate

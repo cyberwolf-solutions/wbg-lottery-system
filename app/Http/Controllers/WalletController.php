@@ -181,7 +181,9 @@ class WalletController extends Controller
             $image->move($destinationPath, $imageName);
 
             // Store the relative image path for saving in the database
-            $imagePath = 'assets/images/request/' . $imageName;
+            $imagePath = 'images/request/' . $imageName;
+
+
         }
 
         // Save deposit request
