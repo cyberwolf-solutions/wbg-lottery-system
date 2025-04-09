@@ -35,7 +35,7 @@
                             <textarea v-model="message" class="form-control" rows="3" placeholder="Message"
                                 required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block mt-2"  >SEND MESSAGE</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-2">SEND MESSAGE</button>
                     </form>
                 </div>
                 <!-- Right Section -->
@@ -52,9 +52,16 @@
                         <p style="margin-bottom: 20px; margin-top: 20px; font-weight: bolder; font-size: 20px;">
                             <strong>Contact Us</strong>
                         </p>
-                        <p><i class="fas fa-phone-alt"></i> +971 52 130 9541</p>
+                        <p>
+                            <i class="fab fa-telegram-plane"></i>
+                            <a href="https://t.me/+EA7YZi2ogEM3ZjE0" target="_blank"
+                                style="text-decoration: none; color: inherit;">
+                                +971 52 130 9541 (Telegram)
+                            </a>
+                        </p>
+
                         <p><i class="fas fa-envelope"></i> info@winboardgame.com</p>
-                        <p><i class="fas fa-address-book"></i>  Al Jabri Tower , Al Quisais Bubai ,<br>    United Arab Emirates.</p>
+
                     </div>
                 </div>
 

@@ -8,9 +8,9 @@
             <li><a :href="route('hiw.index')" :active="route().current('hiw.index')">How it works</a></li>
             <li><a :href="route('latest.index')">Loatest Results</a></li>
             <!-- <li><a href="#">About us</a></li> -->
-            
+
             <li><a :href="route('landinglottery.index')">Lotteries</a></li>
-            <li><a :href="route('winner.index')" >Winners</a></li>
+            <li><a :href="route('winner.index')">Winners</a></li>
             <li><a :href="route('contact.index')" :active="route().current('contact.index')">Contact us</a></li>
           </ul>
         </div>
@@ -40,17 +40,21 @@
       </div>
       <div class="row mt-4 text-left">
 
-        <div class="col-md-6" >
+        <div class="col-md-6">
           <p style="font-size: 12px;">© 2025 WinBoardGame - All Rights Reserved.</p>
 
         </div>
         <div class="col-md-6 text-center text-md-end">
           <div class="social-icons">
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-google"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.facebook.com/share/1BRTRMWarU/" target="_blank">
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a href="https://www.youtube.com/@WinBoardgame" target="_blank">
+              <i class="bi bi-youtube"></i>
+            </a>
           </div>
         </div>
+
       </div>
     </div>
   </footer>
@@ -63,22 +67,21 @@ export default {
 </script>
 
 <style scoped>
-
 @media (max-width: 768px) {
-    .d-flex {
-        flex-direction: column;
-        align-items: center;
-    }
+  .d-flex {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .d-flex input {
-        width: 100%;
-        margin-bottom: 8px;
-    }
+  .d-flex input {
+    width: 100%;
+    margin-bottom: 8px;
+  }
 
-    .d-flex button {
-        width: 100%;
-        text-align: center;
-    }
+  .d-flex button {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 
