@@ -548,7 +548,7 @@ function handleManualDelete() {
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Number</span>
                                         <span style="font-size: 12px;">{{ ticket.draw_number }}</span>
-                                        <span style="font-size: 12px;">{{ ticket.id }}</span>
+                                        <span style="font-size: 12px; display: none;">{{ ticket.id }}</span>
                                     </div>
                                     <div class="button-container">
                                         <span class="fw-bold" style="font-size: 12px;">Draw Date</span>
