@@ -24,7 +24,7 @@
                                 <th>User</th>
                                 <th>Date</th>
                                 <th>Ammount</th>
-
+                                <th>Wallet</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -35,6 +35,7 @@
 
                                 <td>{{ deposit.withdrawal_date }}</td>
                                 <td>{{ deposit.amount }}</td>
+                                <td>{{ deposit.withdrawal_type }} | {{ deposit.address }}</td>
 
                                 <td>
                                     <!-- Approve Button -->

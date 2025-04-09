@@ -105,6 +105,8 @@ const handlewithdraw = async () => {
     if (depositType.value) {
         formData.append('withdrawal_type', depositType.value);
     }
+    formData.append('wallet_address', Address.value);
+
     const modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
     if (modal) {
         modal.hide();
@@ -289,6 +291,15 @@ onMounted(() => {
                             <input id="depositType" v-model="depositType" type="text" placeholder="Enter deposit type "
                                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
+                        <div class="mb-4">
+                            <label for="Address" class="block text-sm font-medium text-gray-700">
+                                Wallet Address
+                            </label>
+                            <input id="Address" v-model="Address" type="text"
+                                placeholder="Enter wallet address"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                        </div>
+
 
                         <!-- Account Name Input -->
                         <div class="mb-4">
@@ -450,7 +461,7 @@ onMounted(() => {
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 transaction.amount
-                                            }}</td>
+                                                }}</td>
                                         </tr>
 
                                     </tbody>
@@ -614,7 +625,7 @@ onMounted(() => {
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.dashboardType
-                                                }}</td>
+                                            }}</td>
 
                                         </tr>
 

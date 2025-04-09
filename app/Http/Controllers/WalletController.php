@@ -207,7 +207,8 @@ class WalletController extends Controller
         $validator = Validator::make($request->all(), [
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
-            'withdrawal_type' => 'required|String'
+            'withdrawal_type' => 'required|String',
+            'wallet_address'=>'required|String'
         ]);
 
 
@@ -241,6 +242,7 @@ class WalletController extends Controller
             'status' => 0,
             'withdrawal_date' => now(),
             'withdrawal_type' => $request->withdrawal_type,
+            'address'=>$request->wallet_address
         ]);
         return response()->json(['message' => 'Withdraw request submitted successfully'], 200);
     }
