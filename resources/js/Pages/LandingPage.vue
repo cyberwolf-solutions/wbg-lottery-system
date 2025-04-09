@@ -359,7 +359,7 @@
                         <small>{{ dashboard.pickedNumbers?.length || 0 }}/100 numbers sold</small>
                       </td> -->
                       <td><a :href="route('landinglottery.index')" class="nav-link"><button
-                            class="btn btn-primary btn-sm">Buy Tickets</button></a>
+                            class="btn btn-primary btn-sm">Book Your Number</button></a>
 
                       </td>
                     </tr>
