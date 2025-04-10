@@ -21,19 +21,24 @@ class CreateDailyDashboard extends Command
             Log::info('Starting the dashboard creation process.');
 
             // Get all unique lottery_id and dashboard combinations
-            $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard')
-                ->distinct()
-                ->get();
+            $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')->distinct()->get();
+
 
             foreach ($lotteryDashboardCombinations as $combination) {
                 $lotteryId = $combination->lottery_id;
                 $dashboardField = $combination->dashboard;
+                $dashboardType = $combination->dashboardType;
 
                 // Get the last dashboard for this specific lottery_id and dashboard
                 $lastDashboard = LotteryDashboards::where('lottery_id', $lotteryId)
-                    ->where('dashboard', $dashboardField)
-                    ->orderBy('id', 'desc')
-                    ->first();
+                ->where('dashboard', $dashboardField)
+                ->where('dashboardType', $dashboardType)
+                ->orderBy('id', 'desc')
+                ->first();
+            
+
+
+                  
 
                 // Determine the new draw number
                 $newDrawNumber = $lastDashboard ? (int)$lastDashboard->draw + 1 : 1;
@@ -48,6 +53,10 @@ class CreateDailyDashboard extends Command
                 $price = $lastDashboard ? $lastDashboard->price : 1000;
                 $winningNumbers = $this->generateWinningNumbers();
 
+                $dashboard_type = $combination->dashboardType;
+
+                Log::info('Last Dashboard:',['Last Dashboard' => $dashboard_type]);
+
                 // Create a new dashboard for this lottery_id and dashboard
                 LotteryDashboards::create([
                     'lottery_id' => $lotteryId,
@@ -57,6 +66,7 @@ class CreateDailyDashboard extends Command
                     'draw' => $newDrawNumber, 
                     'draw_number' => $formattedDrawNumber, 
                     'winning_numbers' => json_encode($winningNumbers),
+                    'dashboardType'=>$dashboard_type,
                     'status' => 'active',
                 ]);
 

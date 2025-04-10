@@ -289,9 +289,12 @@ tbody tr:hover {
     border-radius: 8px;
     max-width: 400px;
     width: 100%;
+    max-height: 80vh; /* Limit height to 80% of viewport */
+    overflow-y: auto;  /* Enable vertical scrolling */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     color: #e0e0e0;
 }
+
 
 h3 {
     margin-bottom: 15px;

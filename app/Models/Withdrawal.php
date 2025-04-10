@@ -17,6 +17,7 @@ class Withdrawal extends Model
         'wallet_id',
         'amount',
         'withdrawal_type',
+        'address',
         'withdrawal_date',
         'status',
         'decline_reason'

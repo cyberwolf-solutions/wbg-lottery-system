@@ -55,10 +55,15 @@
                 <h3>Picked Numbers</h3>
                 <div class="number-grid">
                     <button v-for="num in numberOptions" :key="num"
-                        :class="['number-button', { 'highlighted': isNumberPicked(num) }]" @click="selectNumber(num)">
+                        :class="['number-button', { 'highlighted': isNumberPicked(num) }]" @click="selectNumber(num)"
+                        @mouseover="showUserTooltip(num)" @mouseleave="hideUserTooltip">
                         {{ num }}
                     </button>
+                </div>
 
+                <!-- User Tooltip -->
+                <div v-if="hoveredNumber && hoveredUser" class="user-tooltip">
+                    Picked by: {{ hoveredUser }}
                 </div>
             </div>
         </div>
@@ -74,7 +79,7 @@ export default {
     },
     props: {
         lottery: Array,
-        pickedNumbers: Array, // Accept pickedNumbers as a prop
+        pickedNumbers: Array,
     },
     data() {
         return {
@@ -83,6 +88,8 @@ export default {
             selectedDashboard: null, // Store selected dashboard
             selectedPickedNumbers: [], // Store picked numbers for the selected dashboard
             numberOptions: Array.from({ length: 100 }, (_, i) => String(i).padStart(2, "0")),
+            hoveredNumber: null,
+            hoveredUser: null,
         };
     },
     methods: {
@@ -105,14 +112,35 @@ export default {
             this.isPickerOpen = false;
         },
         isNumberPicked(num) {
-            return this.selectedPickedNumbers.includes(num); // Check numbers for selected dashboard
-        }
+            if (!this.selectedPickedNumbers) return false;
+            return this.selectedPickedNumbers.some(item => item.number === num);
+        },
+
+        showUserTooltip(num) {
+            if (!this.selectedPickedNumbers) return;
+
+            const pickedNumber = this.selectedPickedNumbers.find(item => item.number === num);
+            if (pickedNumber) {
+                this.hoveredNumber = num;
+                this.hoveredUser = pickedNumber.user;
+            }
+        },
+
+        hideUserTooltip() {
+            this.hoveredNumber = null;
+            this.hoveredUser = null;
+        },
+        handleSidebarToggle(isVisible) {
+      this.isSidebarVisible = isVisible;
+    },
     }
 };
 </script>
 
 
 <style scoped>
+
+
 #app.dark-theme {
     background-color: #121212;
     color: #e0e0e0;

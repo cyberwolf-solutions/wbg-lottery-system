@@ -176,6 +176,13 @@ export default {
           isOpen: false,
           permission: "view wallet history"
         },
+        {
+          id: 15,
+          name: "Bank Details",
+          link: "/api/admin/bank-details",
+          isOpen: false,
+          permission: "manage bank"
+        },
         // {
         //   id: 7,
         //   name: "Wallet History",
