@@ -17,28 +17,28 @@ class LandingController extends Controller
     {
         $now = Carbon::now();
 
-        // Get the next 2 upcoming draws
+        
         $upcomingDraws = LotteryDashboards::with(['lottery', 'pickedNumbers'])
             ->where('date', '>=', $now)
             ->orderBy('date', 'asc')
             ->take(2)
             ->get();
-        // Process the upcoming draws
+       
         $lotteriesData = $upcomingDraws->map(function ($draw) {
-            // Count picked numbers for this dashboard
+            
             $pickedCount = $draw->pickedNumbers->count();
-            $soldPercentage = min(100, ($pickedCount / 100) * 100); // Assuming 100 numbers total
+            $soldPercentage = min(100, ($pickedCount / 100) * 100); 
 
             return [
                 'id' => $draw->lottery_id,
                 'name' => $draw->lottery->name,
                 'image' => $draw->lottery->image,
                 'prize' => $draw->price,
-                'price_per_ticket' => $draw->price / 100, // Assuming price is total for all numbers
+                'price_per_ticket' => $draw->price / 100, 
                 'draw_time' => Carbon::parse($draw->date)->setHour(20)->setMinute(0)->setSecond(0)->toIso8601String(),
                 'sold_percentage' => $soldPercentage,
                 'picked_count' => $pickedCount,
-                'total_numbers' => 100 // 00-99
+                'total_numbers' => 100 
             ];
         });
 
