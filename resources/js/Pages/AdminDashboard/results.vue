@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label for="price">First Winning Number:</label>
                                     <input type="number" id="number" v-model="newResult.winning_number"
-                                        class="form-control" min="0" max="99" @input="validateWinningNumber" />
+                                        class="form-control" min="0" max="99" @input="validateWinningNumber" required />
                                 </div>
 
                             </div>
@@ -73,7 +73,7 @@
                                 <div class="form-group">
                                     <label for="price">Last Winning Number:</label>
                                     <input type="number" id="number" v-model="newResult.lwinning_number"
-                                        class="form-control" min="0" max="99" @input="validateWinningNumber" />
+                                        class="form-control" min="0" max="99" @input="validateWinningNumber" required />
                                 </div>
 
                             </div>
@@ -189,7 +189,13 @@ export default {
 
         async addResult() {
             console.log('filteredDashboards:', this.filteredDashboards); // Debugging
-            console.log('lotteries:', this.lotteries); 
+            console.log('lotteries:', this.lotteries);
+
+            if (!this.newResult.lottery || !this.newResult.dashboard || !this.newResult.winning_number ||
+                !this.newResult.lwinning_number || !this.newResult.price || !this.newResult.dashboardName) {
+                this.showToast('Please fill in all required fields before submitting.', 'error');
+                return;
+            }
 
             try {
                 const selectedDashboard = this.filteredDashboards.find(d => d.id === this.newResult.dashboard);
@@ -228,8 +234,25 @@ export default {
             } else {
                 this.newResult.lwinning_number = String(this.newResult.lwinning_number).padStart(2, '0');
             }
-        }
+        },
+        showToast(message, type = 'info') {
+            // Simple alert fallback
+            if (!this.$toast) {
+                alert(message);
+                return;
+            }
 
+            switch (type) {
+                case 'success':
+                    this.$toast.success(message, { position: 'bottom-right' });
+                    break;
+                case 'error':
+                    this.$toast.error(message, { position: 'bottom-right' });
+                    break;
+                default:
+                    this.$toast.info(message, { position: 'bottom-right' });
+            }
+        },
     },
 };
 </script>

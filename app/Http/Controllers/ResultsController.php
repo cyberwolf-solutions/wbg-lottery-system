@@ -81,7 +81,7 @@ class ResultsController extends Controller
     public function store(Request $request)
     {
         try {
-            Log::info('Storing lottery result', $request->all());
+            // Log::info('Storing lottery result', $request->all());
 
             // Validate incoming data
             $validatedData = $request->validate([
@@ -93,7 +93,7 @@ class ResultsController extends Controller
                 'dashboard_name' => 'required'
             ]);
 
-            Log::info('Data', $request->all());
+            // Log::info('Data', $request->all());
 
             // Fetch the two dashboards (FirstDigit and LastDigit) for the given draw number
             $dashboards = LotteryDashboards::where('draw_number', $validatedData['draw_number'])
@@ -102,25 +102,40 @@ class ResultsController extends Controller
                 ->where('dashboard', $validatedData['dashboard_name'])
                 ->get();
 
-            Log::info('Data', ['dashboards' => $dashboards->toArray()]);
 
-            if ($dashboards->count() != 2) {
-                throw new \Exception('Expected two dashboards (FirstDigit and LastDigit) for the given draw number.');
-            }
+            Log::info('Data', ['dashboards' => $dashboards->toArray()]);
+            // dd($dashboards);
+
+
+            // if ($dashboards->count() != 2) {
+            //     throw new \Exception('Expected two dashboards (FirstDigit and LastDigit) for the given draw number.');
+            // }
 
             // Separate the dashboards
-            $firstDigitDashboard = $dashboards->firstWhere('dashboardType', 'First Digits');
-            $lastDigitDashboard = $dashboards->firstWhere('dashboardType', 'Last Digits');
+            $firstDigitDashboards = $dashboards->where('dashboardType', 'First Digits');
+            $lastDigitDashboards = $dashboards->where('dashboardType', 'Last Digits');
 
-            if (!$firstDigitDashboard || !$lastDigitDashboard) {
-                throw new \Exception('Both FirstDigit and LastDigit dashboards are required.');
+
+            if ($firstDigitDashboards->isEmpty() || $lastDigitDashboards->isEmpty()) {
+                throw new \Exception('At least one FirstDigit and one LastDigit dashboard are required.');
             }
 
-            // Add results to the FirstDigit dashboard
-            $this->addResultToDashboard($validatedData, $firstDigitDashboard, $validatedData['winning_number']);
 
-            // Add results to the LastDigit dashboard
-            $this->addResultToDashboard($validatedData, $lastDigitDashboard, $validatedData['lwinning_number']);
+            // Add result to all matching First Digits dashboards
+            foreach ($firstDigitDashboards as $fdDashboard) {
+                $this->addResultToDashboard($validatedData, $fdDashboard, $validatedData['winning_number']);
+            }
+
+            // Add result to all matching Last Digits dashboards
+            foreach ($lastDigitDashboards as $ldDashboard) {
+                $this->addResultToDashboard($validatedData, $ldDashboard, $validatedData['lwinning_number']);
+            }
+
+            // // Add results to the FirstDigit dashboard
+            // $this->addResultToDashboard($validatedData, $firstDigitDashboard, $validatedData['winning_number']);
+
+            // // Add results to the LastDigit dashboard
+            // $this->addResultToDashboard($validatedData, $lastDigitDashboard, $validatedData['lwinning_number']);
 
             Log::info('Results added successfully', [
                 'lottery_id' => $validatedData['lottery_id'],
