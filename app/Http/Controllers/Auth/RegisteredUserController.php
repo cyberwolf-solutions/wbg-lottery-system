@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
         \Illuminate\Support\Facades\Log::info('User Registration Data:', $request->all());
 
         $uniqueCode = Str::random(10);
-        $affiliateLink = url('/ref/' .  $uniqueCode);
+        $affiliateLink = '/ref/' . $uniqueCode;
 
 
         $user = User::create([

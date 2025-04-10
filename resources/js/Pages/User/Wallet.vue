@@ -197,13 +197,13 @@ onMounted(() => {
 
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Account Number
+                        Wallet Number
                     </label>
                     <input id="number" type="text"
                         :value="props.bank.length ? props.bank[0]?.number : 'No Bank Available'" disabled
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 </div>
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label for="wnumber" class="block text-sm font-medium text-gray-700">
                         Wallet Address
                     </label>
@@ -211,7 +211,7 @@ onMounted(() => {
                         :value="props.walletAddress.length ? props.walletAddress[0]?.address : 'No wallet address'"
                         disabled
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                </div>
+                </div> -->
                 <div class="mb-4">
                     <label for="creditAmount" class="block text-sm font-medium text-gray-700">
                         Deposit Amount
