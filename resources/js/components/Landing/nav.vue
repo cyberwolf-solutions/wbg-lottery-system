@@ -199,8 +199,8 @@ export default {
     }
 
     .modal-content {
-        width: 90%; /* Slightly less than full width for some margin */
-        max-height: 90vh; /* Limit height to avoid overflow */
+        width: 90%;
+        max-height: 90vh; 
         overflow-y: auto; /* Allow scrolling if content overflows */
         padding: 20px;
         border-radius: 12px;
@@ -273,7 +273,7 @@ export default {
     .modal-body input {
         font-size: 0.9rem;
         padding: 10px;
-        height: 40px;
+        /* height: 40px; */
     }
 
     .modal-body button {

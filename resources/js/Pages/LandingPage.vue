@@ -1,4 +1,4 @@
-<template>
+<template >
 
   <div class="landing-page container-fluid px-0">
     <Nav />
@@ -550,6 +550,11 @@ export default {
 ``
 
 <style scoped>
+body {
+    background-color: #f8f9fa;
+    margin: 0;
+}
+
 /* Base styles for card */
 .card-wrapper {
   background-color: white;
@@ -840,6 +845,7 @@ export default {
 .landing-page {
   font-family: 'Arial', sans-serif;
   color: #333;
+  /* padding: 0px; */
 }
 
 /*********************** Hero Section ***********************/

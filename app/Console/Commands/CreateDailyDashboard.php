@@ -31,18 +31,25 @@ class CreateDailyDashboard extends Command
 
                 // Get the last dashboard for this specific lottery_id and dashboard
                 $lastDashboard = LotteryDashboards::where('lottery_id', $lotteryId)
-                ->where('dashboard', $dashboardField)
-                ->where('dashboardType', $dashboardType)
-                ->orderBy('id', 'desc')
-                ->first();
-            
+                    ->where('dashboard', $dashboardField)
+                    ->where('dashboardType', $dashboardType)
+                    ->orderBy('id', 'desc')
+                    ->first();
 
 
-                  
+                if ($lastDashboard) {
 
+                    $lastDrawNumber = (int)$lastDashboard->draw_number;
+                    $newDrawNumber = $lastDrawNumber + 1;
+                    $newdraw =  $lastDashboard->draw +1;
+                }
+
+                // Log::info('Last Dashboard:', ['Last Dashboard' => $lastDashboard]);
+                // dd();
                 // Determine the new draw number
-                $newDrawNumber = $lastDashboard ? (int)$lastDashboard->draw + 1 : 1;
+                // $newDrawNumber = $lastDashboard ? (int)$lastDashboard->draw + 1 : 1;
                 $formattedDrawNumber = str_pad($newDrawNumber, 3, '0', STR_PAD_LEFT);
+
 
                 // Get the new date based on the last dashboard's date
                 $newDate = $lastDashboard
@@ -55,7 +62,8 @@ class CreateDailyDashboard extends Command
 
                 $dashboard_type = $combination->dashboardType;
 
-                Log::info('Last Dashboard:',['Last Dashboard' => $dashboard_type]);
+                Log::info('Last Dashboard:', ['Last Dashboard' => $newDrawNumber]);
+                // dd('ok');
 
                 // Create a new dashboard for this lottery_id and dashboard
                 LotteryDashboards::create([
@@ -63,16 +71,16 @@ class CreateDailyDashboard extends Command
                     'dashboard' => $dashboardField,
                     'price' => $price,
                     'date' => $newDate,
-                    'draw' => $newDrawNumber, 
-                    'draw_number' => $formattedDrawNumber, 
+                    'draw' => $newdraw,
+                    'draw_number' => $formattedDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
-                    'dashboardType'=>$dashboard_type,
+                    'dashboardType' => $dashboard_type,
                     'status' => 'active',
                 ]);
 
                 Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, with draw number: {$newDrawNumber}");
 
-                $users = User::all(); 
+                $users = User::all();
                 foreach ($users as $user) {
                     $user->notify(new NewDashboardCreatedNotification(
                         $lotteryId,
@@ -80,7 +88,7 @@ class CreateDailyDashboard extends Command
                         $formattedDrawNumber,
                         $newDate
                     ));
-                    Log::info("Notification sent to user: {$user->email} about new dashboard creation");
+                    // Log::info("Notification sent to user: {$user->email} about new dashboard creation");
                 }
             }
 

@@ -229,7 +229,7 @@
                             autocomplete="affiliate link"></TextInput>
                     </div>
                     <div class="flex items-center mb-6 mt-2">
-                        <input type="checkbox" id="terms" v-model="agreeterms" class="mr-2" />
+                        <input type="checkbox" id="terms" v-model="agreeterms" class="mr-2 w-4 h-4" />
                         <label for="terms" class="text-sm text-gray-500">
                             I agree with the Terms of Use
                         </label>
@@ -281,6 +281,7 @@
                         <label class="flex items-center">
                             <input type="checkbox" v-model="loginForm.remember"
                                 class="rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
+                                
                             <span class="ms-2 text-sm text-gray-600">Remember me</span>
                         </label>
                         <!-- Forgot Password -->

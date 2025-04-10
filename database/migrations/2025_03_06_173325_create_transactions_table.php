@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->foreignId('wallet_id')->constrained()->onDelete('cascade'); 
             $table->decimal('amount', 15, 2);
             $table->string('picked_number', 15)->nullable();
-            $table->enum('type', ['deposit', 'withdrawal', 'transfer','refund' ,'Number pick','winning','Affiliate Commission']); 
+            $table->enum('type', ['deposit', 'withdrawal', 'transfer','refund' ,'Number pick','winning','Affiliate Commission','Admin Deposit','Admin Deduction']); 
             $table->foreignId('lottery_id')->nullable()->constrained('lotteries')->onDelete('cascade'); 
             $table->foreignId('lottery_dashboard_id')->nullable()->constrained('lottery_dashboards')->onDelete('cascade'); 
             $table->date('transaction_date'); 

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Container\Attributes\Log;
+use App\Notifications\WelcomeEmailNotification;
 
 class RegisteredUserController extends Controller
 {
@@ -60,6 +61,7 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+        $user->notify(new WelcomeEmailNotification());
 
         Auth::login($user);
 

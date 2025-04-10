@@ -39,6 +39,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\bankDetailsController;
+use App\Http\Controllers\FundsController;
 use App\Http\Controllers\ReportsController;
 
 Route::middleware('guest')->group(function () {
@@ -257,6 +258,11 @@ Route::middleware(['web'])->group(function () {
 
             Route::get('/bank-details', [bankDetailsController::class, 'index']);
             Route::put('/bank-details/update', [BankDetailsController::class, 'update'])->name('bank.update');
+
+
+            Route::get('/Funds', [FundsController::class, 'index']);
+          
+            Route::post('/funds/{user}/update', [FundsController::class, 'updateWallet'])->name('admin.funds.update');
 
             // Route::get('/Lottery-Expired', [ActiveInactiveController::class, 'deactiveLotteryDashboardsReport']);
 

@@ -14,6 +14,9 @@ const props = defineProps({
     allNotices: Array,
 });
 
+const hiddenNotices = ref(JSON.parse(localStorage.getItem('hiddenNotices') || '[]'));
+
+
 // Cart functionality
 const cartItems = ref(props.pickedNumbers || []);
 const selectedLottery = ref(null);
@@ -22,6 +25,16 @@ const selectedNumbers = ref([]);
 const userPage = ref(1)
 const userPerPage = 3
 
+
+const hideNotice = (noticeId) => {
+    if (!hiddenNotices.value.includes(noticeId)) {
+        hiddenNotices.value.push(noticeId);
+        localStorage.setItem('hiddenNotices', JSON.stringify(hiddenNotices.value));
+    }
+};
+const visibleNotices = computed(() => {
+    return props.allNotices.data.filter(notice => !hiddenNotices.value.includes(notice.id));
+});
 const paginatedUserNotices = computed(() => {
     const start = (userPage.value - 1) * userPerPage
     return props.userNotices.slice(start, start + userPerPage)
@@ -176,13 +189,24 @@ const walletBalance = computed(() => {
                         All Notices
                     </h3>
 
-                    <div v-if="props.allNotices.data.length" class="space-y-3">
-                        <div v-for="notice in props.allNotices.data" :key="notice.id"
-                            class="p-4 rounded-lg shadow-sm border" :class="{
+                    <div v-if="visibleNotices.length" class="space-y-3">
+                        <div v-for="notice in visibleNotices" :key="notice.id"
+                            class="p-4 rounded-lg shadow-sm border relative" :class="{
                                 'border-blue-200 bg-blue-50': notice.user_id,
                                 'border-gray-200 bg-gray-50': !notice.user_id
                             }">
-                            <div class="flex items-start">
+                            <!-- Close button -->
+                            <button @click="hideNotice(notice.id)"
+                                class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+
+                            <div class="flex items-start pr-5">
                                 <span v-if="notice.user_id" class="text-blue-500 mr-2">🔔</span>
                                 <span v-else class="text-gray-500 mr-2">🌐</span>
                                 <div>
@@ -214,29 +238,7 @@ const walletBalance = computed(() => {
                             </div>
                         </div>
 
-                        <!-- Pagination Controls -->
-                        <div class="flex justify-between items-center mt-4">
-                            <button @click="prevPage" :disabled="props.allNotices.current_page === 1"
-                                class="px-4 py-2 rounded-lg border" :class="{
-                                    'bg-gray-100 text-gray-400 cursor-not-allowed': props.allNotices.current_page === 1,
-                                    'bg-white text-blue-600 hover:bg-blue-50': props.allNotices.current_page > 1
-                                }">
-                                Previous
-                            </button>
-
-                            <span class="text-sm text-gray-600">
-                                Page {{ props.allNotices.current_page }} of {{ props.allNotices.last_page }}
-                            </span>
-
-                            <button @click="nextPage"
-                                :disabled="props.allNotices.current_page === props.allNotices.last_page"
-                                class="px-4 py-2 rounded-lg border" :class="{
-                                    'bg-gray-100 text-gray-400 cursor-not-allowed': props.allNotices.current_page === props.allNotices.last_page,
-                                    'bg-white text-blue-600 hover:bg-blue-50': props.allNotices.current_page < props.allNotices.last_page
-                                }">
-                                Next
-                            </button>
-                        </div>
+                        <!-- ... rest of your existing template ... -->
                     </div>
 
                     <div v-else class="text-center py-8 text-gray-500">
