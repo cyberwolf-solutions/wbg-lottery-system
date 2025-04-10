@@ -94,6 +94,13 @@ export default {
           ],
         },
         {
+          id: 16,
+          name: "Funds",
+          link: "/api/admin/Funds",
+          isOpen: false,
+          permission: "view wallet history"
+        },
+        {
           id: 12,
           name: "Affiliates",
           link: "/api/admin/affiliate",

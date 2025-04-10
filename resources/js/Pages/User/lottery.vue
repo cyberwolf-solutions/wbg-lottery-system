@@ -337,10 +337,11 @@ function startCountdown() {
                 };
             } else {
                 countdowns.value[ticket.draw_number] = { expired: true };
-                clearInterval(countdownIntervals[ticket.draw_number]); // Stop countdown
+                clearInterval(countdownIntervals[ticket.draw_number]); 
                 deactivateDashboard(ticket.dashboard_id);
             }
-            console.log("Time left:", timeLeft, countdowns.value[ticket.draw_number]);
+            
+            console.log('lottery'  , selectedLottery);
         }
 
         updateCountdown();
@@ -471,7 +472,7 @@ function handleManualDelete() {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }}
+                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }} || {{ props.lotterie.name }}  
             </h2>
         </template>
 

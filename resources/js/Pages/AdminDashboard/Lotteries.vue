@@ -21,7 +21,7 @@
         <!-- Lottery Table Section -->
         <div class="lottery-table">
           <h3 class="mt-4">{{ lotteries.name }} Dashboard Details</h3>
-          
+
           <!-- Pagination Controls - Top -->
           <!-- <div class="pagination-controls">
             <button 
@@ -63,24 +63,16 @@
               </tr>
             </tbody>
           </table>
-          
+
           <!-- Pagination Controls - Bottom -->
           <div class="pagination-controls">
-            <button 
-              @click="currentPage--" 
-              :disabled="currentPage === 1"
-              class="pagination-button"
-            >
+            <button @click="currentPage--" :disabled="currentPage === 1" class="pagination-button">
               Previous
             </button>
             <span class="page-info">
               Page {{ currentPage }} of {{ totalPages }}
             </span>
-            <button 
-              @click="currentPage++" 
-              :disabled="currentPage === totalPages"
-              class="pagination-button"
-            >
+            <button @click="currentPage++" :disabled="currentPage === totalPages" class="pagination-button">
               Next
             </button>
           </div>
@@ -136,7 +128,7 @@
 
               <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" v-model="newDashboard.date" id="date" required />
+                <input type="date" v-model="newDashboard.date" id="date" required :min="minDate" />
               </div>
 
               <div class="form-group">
@@ -250,7 +242,17 @@ export default {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       return this.dashboards.slice(start, end);
+    },
+
+    minDate() {
+      
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const day = today.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
+
   },
 
   mounted() {
