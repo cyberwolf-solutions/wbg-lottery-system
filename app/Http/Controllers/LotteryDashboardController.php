@@ -43,6 +43,7 @@ class LotteryDashboardController extends Controller
                 'date' => 'required|date',
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
+                'drawNumber' =>'required'
             ]);
 
             Log::info('ok', $request->all());
@@ -56,8 +57,8 @@ class LotteryDashboardController extends Controller
                 ->first();
 
             // If no previous draw exists, start from 1
-            $draw = $lastDashboard ? $lastDashboard->draw + 1 : 1;
-            $drawNumber = $lastDashboard ? $lastDashboard->draw_number + 1 : 1;
+            $draw = 1;
+            $drawNumber = (int)$validated['drawNumber'];
 
             // Calculate the start date
             $startDate = Carbon::parse($validated['date']);
@@ -75,7 +76,7 @@ class LotteryDashboardController extends Controller
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
                     'date' => $currentDate->toDateString(),
-                    'draw' => $drawNumber,
+                    'draw' => $draw,
                     'draw_number' => $currentDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
                     'lottery_id' => $validated['lottery_id'],
@@ -88,7 +89,7 @@ class LotteryDashboardController extends Controller
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
                     'date' => $currentDate->toDateString(),
-                    'draw' => $drawNumber,
+                    'draw' => $draw,
                     'draw_number' => $currentDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
                     'lottery_id' => $validated['lottery_id'],
@@ -98,6 +99,7 @@ class LotteryDashboardController extends Controller
                 ]);
 
                 // Increment draw number for next dashboard
+                $draw++; 
                 $drawNumber++;
             }
 
