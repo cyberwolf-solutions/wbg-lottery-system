@@ -34,6 +34,7 @@ class ResultsController extends Controller
                 ->where('status', 'deactive');
             // ->orderBy('date', 'desc');
         }])->get();
+        // dd($lotteries);
 
         $results = Results::with('lottery', 'dashboard')
             ->orderBy('lottery_id')
@@ -100,6 +101,7 @@ class ResultsController extends Controller
                 ->where('lottery_id', $validatedData['lottery_id'])
                 ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
                 ->where('dashboard', $validatedData['dashboard_name'])
+                ->where('status', 'deactive') 
                 ->get();
 
 
@@ -116,9 +118,9 @@ class ResultsController extends Controller
             $lastDigitDashboards = $dashboards->where('dashboardType', 'Last Digits');
 
 
-            if ($firstDigitDashboards->isEmpty() || $lastDigitDashboards->isEmpty()) {
-                throw new \Exception('At least one FirstDigit and one LastDigit dashboard are required.');
-            }
+            // if ($firstDigitDashboards->isEmpty() || $lastDigitDashboards->isEmpty()) {
+            //     throw new \Exception('At least one FirstDigit and one LastDigit dashboard are required.');
+            // }
 
 
             // Add result to all matching First Digits dashboards

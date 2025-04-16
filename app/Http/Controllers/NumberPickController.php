@@ -76,9 +76,16 @@ class NumberPickController extends Controller
 
         $user = Auth::user();
         $wallet = $user->wallet;
+        $lotteryDashboard = LotteryDashboards::find($validated['lottery_dashboard_id']);
+        Log::info('Dashboard:',  [$lotteryDashboard]);
+        // dd('ok');
+        $totalPrice = $lotteryDashboard->price;
 
         if (!$wallet) {
             return response()->json(['message' => 'Wallet not found'], 400);
+        }
+        if ($wallet->available_balance < $totalPrice) {
+            return response()->json(['message' => 'Insufficient balance'], 400);
         }
 
         // Check if number is already allocated
