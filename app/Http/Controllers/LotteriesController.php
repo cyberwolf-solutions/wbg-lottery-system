@@ -34,7 +34,12 @@ class LotteriesController extends Controller
         Log::info($lotteries);
 
 
-        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)->where('status','active')->with('lottery')->get();
+        // $lotterydashboards = LotteryDashboards::where('lottery_id', $id)->where('status', 'active')->with('lottery')->get();
+        $lotterydashboards = LotteryDashboards::where('lottery_id', $id)
+            ->where('status', 'active')
+            ->with('lottery')
+            ->orderBy('date', 'desc')
+            ->get();
         // dd($lotterydashboards);
 
         $dashboardTypes = LotteryDashboards::where('lottery_id', $id)

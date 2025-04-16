@@ -19,7 +19,7 @@ class DeactivateLotteries extends Command
         Log::info('Current time: '.$now);
         
         $expiredLotteries = LotteryDashboards::where('date', '<', $now->toDateString())
-            ->whereTime('date', '<', '20:00:00') 
+            ->whereTime('date', '<', '14:30:00') 
             ->where('status', 'active')
             ->get();
 
