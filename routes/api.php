@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ActiveInactiveController;
 use Inertia\Inertia;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
@@ -9,8 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\roleController;
 use App\Http\Controllers\testController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\HoidayController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\WinnersController;
 use App\Http\Controllers\AdminUserController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\NumberPickController;
 use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\AdminNoticeController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\bankDetailsController;
 use App\Http\Controllers\LotteryListController;
 use App\Http\Controllers\AdminPlayersController;
 use App\Http\Controllers\PurchaseListController;
@@ -26,6 +29,7 @@ use Illuminate\Contracts\Foundation\Application;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CreditRequestController;
 use App\Http\Controllers\WalletHistoryController;
+use App\Http\Controllers\ActiveInactiveController;
 use App\Http\Controllers\AdminAffiliateController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminAuthController;
@@ -38,9 +42,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\bankDetailsController;
-use App\Http\Controllers\FundsController;
-use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\DashboardChangeController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -263,6 +265,13 @@ Route::middleware(['web'])->group(function () {
             Route::get('/Funds', [FundsController::class, 'index']);
           
             Route::post('/funds/{user}/update', [FundsController::class, 'updateWallet'])->name('admin.funds.update');
+
+
+            Route::get('/holiday', [HoidayController::class, 'index']);
+            Route::post('/holiday/store', [HoidayController::class, 'store']);
+
+            Route::get('/edit/Dashboard', [DashboardChangeController::class, 'index']);
+            Route::put('/dashboards/{dashboard}', [DashboardChangeController::class, 'update'])->name('admin.dashboards.update');
 
             // Route::get('/Lottery-Expired', [ActiveInactiveController::class, 'deactiveLotteryDashboardsReport']);
 
