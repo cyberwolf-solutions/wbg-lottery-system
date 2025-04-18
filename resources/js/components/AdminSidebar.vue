@@ -100,6 +100,24 @@ export default {
           isOpen: false,
           permission: "view wallet history"
         },
+        // {
+        //   id: 16,
+        //   name: "Holidays",
+        //   link: "/api/admin/holiday",
+        //   isOpen: false,
+        //   permission: "manage holidays"
+        // },
+        {
+          id: 17,
+          name: "Holidays",
+          link: "#",
+          isOpen: false,
+          permission: "manage winners",
+          subItems: [
+            { id: 6, name: "Holidays", link: "/api/admin/holiday", permission: "manage holidays" },
+            { id: 9, name: "Edit Draw Dates", link: "/api/admin/edit/Dashboard", permission: "manage holidays" },
+          ],
+        },
         {
           id: 12,
           name: "Affiliates",
