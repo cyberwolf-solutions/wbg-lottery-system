@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Holiday;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -17,89 +18,94 @@ class CreateDailyDashboard extends Command
     public function handle()
     {
         try {
-            // Log the start of the dashboard creation process
             Log::info('Starting the dashboard creation process.');
 
             // Get all unique lottery_id and dashboard combinations
-            $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')->distinct()->get();
+            $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')
+                ->distinct()
+                ->get();
 
+            // Get tomorrow's date
+            $tomorrow = Carbon::tomorrow();
+            $tomorrowDate = $tomorrow->format('Y-m-d');
+
+            // Check if tomorrow is a holiday
+            $isHoliday = Holiday::where('date', $tomorrowDate)->exists();
+            if ($isHoliday) {
+                Log::info("Skipped dashboard creation for tomorrow ({$tomorrowDate}) because it's a holiday");
+                $this->info("Skipped dashboard creation for tomorrow ({$tomorrowDate}) because it's a holiday");
+                return;
+            }
 
             foreach ($lotteryDashboardCombinations as $combination) {
                 $lotteryId = $combination->lottery_id;
                 $dashboardField = $combination->dashboard;
                 $dashboardType = $combination->dashboardType;
 
-                // Get the last dashboard for this specific lottery_id and dashboard
+                // Get the last dashboard for this combination
                 $lastDashboard = LotteryDashboards::where('lottery_id', $lotteryId)
                     ->where('dashboard', $dashboardField)
                     ->where('dashboardType', $dashboardType)
                     ->orderBy('id', 'desc')
                     ->first();
 
-
+                // Determine the new draw number and draw count
                 if ($lastDashboard) {
-
-                    $lastDrawNumber = (int)$lastDashboard->draw_number;
-                    $newDrawNumber = $lastDrawNumber + 1;
-                    $newdraw =  $lastDashboard->draw +1;
+                    $newDrawNumber = (int)$lastDashboard->draw_number + 1;
+                    $newDraw = $lastDashboard->draw + 1;
+                } else {
+                    $newDrawNumber = 1;
+                    $newDraw = 1;
                 }
-
-                // Log::info('Last Dashboard:', ['Last Dashboard' => $lastDashboard]);
-                // dd();
-                // Determine the new draw number
-                // $newDrawNumber = $lastDashboard ? (int)$lastDashboard->draw + 1 : 1;
                 $formattedDrawNumber = str_pad($newDrawNumber, 3, '0', STR_PAD_LEFT);
 
-
-                // Get the new date based on the last dashboard's date
-                $newDate = $lastDashboard
-                    ? Carbon::parse($lastDashboard->date)->addDay()->format('Y-m-d')
-                    : Carbon::now()->format('Y-m-d');
-
-                // Get other attributes from the last dashboard
+                // Get other attributes from the last dashboard or use defaults
                 $price = $lastDashboard ? $lastDashboard->price : 1000;
                 $winningNumbers = $this->generateWinningNumbers();
 
-                $dashboard_type = $combination->dashboardType;
+                // Check if a dashboard already exists for tomorrow's date
+                $existingDashboard = LotteryDashboards::where('lottery_id', $lotteryId)
+                    ->where('dashboard', $dashboardField)
+                    ->where('dashboardType', $dashboardType)
+                    ->where('date', $tomorrowDate)
+                    ->first();
 
-                Log::info('Last Dashboard:', ['Last Dashboard' => $newDrawNumber]);
-                // dd('ok');
+                if ($existingDashboard) {
+                    Log::info("Dashboard already exists for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$tomorrowDate}");
+                    continue;
+                }
 
-                // Create a new dashboard for this lottery_id and dashboard
+                // Create the new dashboard
                 LotteryDashboards::create([
                     'lottery_id' => $lotteryId,
                     'dashboard' => $dashboardField,
                     'price' => $price,
-                    'date' => $newDate,
-                    'draw' => $newdraw,
+                    'date' => $tomorrowDate, // Always use tomorrow's date
+                    'draw' => $newDraw,
                     'draw_number' => $formattedDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
-                    'dashboardType' => $dashboard_type,
+                    'dashboardType' => $dashboardType,
                     'status' => 'active',
                 ]);
 
-                Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, with draw number: {$newDrawNumber}");
+                Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$tomorrowDate}, draw number: {$formattedDrawNumber}");
 
+                // Notify users
                 $users = User::all();
                 foreach ($users as $user) {
                     $user->notify(new NewDashboardCreatedNotification(
                         $lotteryId,
                         $dashboardField,
                         $formattedDrawNumber,
-                        $newDate
+                        $tomorrowDate
                     ));
-                    // Log::info("Notification sent to user: {$user->email} about new dashboard creation");
                 }
             }
 
-            // Output a success message
             $this->info('All dashboards created successfully.');
         } catch (\Exception $e) {
-            // Log the error details
             Log::error("Error creating dashboards: " . $e->getMessage());
             Log::error("Stack trace: " . $e->getTraceAsString());
-
-            // Output an error message
             $this->error("Error creating dashboards: " . $e->getMessage());
         }
     }

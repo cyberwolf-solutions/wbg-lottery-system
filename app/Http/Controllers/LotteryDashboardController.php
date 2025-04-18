@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use the;
 use Carbon\Carbon;
 use Inertia\Inertia;
+use App\Models\Holiday;
 use App\Models\Lotteries;
 use App\Jobs\PickNumberJob;
 use App\Models\PickedNumber;
@@ -67,15 +68,23 @@ class LotteryDashboardController extends Controller
             $winningNumbers = $this->generateWinningNumbers();
 
             // Create 10 dashboards for "First Digits" and 10 for "Last Digits"
-            $dashboards = [];
-            for ($i = 0; $i < 10; $i++) {
-                $currentDate = $startDate->addDay(); // Increment the date for the next day
+            $createdDays = 0;
+            while ($createdDays < 10) {
+                $startDate->addDay(); 
+    
+                // Check if this date is a holiday
+                $isHoliday = Holiday::where('date', $startDate->toDateString())->exists();
+                if ($isHoliday) {
+                    Log::info("Skipping dashboard creation on holiday: " . $startDate->toDateString());
+                    continue; 
+                }
+    
                 $currentDrawNumber = str_pad($drawNumber, 3, '0', STR_PAD_LEFT);
-
+    
                 // First Digits Dashboard
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
-                    'date' => $currentDate->toDateString(),
+                    'date' => $startDate->toDateString(),
                     'draw' => $draw,
                     'draw_number' => $currentDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
@@ -84,11 +93,11 @@ class LotteryDashboardController extends Controller
                     'status' => 'active',
                     'dashboardType' => 'First Digits',
                 ]);
-
+    
                 // Last Digits Dashboard
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
-                    'date' => $currentDate->toDateString(),
+                    'date' => $startDate->toDateString(),
                     'draw' => $draw,
                     'draw_number' => $currentDrawNumber,
                     'winning_numbers' => json_encode($winningNumbers),
@@ -97,10 +106,11 @@ class LotteryDashboardController extends Controller
                     'status' => 'active',
                     'dashboardType' => 'Last Digits',
                 ]);
-
-                // Increment draw number for next dashboard
-                $draw++; 
+    
+                
+                $draw++;
                 $drawNumber++;
+                $createdDays++; 
             }
 
             // Return the response with created dashboards
