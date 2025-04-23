@@ -38,7 +38,7 @@ class LotteriesController extends Controller
         $lotterydashboards = LotteryDashboards::where('lottery_id', $id)
             ->where('status', 'active')
             ->with('lottery')
-            ->orderBy('date', 'desc')
+            ->orderBy('date', 'asc')
             ->get();
         // dd($lotterydashboards);
 
