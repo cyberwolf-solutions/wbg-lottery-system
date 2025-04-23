@@ -66,6 +66,7 @@ class HomeController extends Controller
                 'count' => $withdrawals->count ?? 0
             ],
             'allNotices' => $allNotices,
+            'authUser' => Auth::user(),
         ]);
     }
 }

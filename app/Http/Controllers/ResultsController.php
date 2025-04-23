@@ -31,7 +31,10 @@ class ResultsController extends Controller
         $lotteries = Lotteries::with(['dashboards' => function ($query) {
 
             $query->where('date', '<', now()->format('Y-m-d'))
-                ->where('status', 'deactive');
+                ->where(function ($q) {
+                    $q->where('status', 'deactive')
+                        ->orWhere('status', 'closed');
+                });
             // ->orderBy('date', 'desc');
         }])->get();
         // dd($lotteries);
@@ -101,7 +104,10 @@ class ResultsController extends Controller
                 ->where('lottery_id', $validatedData['lottery_id'])
                 ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
                 ->where('dashboard', $validatedData['dashboard_name'])
-                ->where('status', 'deactive') 
+                ->where(function ($q) {
+                    $q->where('status', 'deactive')
+                        ->orWhere('status', 'closed');
+                })
                 ->get();
 
 
@@ -192,12 +198,12 @@ class ResultsController extends Controller
                 'winning_number' => $pickedNumber->picked_number,
                 'price' => $winningPrice,
             ]);
-
+        
             $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
-
+        
             // Add winning amount to the wallet
             $wallet->increment('available_balance', $winningPrice);
-
+        
             // Save the transaction for the winning amount
             Transaction::create([
                 'wallet_id' => $wallet->id,
@@ -208,11 +214,10 @@ class ResultsController extends Controller
                 'transaction_date' => Carbon::now(),
                 'picked_number' => $pickedNumber->picked_number,
             ]);
-
-
+        
             $user = User::find($pickedNumber->user_id);
             $lottery = Lotteries::find($validatedData['lottery_id']);
-
+        
             if ($user) {
                 $user->notify(new WinnerNotification(
                     $lottery->name,
@@ -224,20 +229,21 @@ class ResultsController extends Controller
             } else {
                 Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
             }
-
+        
             // Process affiliate commission (10% of the winner's prize)
-            $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
+            $affiliate = null;
+            if (Auth::user() && Auth::user()->affiliate_link) {
+                $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
+            }
             Log::info('Data', ['affiliate' => $affiliate]);
-
-            // dd($affiliate);
-
+        
             if ($affiliate) {
                 $affiliateCommission = $winningPrice * 0.10;
                 $affiliateWallet = Wallet::firstOrCreate(['user_id' => $affiliate->id]);
-
+        
                 // Add commission to affiliate's wallet
                 $affiliateWallet->increment('available_balance', $affiliateCommission);
-
+        
                 // Save the transaction for the affiliate commission
                 Transaction::create([
                     'wallet_id' => $affiliateWallet->id,
@@ -247,21 +253,22 @@ class ResultsController extends Controller
                     'lottery_dashboard_id' => $dashboard->id,
                     'transaction_date' => Carbon::now(),
                 ]);
-
+        
                 Affiliate::create([
                     'user_id' => $affiliate->id,
                     'affiliate_user_id' => Auth::id(),
                     'price' => $affiliateCommission,
                     'date' => Carbon::now(),
                 ]);
-
-                $affiliate->notify(new AffiliateCommissionNotification(
-                    $user->name,
-                    $affiliateCommission,
-                    $lottery->name
-                ));
-
-
+        
+                if ($user) {  // Added check for $user existence
+                    $affiliate->notify(new AffiliateCommissionNotification(
+                        $user->name,
+                        $affiliateCommission,
+                        $lottery->name
+                    ));
+                }
+        
                 Log::info('Affiliate commission added', [
                     'affiliate_user_id' => $affiliate->user_id,
                     'commission' => $affiliateCommission,

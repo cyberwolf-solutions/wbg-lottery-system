@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import MessagesIndex from '@/components/UserChat.vue';
 
 const props = defineProps({
     purchaseHistory: Array,
@@ -10,7 +11,7 @@ const props = defineProps({
     lotteryDashboards: Array,
     deposits: Array,
     withdrawals: Array,
-
+    authUser: Object,
     allNotices: Array,
 });
 
@@ -153,6 +154,9 @@ const walletBalance = computed(() => {
                 Dashboard
             </h2>
         </template>
+
+
+
 
         <div class="flex-grow row d-flex justify-content-center align-items-center mt-4 mb-0">
 
@@ -301,13 +305,17 @@ const walletBalance = computed(() => {
                 </div>
             </div>
 
-
-
+            <MessagesIndex :user="authUser" />
         </div>
     </AuthenticatedLayout>
 </template>
 
+
 <style>
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .grid.grid-cols-3 {

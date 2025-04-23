@@ -99,6 +99,7 @@
                                     <th>Draw Date</th>
                                     <th>Price</th>
                                     <th>Winning Number</th>
+                                    <th>Draw Number</th>
 
                                 </tr>
                             </thead>
@@ -111,6 +112,7 @@
                                     <td>{{ result.dashboard.date }}</td>
                                     <td>{{ result.dashboard.price * 70 }}</td>
                                     <td>{{ result.winning_number }}</td>
+                                    <td>{{ result.dashboard.draw_number}}</td>
                                 </tr>
                             </tbody>
                         </table>

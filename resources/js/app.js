@@ -46,7 +46,7 @@ createInertiaApp({
 });
 
 
-// Reactive state to track selected numbers for each ticket
+
 const selectedNumbers = ref(Array.from({ length: 5 }, () => []));
 
 // Toggles the selection of a number for a specific ticket

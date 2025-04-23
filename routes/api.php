@@ -12,6 +12,7 @@ use App\Http\Controllers\FundsController;
 use App\Http\Controllers\HoidayController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\MessageCOntroller;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\WinnersController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\ActiveInactiveController;
 use App\Http\Controllers\AdminAffiliateController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\DashboardChangeController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\LotteryDashboardController;
@@ -42,7 +44,6 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\DashboardChangeController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -88,6 +89,10 @@ Route::middleware(['web'])->group(function () {
     Route::get('/notifications', function (Request $request) {
         return response()->json($request->user()->notifications);
     })->middleware('auth:sanctum');
+
+
+    Route::get('/messages', [MessageController::class, 'userindex']);
+    Route::post('/messages/store', [MessageController::class, 'store']);
 });
 
 
@@ -263,7 +268,7 @@ Route::middleware(['web'])->group(function () {
 
 
             Route::get('/Funds', [FundsController::class, 'index']);
-          
+
             Route::post('/funds/{user}/update', [FundsController::class, 'updateWallet'])->name('admin.funds.update');
 
 
@@ -285,6 +290,11 @@ Route::middleware(['web'])->group(function () {
             Route::get('/adminLot', function () {
                 return Inertia::render('AdminDashboard/Lotteries');
             });
+
+
+            //messages
+            Route::get('/messages', [MessageCOntroller::class, 'index']);
+            Route::post('/messages/store', [MessageCOntroller::class, 'adminStore']);
 
             // Route::get("/customers", function () {
             //     return Inertia::render("AdminDashboard/Customers");
