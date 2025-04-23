@@ -76,5 +76,8 @@ class PickNumberJob implements ShouldQueue
         broadcast(new NumberPicked($pickedNumber))->toOthers();
 
         Log::info("PickNumberJob completed.");
+
+
+        
     }
 }

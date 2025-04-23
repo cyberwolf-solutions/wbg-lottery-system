@@ -5,12 +5,14 @@ use App\Http\Controllers\Contact;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\HowItWorks;
 use App\Http\Controllers\UserPannel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\LangingPage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\LatestResults;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\PrizesController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WinnerController;
@@ -67,6 +69,26 @@ Route::post('/send-contact-email', [ContactController::class, 'sendEmail']);
 // Route::get('/lottery/{id}', [LotteriesController::class, 'index']);
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+
+Broadcast::routes(['middleware' => ['web', 'auth:admin']]);
+Route::post('/user/broadcasting/auth', function () {
+    return Broadcast::auth(request());
+})->middleware(['web', 'auth']);
+// Route::post('/broadcasting/auth', function () {
+//     // Log the request details
+//     Log::info('Broadcasting auth request received', [
+//         'admin_authenticated' => Auth::guard('admin')->check(),
+//         'admin_id' => Auth::guard('admin')->user()?->id,
+//         'channel_name' => request()->input('channel_name'),
+//         'session_id' => session()->getId(),
+//         'request_headers' => request()->headers->all(),
+//         'ip_address' => request()->ip(),
+//     ]);
+
+//     // Delegate to the default broadcasting authorization logic
+//     return Broadcast::auth(request());
+// })->middleware(['web', 'auth:admin']);
 
 
 

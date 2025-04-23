@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\RateLimiter;
 
@@ -49,21 +50,26 @@ class AppServiceProvider extends ServiceProvider
                     'user_agent' => $request->userAgent()
                 ]);
             }
-            
+
             // Handle 122 errors (CURL error codes appear in content)
-            if ($response->getStatusCode() === 200 && 
-                is_string($response->getContent()) && 
-                str_contains($response->getContent(), 'CURL error 122')) {
+            if (
+                $response->getStatusCode() === 200 &&
+                is_string($response->getContent()) &&
+                str_contains($response->getContent(), 'CURL error 122')
+            ) {
                 Log::debug('122 Error - CURL Request Failed', [
                     'type' => '122_curl_error',
                     'session' => session()->all(),
                     'cookies' => $request->cookies->all(),
                     'path' => $request->path(),
                     'headers' => $request->headers->all(),
-                    'content' => $response->getContent(), 
+                    'content' => $response->getContent(),
                     'ip' => $request->ip()
                 ]);
             }
         });
+        Broadcast::routes(['middleware' => ['web', 'auth:admin']]);
+
+        require base_path('routes/channels.php');
     }
 }

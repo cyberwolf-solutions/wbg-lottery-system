@@ -219,12 +219,17 @@ class NumberPickController extends Controller
             // Dispatch Job
             PickNumberJob::dispatch($pickedNumber, $dashboardId, $lotteryId, $user->id);
         }
-        // Check if all numbers are picked
+        
+        // $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
         $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
+        $pickedPercentage = ($pickedCount / 100) * 100; 
 
+
+        Log::info('Picked Percentage:', ['picked_count' => $pickedCount, 'picked_percentage' => $pickedPercentage]);
+        
         Log::info('Picked Count:', ['picked_count' => $pickedCount]);
 
-        if ($pickedCount >= 100) {
+        if ($pickedPercentage >= 100) {
             // Close the current dashboard
             $dashboard = LotteryDashboards::find($dashboardId);
             $dashboard->update(['status' => 'closed']);

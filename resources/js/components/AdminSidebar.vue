@@ -100,13 +100,13 @@ export default {
           isOpen: false,
           permission: "view wallet history"
         },
-        // {
-        //   id: 16,
-        //   name: "Holidays",
-        //   link: "/api/admin/holiday",
-        //   isOpen: false,
-        //   permission: "manage holidays"
-        // },
+        {
+          id: 16,
+          name: "Messages",
+          link: "/api/admin/messages",
+          isOpen: false,
+          permission: "manage messages"
+        },
         {
           id: 17,
           name: "Holidays",
