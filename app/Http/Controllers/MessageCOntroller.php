@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Message;
@@ -9,6 +10,9 @@ use App\Events\NewMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewConversationMail;
+
 
 class MessageController extends Controller
 {
@@ -57,7 +61,34 @@ class MessageController extends Controller
             'is_from_user' => true,
         ];
 
-        $message = Message::create($data);
+
+
+        $message = Message::create($data)->load('user');
+
+       
+        $isFirstMessage = Message::where('user_id', Auth::id())->exists();
+
+        
+        Log::info('isFirstMessage:', ['isFirstMessage' => $isFirstMessage]);
+        // dd($isFirstMessage);
+
+        if (!$isFirstMessage) {
+            try {
+
+                Mail::to('info@winboardgame.com')->send(new NewConversationMail($message));
+
+
+                Log::info('New conversation email sent successfully.', ['message' => $message->id]);
+            } catch (\Exception $e) {
+
+                Log::error('Failed to send new conversation email.', [
+                    'error' => $e->getMessage(),
+                    'message_id' => $message->id
+                ]);
+            }
+        }
+
+
 
         broadcast(new NewMessage($message));
 
@@ -74,7 +105,7 @@ class MessageController extends Controller
         ];
 
         $message = Message::create($data);
-        $message->load('user', 'admin'); 
+        $message->load('user', 'admin');
 
         broadcast(new NewMessage($message))->toOthers();
 

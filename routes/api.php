@@ -38,6 +38,7 @@ use App\Http\Controllers\DashboardChangeController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\LotteryDashboardController;
+use App\Http\Controllers\SubscriptionEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -93,6 +94,9 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/messages', [MessageController::class, 'userindex']);
     Route::post('/messages/store', [MessageController::class, 'store']);
+
+
+    Route::post('/subscribe', [SubscriptionEmailController::class, 'store']);
 });
 
 

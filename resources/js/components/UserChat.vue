@@ -1,18 +1,24 @@
 <template>
   <div>
-    <button @click="toggleChat"
-      class="fixed bottom-4 right-4 p-3 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-    </button>
+    <div class="fixed bottom-4 right-4">
+      <button @click="openChat"
+        class="p-3 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 transition relative">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span v-if="unreadCount > 0"
+          class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {{ unreadCount > 9 ? '9+' : unreadCount }}
+        </span>
+      </button>
+    </div>
 
     <div v-if="showChat"
       class="fixed bottom-16 right-4 bg-white w-80 h-96 shadow-lg rounded-lg flex flex-col border border-gray-200">
       <div class="p-3 border-b font-bold bg-blue-600 text-white rounded-t-lg flex justify-between items-center">
         <span>Customer Support</span>
-        <button @click="toggleChat" class="text-white hover:text-gray-200">
+        <button @click="closeChat" class="text-white hover:text-gray-200">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -49,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, watch, onUnmounted } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted , defineExpose } from 'vue';
 import axios from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
@@ -60,28 +66,44 @@ const messagesContainer = ref(null);
 const messages = ref([]);
 const echo = ref(null);
 const fetchInterval = ref(null);
+const unreadCount = ref(0);
+const lastReadAt = ref(null);
 
 const props = defineProps({
   user: Object
 });
 
+
+const openChat = () => {
+  showChat.value = true;
+  markMessagesAsRead();
+  startMessagePolling();
+  setupEcho();
+};
+
+const closeChat = () => {
+  showChat.value = false;
+  stopMessagePolling();
+};
+
 const toggleChat = () => {
-  showChat.value = !showChat.value;
   if (showChat.value) {
-    startMessagePolling();
-    setupEcho();
+    closeChat();
   } else {
-    stopMessagePolling();
+    openChat();
   }
 };
 
-// Start polling messages only if needed (no need to poll if Echo is already listening)
+const markMessagesAsRead = () => {
+  unreadCount.value = 0;
+  lastReadAt.value = new Date().toISOString();
+};
+
 const startMessagePolling = () => {
   fetchMessages(); // Initial fetch
   fetchInterval.value = setInterval(fetchMessages, 1000); // Fetch every second
 };
 
-// Stop polling when chat is closed or if Echo is enabled
 const stopMessagePolling = () => {
   if (fetchInterval.value) {
     clearInterval(fetchInterval.value);
@@ -100,10 +122,27 @@ const fetchMessages = async () => {
     if (JSON.stringify(messages.value) !== JSON.stringify(response.data.messages)) {
       messages.value = response.data.messages;
       scrollToBottom();
+      
+      // Update unread count when chat is closed
+      if (!showChat.value) {
+        updateUnreadCount();
+      }
     }
   } catch (error) {
     console.error('Error fetching messages:', error.response?.data || error.message);
   }
+};
+
+const updateUnreadCount = () => {
+  if (!messages.value.length) {
+    unreadCount.value = 0;
+    return;
+  }
+  
+  // Count messages that are not from user and newer than last read time
+  unreadCount.value = messages.value.filter(msg => {
+    return !msg.is_from_user && (!lastReadAt.value || new Date(msg.created_at) > new Date(lastReadAt.value));
+  }).length;
 };
 
 const sendMessage = async () => {
@@ -113,7 +152,6 @@ const sendMessage = async () => {
     });
 
     newMessage.value = '';
-    // No need to fetch messages manually, Echo will handle it
     scrollToBottom();
   } catch (error) {
     console.error('Error sending message:', error);
@@ -161,6 +199,12 @@ const setupEcho = () => {
             ...data.message,
             is_from_user: data.message.user_id === userId
           });
+          
+          // If chat is closed, increment unread count
+          if (!showChat.value) {
+            unreadCount.value++;
+          }
+          
           scrollToBottom();
         }
       })
@@ -169,12 +213,17 @@ const setupEcho = () => {
       });
   }
 };
-
+defineExpose({
+    openChat,
+});
 onMounted(() => {
   if (showChat.value) {
     startMessagePolling();
     setupEcho();
   }
+  
+  // Initialize lastReadAt when component mounts
+  lastReadAt.value = new Date().toISOString();
 });
 
 onUnmounted(() => {
@@ -183,4 +232,5 @@ onUnmounted(() => {
     window.Echo.leave(`user.${window.Laravel.user.id}`);
   }
 });
+
 </script>
