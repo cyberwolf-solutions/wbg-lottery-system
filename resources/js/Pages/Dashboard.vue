@@ -1,8 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed , onMounted  } from 'vue';
 import MessagesIndex from '@/components/UserChat.vue';
+
+
 
 const props = defineProps({
     purchaseHistory: Array,
@@ -14,9 +16,14 @@ const props = defineProps({
     authUser: Object,
     allNotices: Array,
 });
+const messagesIndexRef = ref(null);
 
 const hiddenNotices = ref(JSON.parse(localStorage.getItem('hiddenNotices') || '[]'));
-
+onMounted(() => {
+    if (messagesIndexRef.value) {
+        messagesIndexRef.value.openChat();
+    }
+});
 
 // Cart functionality
 const cartItems = ref(props.pickedNumbers || []);
@@ -305,7 +312,7 @@ const walletBalance = computed(() => {
                 </div>
             </div>
 
-            <MessagesIndex :user="authUser" />
+            <MessagesIndex ref="messagesIndexRef" :user="authUser" />
         </div>
     </AuthenticatedLayout>
 </template>

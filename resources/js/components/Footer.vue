@@ -26,11 +26,14 @@
           <h5 style="font-weight: bold;">Email Newsletters</h5>
           <p style="color: gray;font-size: 12px;">Subscribe now and receive weekly newsletter for the latest draw and
             offer news and much more!</p>
-          <form class="d-flex">
-            <input type="email" class="form-control me-2" placeholder="Email address"
+          <form class="d-flex" @submit.prevent="subscribe">
+            <input type="email" class="form-control me-2" v-model="email" placeholder="Email address"
               style="border-radius: 30px;border-color: gainsboro;" required>
-            <button type="submit" style="border-radius: 30px;background-color: rgb(96, 200, 242);border-style: none;"
-              class="btn btn-primary">Subscribe</button>
+            <button type="submit" @click.prevent="subscribe" class="btn btn-primary w-100 w-md-auto"
+              style="border-radius: 30px; background-color: rgb(96, 200, 242); border-style: none;">
+              Subscribe
+            </button>
+
           </form>
         </div>
       </div>
@@ -56,6 +59,26 @@
 <script>
 export default {
   name: 'Footer',
+  data() {
+    return {
+      email: '',
+    };
+  },
+  methods: {
+    async subscribe() {
+      // alert('Subscribed successfully!');
+      try {
+        const response = await axios.post('/api/subscribe', {
+          email: this.email,
+        });
+        // alert(response.data.success);
+        this.email = '';
+      } catch (error) {
+        // alert(error.response?.data?.error || 'Something went wrong!');
+        this.email = '';
+      }
+    },
+  },
 };
 </script>
 

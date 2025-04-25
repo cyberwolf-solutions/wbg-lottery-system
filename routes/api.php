@@ -38,12 +38,14 @@ use App\Http\Controllers\DashboardChangeController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\LotteryDashboardController;
+use App\Http\Controllers\SubscriptionEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\BackUpController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -93,6 +95,9 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/messages', [MessageController::class, 'userindex']);
     Route::post('/messages/store', [MessageController::class, 'store']);
+
+
+    Route::post('/subscribe', [SubscriptionEmailController::class, 'store']);
 });
 
 
@@ -295,6 +300,13 @@ Route::middleware(['web'])->group(function () {
             //messages
             Route::get('/messages', [MessageCOntroller::class, 'index']);
             Route::post('/messages/store', [MessageCOntroller::class, 'adminStore']);
+
+
+            //backup
+            Route::get('/backup', [BackUpController::class, 'index']);
+            Route::get('/admin/backup', [BackupController::class, 'backup'])
+                ->name('admin.backup')
+                ->middleware(['auth', 'admin']); 
 
             // Route::get("/customers", function () {
             //     return Inertia::render("AdminDashboard/Customers");
