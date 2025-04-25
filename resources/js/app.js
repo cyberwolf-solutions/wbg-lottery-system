@@ -18,7 +18,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-// Fetch and set CSRF token from Laravel
+
 axios.get('/sanctum/csrf-cookie').then(() => {
     console.log("CSRF token set.");
 });
@@ -35,8 +35,9 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(VueReCaptcha, { 
-                siteKey: '6LdM2wkrAAAAAGxBDb3_rnTHEdSA1ZPzJsjviKRA' 
+            .use(VueReCaptcha, {
+                siteKey: '6LdM2wkrAAAAAGxBDb3_rnTHEdSA1ZPzJsjviKRA',
+                // siteKey: import.meta.env.RECAPTCHA_SITE_KEY
             })
             .mount(el);
     },
@@ -49,19 +50,19 @@ createInertiaApp({
 
 const selectedNumbers = ref(Array.from({ length: 5 }, () => []));
 
-// Toggles the selection of a number for a specific ticket
+
 function toggleNumber(ticketIndex, number) {
-    const ticketNumbers = [...selectedNumbers.value[ticketIndex]]; // Create a shallow copy to maintain reactivity
+    const ticketNumbers = [...selectedNumbers.value[ticketIndex]]; 
     if (ticketNumbers.includes(number)) {
-        // Remove the number if already selected
+     
         selectedNumbers.value[ticketIndex] = ticketNumbers.filter(n => n !== number);
     } else {
-        // Add the number if not already selected
+        
         selectedNumbers.value[ticketIndex].push(number);
     }
 }
 
-// Formats numbers to start with 00, 01, etc.
+
 function formatNumber(number) {
     return number < 10 ? `0${number}` : `${number}`;
 }
