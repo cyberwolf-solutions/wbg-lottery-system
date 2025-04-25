@@ -1,4 +1,4 @@
-<template >
+<template>
 
   <div class="landing-page container-fluid px-0">
     <Nav />
@@ -92,7 +92,8 @@
                 <div v-for="lottery in lotteries" :key="lottery.id" class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
-                    <img class="card-logo rounded-circle mb-3" :src="`/${lottery.image}`" style="height: 80px;" alt="Logo">
+                    <img class="card-logo rounded-circle mb-3" :src="`/${lottery.image}`" style="height: 80px;"
+                      alt="Logo">
                     <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
                     <p class="card-title title mb-2">{{ lottery.name }}</p>
                     <p class="card-description text-muted mb-4">
@@ -479,8 +480,8 @@ export default {
     },
 
     startCountdown(drawDate) {
-      // Convert drawDate to a timestamp
-      const targetDate = new Date(drawDate).getTime();
+      // Convert drawDate to a timestamp and subtract 1 hour 30 minutes (5400000 ms)
+      const targetDate = new Date(drawDate).getTime() - (1 * 60 * 60 * 1000 + 30 * 60 * 1000); // or just - 5400000
 
       this.countdownInterval = setInterval(() => {
         const now = new Date().getTime();
@@ -502,10 +503,11 @@ export default {
         this.countdown.seconds = Math.floor((distance % (1000 * 60)) / 1000);
       }, 1000);
     },
+
+    
     formatCountdown(drawTime) {
       if (!drawTime) return "N/A";
 
-      // alert(drawTime);
       const now = new Date();
       const drawDate = new Date(drawTime);
       const diff = drawDate - now;
@@ -518,7 +520,7 @@ export default {
       const seconds = Math.floor((diff / 1000) % 60);
 
       return `${days} days ${hours}:${minutes}:${seconds}`;
-      
+
     },
 
     methods: {
@@ -553,8 +555,8 @@ export default {
 
 <style scoped>
 body {
-    background-color: #f8f9fa;
-    margin: 0;
+  background-color: #f8f9fa;
+  margin: 0;
 }
 
 /* Base styles for card */

@@ -59,7 +59,7 @@ class LandingController extends Controller
                 'description' => $lottery->description,
                 'prize' => $closestDraw ? $closestDraw->price : 'N/A',
                 'draw_time' => $closestDraw
-                    ? Carbon::parse($closestDraw->date)->setHour(20)->setMinute(0)->setSecond(0)->toIso8601String()
+                    ? Carbon::parse($closestDraw->date)->setHour(18)->setMinute(30)->setSecond(0)->toIso8601String()
                     : null,
             ];
         });
