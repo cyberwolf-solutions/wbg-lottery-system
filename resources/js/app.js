@@ -25,7 +25,7 @@ axios.get('/sanctum/csrf-cookie').then(() => {
 
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? `${title} - Winboard Game` : 'Winboard Game',
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,
@@ -35,8 +35,8 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(VueReCaptcha, { 
-                siteKey: '6LdM2wkrAAAAAGxBDb3_rnTHEdSA1ZPzJsjviKRA' 
+            .use(VueReCaptcha, {
+                siteKey: '6LdM2wkrAAAAAGxBDb3_rnTHEdSA1ZPzJsjviKRA'
             })
             .mount(el);
     },
