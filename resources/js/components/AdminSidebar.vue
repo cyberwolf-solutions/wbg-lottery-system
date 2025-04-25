@@ -108,6 +108,13 @@ export default {
           permission: "manage messages"
         },
         {
+          id: 20,
+          name: 'Back-Up',
+          isOpen: false,
+          permission: "manage backup",
+          link: "/api/admin/backup"
+        },
+        {
           id: 17,
           name: "Holidays",
           link: "#",

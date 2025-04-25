@@ -47,6 +47,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('lottery:check-participation')->hourly();
 
         $schedule->command('generate:dashboard')->dailyAt('00:00');
+
+        $schedule->command('db:backup')->hourly();
     })
 
     ->create();
