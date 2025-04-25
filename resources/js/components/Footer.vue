@@ -3,23 +3,25 @@
     <div class="" style="background-color: transparent;border-style: none;padding-left: 150px;padding-right: 150px;">
       <div class="row text-center text-md-start">
         <div class="col-md-4">
-          <h5 style="font-weight: bold;">About About Win Board Game</h5>
+          <h5 style="font-weight: bold;">About Win Board Game</h5>
           <ul class="list-unstyled">
-            <li><a href="#">About us</a></li>
-            <li><a href="#">How it works</a></li>
-            <li><a href="#">Our services</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact us</a></li>
+            <li><a :href="route('hiw.index')" :active="route().current('hiw.index')">How it works</a></li>
+            <li><a :href="route('latest.index')">Loatest Results</a></li>
+            <!-- <li><a href="#">About us</a></li> -->
+
+            <li><a :href="route('landinglottery.index')">Lotteries</a></li>
+            <li><a :href="route('winner.index')">Winners</a></li>
+            <li><a :href="route('contact.index')" :active="route().current('contact.index')">Contact us</a></li>
           </ul>
         </div>
         <div class="col-md-4">
           <h5 style="font-weight: bold;">Quick Links</h5>
           <ul class="list-unstyled" style="color: gray;">
-            <li><a href="#">My Account</a></li>
-            <li><a href="#">Affiliate Program</a></li>
-            <li><a href="#">Terms and Conditions</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">WBG Licenses</a></li>
+            <!-- <li><a href="#">My Account</a></li>
+            <li><a href="#">Affiliate Program</a></li> -->
+            <li><a :href="route('terms')" :active="route().current('terms')">Terms and Conditions</a></li>
+            <li><a :href="route('privacy')" :active="route().current('privacy')">Privacy Policy</a></li>
+            <li><a :href="route('faq')" :active="route().current('faq')">FAQ</a></li>
           </ul>
         </div>
         <div class="col-md-4">
