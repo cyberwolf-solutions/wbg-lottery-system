@@ -505,6 +505,7 @@ export default {
     formatCountdown(drawTime) {
       if (!drawTime) return "N/A";
 
+      // alert(drawTime);
       const now = new Date();
       const drawDate = new Date(drawTime);
       const diff = drawDate - now;
@@ -517,6 +518,7 @@ export default {
       const seconds = Math.floor((diff / 1000) % 60);
 
       return `${days} days ${hours}:${minutes}:${seconds}`;
+      
     },
 
     methods: {
