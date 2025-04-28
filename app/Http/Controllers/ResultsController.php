@@ -29,7 +29,6 @@ class ResultsController extends Controller
     public function index()
     {
         $lotteries = Lotteries::with(['dashboards' => function ($query) {
-
             $query->where('date', '<', now()->format('Y-m-d'))
                 ->where(function ($q) {
                     $q->where('status', 'deactive')
@@ -37,7 +36,6 @@ class ResultsController extends Controller
                 });
             // ->orderBy('date', 'desc');
         }])->get();
-        // dd($lotteries);
 
         $results = Results::with('lottery', 'dashboard')
             ->orderBy('lottery_id')
@@ -45,24 +43,29 @@ class ResultsController extends Controller
             ->groupBy('lottery_id');
 
         foreach ($lotteries as $lottery) {
-            // Keep track of seen draw numbers
-            $seenDrawNumbers = [];
+            // Keep track of seen draw_number + dashboardType + dashboard
+            $seenCombinations = [];
 
             foreach ($lottery->dashboards as $key => $dashboard) {
-                if (in_array($dashboard->draw_number, $seenDrawNumbers)) {
-                    // Remove duplicate dashboards with the same draw_number
+                // Create a unique key with draw_number + dashboardType + dashboard
+                $uniqueKey = $dashboard->draw_number . '-' . $dashboard->dashboardType . '-' . $dashboard->dashboard;
+
+                if (in_array($uniqueKey, $seenCombinations)) {
+                    // Remove duplicate dashboards (same draw_number + dashboardType + dashboard)
                     unset($lottery->dashboards[$key]);
+                    continue;
                 } else {
-                    // Mark draw_number as seen
-                    $seenDrawNumbers[] = $dashboard->draw_number;
+                    // Mark this combination as seen
+                    $seenCombinations[] = $uniqueKey;
                 }
 
-                // Check if a result already exists
+                // Check if a result already exists for this dashboard
                 $lotteryResults = $results->get($lottery->id);
                 if ($lotteryResults) {
                     $existingResult = $lotteryResults->where('dashboard_id', $dashboard->id)->first();
                     if ($existingResult) {
                         unset($lottery->dashboards[$key]);
+                        continue;
                     }
                 }
             }
@@ -76,7 +79,6 @@ class ResultsController extends Controller
             'lotteries' => $lotteries
         ]);
     }
-
 
 
 
@@ -198,12 +200,12 @@ class ResultsController extends Controller
                 'winning_number' => $pickedNumber->picked_number,
                 'price' => $winningPrice,
             ]);
-        
+
             $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
-        
+
             // Add winning amount to the wallet
             $wallet->increment('available_balance', $winningPrice);
-        
+
             // Save the transaction for the winning amount
             Transaction::create([
                 'wallet_id' => $wallet->id,
@@ -214,10 +216,10 @@ class ResultsController extends Controller
                 'transaction_date' => Carbon::now(),
                 'picked_number' => $pickedNumber->picked_number,
             ]);
-        
+
             $user = User::find($pickedNumber->user_id);
             $lottery = Lotteries::find($validatedData['lottery_id']);
-        
+
             if ($user) {
                 $user->notify(new WinnerNotification(
                     $lottery->name,
@@ -229,21 +231,21 @@ class ResultsController extends Controller
             } else {
                 Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
             }
-        
+
             // Process affiliate commission (10% of the winner's prize)
             $affiliate = null;
             if (Auth::user() && Auth::user()->affiliate_link) {
                 $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
             }
             Log::info('Data', ['affiliate' => $affiliate]);
-        
+
             if ($affiliate) {
                 $affiliateCommission = $winningPrice * 0.10;
                 $affiliateWallet = Wallet::firstOrCreate(['user_id' => $affiliate->id]);
-        
+
                 // Add commission to affiliate's wallet
                 $affiliateWallet->increment('available_balance', $affiliateCommission);
-        
+
                 // Save the transaction for the affiliate commission
                 Transaction::create([
                     'wallet_id' => $affiliateWallet->id,
@@ -253,14 +255,14 @@ class ResultsController extends Controller
                     'lottery_dashboard_id' => $dashboard->id,
                     'transaction_date' => Carbon::now(),
                 ]);
-        
+
                 Affiliate::create([
                     'user_id' => $affiliate->id,
                     'affiliate_user_id' => Auth::id(),
                     'price' => $affiliateCommission,
                     'date' => Carbon::now(),
                 ]);
-        
+
                 if ($user) {  // Added check for $user existence
                     $affiliate->notify(new AffiliateCommissionNotification(
                         $user->name,
@@ -268,7 +270,7 @@ class ResultsController extends Controller
                         $lottery->name
                     ));
                 }
-        
+
                 Log::info('Affiliate commission added', [
                     'affiliate_user_id' => $affiliate->user_id,
                     'commission' => $affiliateCommission,
