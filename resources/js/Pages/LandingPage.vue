@@ -480,8 +480,18 @@ export default {
     },
 
     startCountdown(drawDate) {
-      // Convert drawDate to a timestamp and subtract 1 hour 30 minutes (5400000 ms)
-      const targetDate = new Date(drawDate).getTime() - (1 * 60 * 60 * 1000 + 30 * 60 * 1000); // or just - 5400000
+
+      const dateParts = drawDate.split('-');
+      const date = new Date(
+        parseInt(dateParts[0]),
+        parseInt(dateParts[1]) - 1,
+        parseInt(dateParts[2])
+      );
+
+
+      date.setHours(20, 0, 0, 0);
+
+      const targetDate = date.getTime();
 
       this.countdownInterval = setInterval(() => {
         const now = new Date().getTime();
@@ -504,12 +514,22 @@ export default {
       }, 1000);
     },
 
-    
+
+
     formatCountdown(drawTime) {
       if (!drawTime) return "N/A";
 
+      const dateParts = drawTime.split('-'); 
+      const drawDate = new Date(
+        parseInt(dateParts[0]), 
+        parseInt(dateParts[1]) - 1, 
+        parseInt(dateParts[2]) 
+      );
+
+   
+      drawDate.setHours(20, 0, 0, 0);
+
       const now = new Date();
-      const drawDate = new Date(drawTime);
       const diff = drawDate - now;
 
       if (diff <= 0) return "Expired";
@@ -519,9 +539,14 @@ export default {
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      return `${days} days ${hours}:${minutes}:${seconds}`;
-
+      return `${days} days ${this.padZero(hours)}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
     },
+
+  
+    padZero(num) {
+      return num.toString().padStart(2, '0');
+    },
+
 
     methods: {
       extractHighlightedNumbers(numbers) {

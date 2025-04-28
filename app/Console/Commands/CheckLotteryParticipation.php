@@ -22,74 +22,82 @@ class CheckLotteryParticipation extends Command
     {
         Log::info('Lottery check participation command started.');
 
+        $now = Carbon::now('Asia/Colombo');
+        Log::info('Current time: ' . $now);
+
+
         $totalNumbers = 100;
         $threshold = 0.8;
+        if ($now->format('H') == '20') {
+            $dashboards = LotteryDashboards::where('status', 'active')
+                ->whereDate('date', Carbon::today())
+                ->get();
 
-        $dashboards = LotteryDashboards::where('status', 'active')
-            ->whereDate('date', Carbon::today())
-            ->get();
+            Log::info('Active Dashboards for Today:', $dashboards->toArray());
 
-        Log::info('Active Dashboards for Today:', $dashboards->toArray());
+            foreach ($dashboards as $dashboard) {
+                $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboard->id)->count();
+                $participationRate = $pickedCount / $totalNumbers;
 
-        foreach ($dashboards as $dashboard) {
-            $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboard->id)->count();
-            $participationRate = $pickedCount / $totalNumbers;
+                Log::info("Checking Lottery Dashboard ID {$dashboard->id}: Picked Count = {$pickedCount}, Participation Rate = {$participationRate}");
 
-            Log::info("Checking Lottery Dashboard ID {$dashboard->id}: Picked Count = {$pickedCount}, Participation Rate = {$participationRate}");
+                if ($participationRate < $threshold) {
+                    DB::transaction(function () use ($dashboard) {
+                        // Cancel the lottery
+                        $dashboard->update(['status' => 'cancelled']);
+                        Log::info("Lottery Dashboard ID {$dashboard->id} was cancelled due to low participation.");
 
-            if ($participationRate < $threshold) {
-                DB::transaction(function () use ($dashboard) {
-                    // Cancel the lottery
-                    $dashboard->update(['status' => 'cancelled']);
-                    Log::info("Lottery Dashboard ID {$dashboard->id} was cancelled due to low participation.");
+                        // Fetch all picked numbers and refund users
+                        $pickedNumbers = PickedNumber::with('user')->where('lottery_dashboard_id', $dashboard->id)->get();
 
-                    // Fetch all picked numbers and refund users
-                    $pickedNumbers = PickedNumber::with('user')->where('lottery_dashboard_id', $dashboard->id)->get();
+                        foreach ($pickedNumbers as $pick) {
+                            $wallet = Wallet::where('user_id', $pick->user_id)->first();
+                            if ($wallet) {
+                                $wallet->increment('available_balance', $dashboard->price);
 
-                    foreach ($pickedNumbers as $pick) {
-                        $wallet = Wallet::where('user_id', $pick->user_id)->first();
-                        if ($wallet) {
-                            $wallet->increment('available_balance', $dashboard->price);
+                                // Log the refund transaction
+                                $transaction = Transaction::create([
+                                    'user_id' => $pick->user_id,
+                                    'amount' => $dashboard->price,
+                                    'type' => 'refund',
+                                    'description' => 'Refund for cancelled lottery',
+                                    'wallet_id' => $wallet->id,
+                                    'transaction_date' => now(),
+                                    'lottery_id' => $dashboard->lottery_id,
+                                    'lottery_dashboard_id' => $dashboard->id,
+                                    'picked_number' => $pick->number,
+                                ]);
 
-                            // Log the refund transaction
-                            $transaction = Transaction::create([
-                                'user_id' => $pick->user_id,
-                                'amount' => $dashboard->price,
-                                'type' => 'refund',
-                                'description' => 'Refund for cancelled lottery',
-                                'wallet_id' => $wallet->id,
-                                'transaction_date' => now(),
-                                'lottery_id' => $dashboard->lottery_id,
-                                'lottery_dashboard_id' => $dashboard->id,
-                                'picked_number' => $pick->number,
-                            ]);
+                                Log::info("Refunded user {$pick->user_id} amount {$dashboard->price}.");
 
-                            Log::info("Refunded user {$pick->user_id} amount {$dashboard->price}.");
+                                // Send notification to user
+                                if ($pick->user) {
+                                    $pick->user->notify(new LotteryRefundNotification(
+                                        $dashboard->lottery->name,
+                                        $dashboard->draw_number,
+                                        $dashboard->price,
+                                        $pick->number
+                                    ));
 
-                            // Send notification to user
-                            if ($pick->user) {
-                                $pick->user->notify(new LotteryRefundNotification(
-                                    $dashboard->lottery->name,
-                                    $dashboard->draw_number,
-                                    $dashboard->price,
-                                    $pick->number
-                                ));
-
-                                Log::info("Notification sent to user {$pick->user_id} about refund.");
+                                    Log::info("Notification sent to user {$pick->user_id} about refund.");
+                                }
                             }
                         }
-                    }
 
-                    // Delete picked numbers since the lottery is canceled
-                    PickedNumber::where('lottery_dashboard_id', $dashboard->id)->delete();
-                    Log::info("Deleted picked numbers for Lottery Dashboard ID {$dashboard->id}.");
-                });
+                        // Delete picked numbers since the lottery is canceled
+                        PickedNumber::where('lottery_dashboard_id', $dashboard->id)->delete();
+                        Log::info("Deleted picked numbers for Lottery Dashboard ID {$dashboard->id}.");
+                    });
 
-                $this->info("Lottery Dashboard ID {$dashboard->id} was cancelled and users were refunded.");
+                    $this->info("Lottery Dashboard ID {$dashboard->id} was cancelled and users were refunded.");
+                }
             }
-        }
 
-        Log::info('Lottery check participation command completed.');
-        return Command::SUCCESS;
+            Log::info('Lottery check participation command completed.');
+            return Command::SUCCESS;
+        }else{
+            Log::info('command skipped .Current time is not 8 p.m');
+            $this->info('Skipped: Is is not 8 PM Sri lanka time');
+        }
     }
 }
