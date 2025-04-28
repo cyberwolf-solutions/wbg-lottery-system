@@ -156,12 +156,33 @@ export default {
     },
     computed: {
         filteredDashboards() {
-            const selectedLottery = this.lotteries.find(
-                (lottery) => lottery.id === this.newResult.lottery
-            );
-            // Convert the dashboards object into an array
-            return selectedLottery ? Object.values(selectedLottery.dashboards || {}) : [];
-        },
+        const selectedLottery = this.lotteries.find(
+            (lottery) => lottery.id === this.newResult.lottery
+        );
+
+        if (!selectedLottery || !selectedLottery.dashboards) {
+            return [];
+        }
+
+        // Convert dashboards object into an array
+        const dashboardsArray = Object.values(selectedLottery.dashboards);
+
+        // Remove duplicates based on "draw_number + dashboard"
+        const uniqueDashboards = [];
+
+        const seen = new Set();
+
+        for (const dashboard of dashboardsArray) {
+            const identifier = `${dashboard.draw_number}|${dashboard.dashboard}`; // unique identifier
+
+            if (!seen.has(identifier)) {
+                seen.add(identifier);
+                uniqueDashboards.push(dashboard);
+            }
+        }
+
+        return uniqueDashboards;
+    },
     },
     mounted() {
         console.log(this.results);
