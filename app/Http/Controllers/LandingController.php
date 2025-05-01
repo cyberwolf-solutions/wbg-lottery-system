@@ -17,28 +17,28 @@ class LandingController extends Controller
     {
         $now = Carbon::now();
 
-        
+
         $upcomingDraws = LotteryDashboards::with(['lottery', 'pickedNumbers'])
             ->where('date', '>=', $now)
             ->orderBy('date', 'asc')
             ->take(2)
             ->get();
-       
+
         $lotteriesData = $upcomingDraws->map(function ($draw) {
-            
+
             $pickedCount = $draw->pickedNumbers->count();
-            $soldPercentage = min(100, ($pickedCount / 100) * 100); 
+            $soldPercentage = min(100, ($pickedCount / 100) * 100);
 
             return [
                 'id' => $draw->lottery_id,
                 'name' => $draw->lottery->name,
                 'image' => $draw->lottery->image,
                 'prize' => $draw->price,
-                'price_per_ticket' => $draw->price / 100, 
+                'price_per_ticket' => $draw->price / 100,
                 'draw_time' => Carbon::parse($draw->date)->setHour(20)->setMinute(0)->setSecond(0)->toIso8601String(),
                 'sold_percentage' => $soldPercentage,
                 'picked_count' => $pickedCount,
-                'total_numbers' => 100 
+                'total_numbers' => 100
             ];
         });
 
@@ -126,15 +126,39 @@ class LandingController extends Controller
 
 
         // Ensure the draw time is set to 8 PM (20:00:00)
+        $today = Carbon::today('Asia/Colombo');
+
+
+        $todayCutoff = $today->copy()->setHour(20)->setMinute(0)->setSecond(0);
+
+
+        if ($now->lt($todayCutoff)) {
+            $closestDraw = LotteryDashboards::where('date', '>=', $today)
+                ->where('date', '<', $todayCutoff)
+                ->orderBy('date', 'asc')
+                ->first();
+        }
+
+
+        if (!$closestDraw) {
+            $closestDraw = LotteryDashboards::where('date', '>=', $todayCutoff)
+                ->orderBy('date', 'asc')
+                ->first();
+        }
+
+
         $closestDrawDate = $closestDraw
-            ? Carbon::parse($closestDraw->date)->setHour(20)->setMinute(0)->setSecond(0)
+            ? Carbon::parse($closestDraw->date, 'Asia/Colombo')
+            ->setHour(20)
+            ->setMinute(0)
+            ->setSecond(0)
             : null;
 
 
 
-            // dd($winningNumbers);
+        // dd($closestDrawDate ? $closestDrawDate->toIso8601String() : null);
 
-        
+
         // dd($closestDrawDate ? $closestDrawDate->toIso8601String() : null);
         return Inertia::render('LandingPage', [
             'latestDraw' => $closestDrawDate ? $closestDrawDate->toIso8601String() : null,

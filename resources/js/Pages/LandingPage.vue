@@ -481,19 +481,17 @@ export default {
 
     startCountdown(drawDate) {
       const dateParts = drawDate.split('-');
+  
+      const sriLankaOffsetMinutes = 5.5 * 60;
 
-      // Create UTC time for the given date at 20:00 Sri Lanka time
-      // Sri Lanka is UTC +5:30 -> so we adjust accordingly
-      const sriLankaOffsetMinutes = 5.5 * 60; // 5 hours 30 minutes
-
-      // Create date in UTC
+    
       const dateInUTC = new Date(
         Date.UTC(
           parseInt(dateParts[0]),
           parseInt(dateParts[1]) - 1,
           parseInt(dateParts[2]),
-          20 - 5, // 20:00 in SL is 15:30 UTC (5 hours 30 min difference)
-          -30 // Minus 30 minutes to adjust fully
+          20 - 5, 
+          -30 
         )
       );
 
@@ -520,22 +518,21 @@ export default {
 
 
 
-    formatCountdown(drawTime) {
-      if (!drawTime) return "N/A";
+    formatCountdown(drawDate) {
+      if (!drawDate) return "N/A";
+// alert(drawDate);
+      const dateParts = drawDate.split('-');
 
-      const dateParts = drawTime.split('-');
 
-      // Sri Lanka is UTC+5:30
       const sriLankaOffsetMinutes = 5.5 * 60;
 
-      // Create the target date in UTC first
       const drawDateInUTC = new Date(
         Date.UTC(
           parseInt(dateParts[0]),
           parseInt(dateParts[1]) - 1,
           parseInt(dateParts[2]),
-          20 - 5, // Adjust 5 hours
-          -30    // Adjust -30 minutes
+          20 - 5, 
+          -30    
         )
       );
 

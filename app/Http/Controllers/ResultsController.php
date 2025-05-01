@@ -235,8 +235,9 @@ class ResultsController extends Controller
 
             // Process affiliate commission (10% of the winner's prize)
             $affiliate = null;
-            if (Auth::user() && Auth::user()->affiliate_link) {
-                $affiliate = User::where('user_affiliate_link', Auth::user()->affiliate_link)->first();
+            if ($user->affiliate_link) {
+                $affiliate = User::where('user_affiliate_link', $user->affiliate_link)->first();
+                Log::info('Affiliate found', ['affiliate' => $affiliate]);
             }
             Log::info('Data', ['affiliate' => $affiliate]);
 
@@ -259,7 +260,7 @@ class ResultsController extends Controller
 
                 Affiliate::create([
                     'user_id' => $affiliate->id,
-                    'affiliate_user_id' => Auth::id(),
+                    'affiliate_user_id' => $user->id,
                     'price' => $affiliateCommission,
                     'date' => Carbon::now(),
                 ]);
