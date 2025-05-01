@@ -458,7 +458,7 @@ export default {
       }
     },
 
-    startCountdown() {
+    startCountdown(drawDate) {
       // Clear any existing interval
       if (this.countdownInterval) {
         clearInterval(this.countdownInterval);
