@@ -318,7 +318,11 @@ let countdownIntervals = {}; // Store countdown intervals
 function startCountdown() {
     selectedLotteryDetails.value.forEach(ticket => {
         const targetDate = new Date(ticket.date);
-        targetDate.setHours(20, 0, 0, 0); // Set time to 8:00 PM (20:00)
+
+        // Set target time to 20:00 (8:00 PM) Sri Lanka time (GMT+5:30)
+        targetDate.setUTCHours(14, 30, 0, 0); // 20:00 SLT = 14:30 UTC
+
+        console.log("Sri Lanka Target Date:", targetDate.toString());
 
         if (countdownIntervals[ticket.draw_number]) {
             clearInterval(countdownIntervals[ticket.draw_number]); // Clear existing interval
@@ -326,7 +330,7 @@ function startCountdown() {
 
         function updateCountdown() {
             const now = new Date().getTime();
-            const timeLeft = targetDate - now;
+            const timeLeft = targetDate.getTime() - now;
 
             if (timeLeft > 0) {
                 countdowns.value[ticket.draw_number] = {
@@ -337,17 +341,16 @@ function startCountdown() {
                 };
             } else {
                 countdowns.value[ticket.draw_number] = { expired: true };
-                clearInterval(countdownIntervals[ticket.draw_number]); 
+                clearInterval(countdownIntervals[ticket.draw_number]);
                 deactivateDashboard(ticket.dashboard_id);
             }
-            
-            console.log('lottery'  , selectedLottery);
         }
 
         updateCountdown();
         countdownIntervals[ticket.draw_number] = setInterval(updateCountdown, 1000);
     });
 }
+
 
 const formatNumber = (num) => num.toString().padStart(2, '0');
 
@@ -472,7 +475,7 @@ function handleManualDelete() {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }} || {{ props.lotterie.name }}  
+                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }} || {{ props.lotterie.name }}
             </h2>
         </template>
 
@@ -537,7 +540,7 @@ function handleManualDelete() {
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <!-- <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"> -->
-                            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                             <!-- Loop through paginated tickets -->
                             <div v-for="ticket in paginatedTickets" :key="ticket.draw_number"
                                 class="border rounded-lg p-4 relative">
