@@ -28,7 +28,7 @@ class CheckLotteryParticipation extends Command
 
         $totalNumbers = 100;
         $threshold = 0.8;
-        if ($now->format('H') == '20') {
+        if ($now->format('H:i') == '20:00') {
             $dashboards = LotteryDashboards::where('status', 'active')
                 ->whereDate('date', Carbon::today())
                 ->get();
