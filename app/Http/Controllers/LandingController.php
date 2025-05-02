@@ -21,7 +21,7 @@ class LandingController extends Controller
         $upcomingDraws = LotteryDashboards::with(['lottery', 'pickedNumbers'])
             ->where('date', '>=', $now)
             ->orderBy('date', 'asc')
-            ->take(2)
+            ->take(3)
             ->get();
 
         $lotteriesData = $upcomingDraws->map(function ($draw) {
@@ -45,7 +45,7 @@ class LandingController extends Controller
 
         $lotteries = Lotteries::with(['dashboards' => function ($query) use ($now) {
             $query->where('date', '>=', $now)
-                ->orderBy('date', 'asc'); // Get the next draw
+                ->orderBy('date', 'asc');
         }])->take(3)->get();
 
         // Process each lottery to find its closest draw at 8 PM
@@ -67,6 +67,8 @@ class LandingController extends Controller
         // Fetch the result
         $dashboardDetails = LotteryDashboards::select('price', 'date', 'draw_number', 'draw')
             ->distinct()
+            // ->orderBy('date', 'asc')
+            // ->take(3)
             ->get();
 
         $winningNumbers = [];
@@ -109,7 +111,7 @@ class LandingController extends Controller
             }
         }
 
-
+        $winningNumbers = array_slice($winningNumbers, -3);
         $winners = Winner::with(['lottery', 'user'])
             ->orderBy('created_at', 'desc')
             ->take(3)

@@ -36,7 +36,7 @@ const copyToClipboard = () => {
 // Mocked user profile picture URL
 const profilePicture = ref(props.user?.image
     ? `/${props.user.image}`
-    : '/default-profile.jpg');
+    : '/assets/winners/default.jpg');
 
 // Temporary variable to hold the uploaded file
 const uploadedFile = ref(null);

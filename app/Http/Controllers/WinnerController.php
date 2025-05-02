@@ -14,10 +14,9 @@ class WinnerController extends Controller
      */
     public function index()
     {
-        // Fetch all lotteries with their winners
+    
         $lotteries = Lotteries::with(['dashboards.winners.user'])->get();
-        // dd($lotteries->toArray());
-        // Pass the data to the frontend
+   
         return Inertia::render('User/Winners', [
             'lotteries' => $lotteries,
         ]);
