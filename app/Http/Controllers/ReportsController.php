@@ -6,8 +6,10 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Admin;
 use App\Models\Lotteries;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
+use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
@@ -120,4 +122,18 @@ class ReportsController extends Controller
             'dashboards' => $dashboards
         ]);
     }
+    public function refund()
+{
+    $refund = Transaction::with([
+        'wallet.user', 
+        'lottery', 
+        'lotteryDashboard'
+    ])->where('type', 'refund')->get();
+
+    Log::info('Refund Report:', ['refund' => $refund]);
+
+    return Inertia::render('AdminDashboard/refundReport', [
+        'refunds' => $refund
+    ]);
+}
 }
