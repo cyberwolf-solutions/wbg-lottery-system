@@ -39,8 +39,10 @@ import { Head } from '@inertiajs/vue3';
                         <div class="card-body text-center">
                             <div class="row" style="height: 70px;">
                                 <div class="col-12 d-flex justify-content-center align-items-center">
-                                    <img :src="`/${lottery.image}`" alt="Logo" class="card-img-top"
-                                        style="height: 100px; width: auto; object-fit: contain;">
+                                    <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden;">
+                                        <img :src="`/${lottery.image}`" alt="Logo"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
                                 </div>
 
 
@@ -54,7 +56,7 @@ import { Head } from '@inertiajs/vue3';
                                 <!-- Highlighted Digit -->
                                 <span v-for="(digit, index) in lottery.dashboardInfo.displayDigits.digits"
                                     :key="'digit-' + index" style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
-                    border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     {{ digit }}
                                 </span>
 
@@ -144,7 +146,7 @@ import { Head } from '@inertiajs/vue3';
 
 
 
-        <Footer  class="mt-0" />
+        <Footer class="mt-0" />
     </AuthenticatedLayout>
 </template>
 

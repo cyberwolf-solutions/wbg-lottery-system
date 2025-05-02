@@ -321,7 +321,7 @@
                     <tr v-for="(dashboard, index) in upcomingDraws" :key="dashboard.id"
                       :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                       <td>
-                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2" style="width: 30px; height: 20px;">
+                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2" style="width: 40px; height: 40px; border-radius: 30px;">
                         {{ dashboard.name || 'Unknown Lottery' }}
                       </td>
                       <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>

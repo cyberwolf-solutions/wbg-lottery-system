@@ -54,6 +54,7 @@ class LatestResults extends Controller
                     $formattedLotteries[] = [
                         'id' => $dashboard->id,
                         'name' => $lottery ? $lottery->name : 'Unknown Lottery',
+                        'image' => $lottery ? $lottery->image : 'default-image.png',
                         'dashboardInfo' => [
                             'dashboardType' => $dashboard->dashboardType,
                             'draw_number' => $dashboard->draw_number,
