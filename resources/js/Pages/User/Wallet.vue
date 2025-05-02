@@ -159,9 +159,29 @@ const currentPage = ref({
 
 const itemsPerPage = 8;
 
+
+const visiblePageRange = computed(() => {
+    return (table) => {
+        const current = currentPage.value[table];
+        const total = totalPages.value[table];
+        const range = 2;
+        let start = Math.max(1, current - range);
+        let end = Math.min(total, current + range);
+
+
+        if (current <= range + 1) {
+            end = Math.min(1 + (range * 2), total);
+        }
+        if (current >= total - range) {
+            start = Math.max(total - (range * 2), 1);
+        }
+
+        return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    };
+});
 // Computed properties for each table
 const filteredTransactions = computed(() => {
-    return props.transactions.filter(t => t.type !== 'refund');
+    return props.transactions;
 });
 
 const filteredRefunds = computed(() => {
@@ -213,6 +233,9 @@ const totalPages = computed(() => ({
     winnings: Math.ceil(props.winnings.length / itemsPerPage),
     affiliate: Math.ceil(props.affiliateData.length / itemsPerPage)
 }));
+
+
+
 
 // Navigation functions for each table
 function nextPage(table) {
@@ -512,7 +535,7 @@ onMounted(() => {
                                                 Transaction Type</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                                                Picked Numbers</th>
+                                                Type || Picked Numbers</th>
                                             <th
                                                 class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
                                                 Date
@@ -546,7 +569,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.transactions - 1) *
                                                     itemsPerPage + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.transactions *
                                                     itemsPerPage,
@@ -567,7 +590,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.transactions" :key="page"
+                                                <button v-for="page in visiblePageRange('transactions')" :key="page"
                                                     @click="goToPage('transactions', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.transactions === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.transactions !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -621,7 +644,7 @@ onMounted(() => {
                                             <td class="px-6 py-4 text-gray-800">Refund</td>
                                             <td class="px-6 py-4 text-green-500 font-medium">
                                                 {{ transaction.lottery.name ?? 'N/A' }} || {{
-                                                    transaction.lottery_dashboard.dashboardType }} 
+                                                    transaction.lottery_dashboard.dashboardType }}
                                             </td>
                                             <td class="px-6 py-4 text-green-500 font-medium">
                                                 {{
@@ -629,7 +652,7 @@ onMounted(() => {
                                                     transaction.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?? 'N/A'
-                                            }}</td>
+                                                }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.amount }}</td>
                                         </tr>
                                     </tbody>
@@ -644,7 +667,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.refunds - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.refunds *
                                                     itemsPerPage,
@@ -665,7 +688,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.refunds" :key="page"
+                                                <button v-for="page in visiblePageRange('refunds')" :key="page"
                                                     @click="goToPage('refunds', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.refunds === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.refunds !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -735,7 +758,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.withdrawals - 1) *
                                                     itemsPerPage + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.withdrawals *
                                                     itemsPerPage,
@@ -756,7 +779,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.withdrawals" :key="page"
+                                                <button v-for="page in visiblePageRange('withdrawals')" :key="page"
                                                     @click="goToPage('withdrawals', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.withdrawals === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.withdrawals !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -764,7 +787,7 @@ onMounted(() => {
                                                 </button>
 
                                                 <button @click="nextPage('withdrawals')"
-                                                    :disabled="currentPage.withdrawals === totalPages.withdrawals"
+                                                    :disabled="currentPage.refunds === totalPages.withdrawals"
                                                     :class="{ 'opacity-50 cursor-not-allowed': currentPage.withdrawals === totalPages.withdrawals }"
                                                     class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                                     <span class="sr-only">Next</span>
@@ -824,7 +847,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.deposits - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.deposits *
                                                     itemsPerPage,
@@ -845,7 +868,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.deposits" :key="page"
+                                                <button v-for="page in visiblePageRange('deposits')" :key="page"
                                                     @click="goToPage('deposits', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.deposits === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.deposits !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -910,10 +933,10 @@ onMounted(() => {
                                                 winningsItem.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.date
-                                            }}</td>
+                                                }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.dashboardType
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -927,7 +950,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.winnings - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.winnings *
                                                     itemsPerPage,
@@ -948,7 +971,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.winnings" :key="page"
+                                                <button v-for="page in visiblePageRange('winnings')" :key="page"
                                                     @click="goToPage('winnings', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.winnings === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.winnings !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -957,7 +980,7 @@ onMounted(() => {
 
                                                 <button @click="nextPage('winnings')"
                                                     :disabled="currentPage.winnings === totalPages.winnings"
-                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.winnings === totalPages.winnings }"
+                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.deposits === totalPages.winnings }"
                                                     class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                                     <span class="sr-only">Next</span>
                                                     Next &rarr;
@@ -1013,7 +1036,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.affiliate - 1) * itemsPerPage
                                                     + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.affiliate *
                                                     itemsPerPage,
@@ -1034,7 +1057,7 @@ onMounted(() => {
                                                     &larr; Previous
                                                 </button>
 
-                                                <button v-for="page in totalPages.affiliate" :key="page"
+                                                <button v-for="page in visiblePageRange('affiliate')" :key="page"
                                                     @click="goToPage('affiliate', page)"
                                                     :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.affiliate === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.affiliate !== page }"
                                                     class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
@@ -1042,8 +1065,8 @@ onMounted(() => {
                                                 </button>
 
                                                 <button @click="nextPage('affiliate')"
-                                                    :disabled="currentPage.affiliate === totalPages.affiliate"
-                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.affiliate === totalPages.affiliate }"
+                                                    :disabled="currentPage.winnings === totalPages.affiliate"
+                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.deposits === totalPages.affiliate }"
                                                     class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                                     <span class="sr-only">Next</span>
                                                     Next &rarr;
