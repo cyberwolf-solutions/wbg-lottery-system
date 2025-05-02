@@ -151,8 +151,6 @@ class NumberPickController extends Controller
         $user = Auth::user();
         $wallet = $user->wallet;
 
-        Log::debug('Request data:', $request->all());
-
         if (!$wallet) {
             return response()->json(['message' => 'Wallet not found'], 400);
         }
@@ -160,8 +158,6 @@ class NumberPickController extends Controller
         $numbers = $request->input('numbers', []);
         $lotteryId = $request->input('lottery_id');
         $totalPrice = $request->input('total_price');
-
-        Log::debug('Cart data: ', ['numbers' => $numbers, 'lottery_id' => $lotteryId, 'total_price' => $totalPrice]);
 
         if (empty($numbers)) {
             return response()->json(['message' => 'No numbers selected for checkout'], 400);
@@ -177,88 +173,76 @@ class NumberPickController extends Controller
             return response()->json(['message' => 'Insufficient balance'], 400);
         }
 
-        Log::debug('wallet reducing');
-        $wallet->decrement('available_balance', $totalPrice);
+        // Start a database transaction to ensure data consistency
+        DB::beginTransaction();
 
-        Log::debug('Entering foreach loop');
+        try {
+            $wallet->decrement('available_balance', $totalPrice);
 
-        // Loop through the numbers array
-        foreach ($numbers as $numberData) {
-            $dashboardId = $numberData['dashboard_id'];
-            $pickedNumber = $numberData['number'];
-            $amount = $numberData['price'];
+            $dashboardId = null; // Track the dashboard ID for percentage calculation
 
-            Log::debug('Saving Transaction', [
-                'wallet_id' => $wallet->id,
-                'amount' => $amount,
-                'type' => 'transfer',
-                'lottery_id' => $lotteryId,
-                'lottery_dashboard_id' => $dashboardId,
-                'transaction_date' => Carbon::now(),
-                'picked_number' => $pickedNumber
-            ]);
+            foreach ($numbers as $numberData) {
+                $dashboardId = $numberData['dashboard_id'];
+                $pickedNumber = $numberData['number'];
+                $amount = $numberData['price'];
 
-            // Save transaction
-            Transaction::create([
-                'wallet_id' => $wallet->id,
-                'amount' => $amount,
-                'type' => 'Number pick',
-                'lottery_id' => $lotteryId,
-                'lottery_dashboard_id' => $dashboardId,
-                'transaction_date' => Carbon::now(),
-                'picked_number' => $pickedNumber
-            ]);
+                // Save transaction
+                Transaction::create([
+                    'wallet_id' => $wallet->id,
+                    'amount' => $amount,
+                    'type' => 'Number pick',
+                    'lottery_id' => $lotteryId,
+                    'lottery_dashboard_id' => $dashboardId,
+                    'transaction_date' => Carbon::now(),
+                    'picked_number' => $pickedNumber
+                ]);
 
-            Log::debug('Dispatching PickNumberJob', [
-                'number' => $pickedNumber,
-                'dashboard_id' => $dashboardId,
-                'lottery_id' => $lotteryId,
-                'user_id' => $user->id
-            ]);
+                // Dispatch Job
+                PickNumberJob::dispatch($pickedNumber, $dashboardId, $lotteryId, $user->id);
+            }
 
-            // Dispatch Job
-            PickNumberJob::dispatch($pickedNumber, $dashboardId, $lotteryId, $user->id);
+            // Calculate picked count AFTER all numbers have been processed
+            $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
+            $pickedPercentage = ($pickedCount / 100) * 100;
+
+            Log::info('Picked Count:', ['picked_count' => $pickedCount]);
+
+            if ($pickedPercentage >= 100) {
+                $dashboard = LotteryDashboards::findOrFail($dashboardId);
+
+                // Close the current dashboard
+                $dashboard->update(['status' => 'closed']);
+
+                // Create a new dashboard with incremented draw number
+                $newDashboard = LotteryDashboards::create([
+                    'lottery_id' => $dashboard->lottery_id,
+                    'dashboard' => $dashboard->dashboard,
+                    'price' => $dashboard->price,
+                    'date' => $dashboard->date,
+                    'draw' => $dashboard->draw,
+                    'draw_number' => $dashboard->draw_number, 
+                    'winning_numbers' => $dashboard->winning_numbers, 
+                    'dashboardType' => $dashboard->dashboardType,
+                    'status' => 'active',
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
+                    'new_dashboard_id' => $newDashboard->id
+                ]);
+            }
+
+            DB::commit();
+            session()->forget('cart');
+            return response()->json(['message' => 'Checkout successful']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Checkout failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Checkout failed. Please try again.'], 500);
         }
-        
-        // $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
-        $pickedCount = PickedNumber::where('lottery_dashboard_id', $dashboardId)->count();
-        $pickedPercentage = ($pickedCount / 100) * 100; 
-
-
-        Log::info('Picked Percentage:', ['picked_count' => $pickedCount, 'picked_percentage' => $pickedPercentage]);
-        
-        Log::info('Picked Count:', ['picked_count' => $pickedCount]);
-
-        if ($pickedPercentage >= 100) {
-            // Close the current dashboard
-            $dashboard = LotteryDashboards::find($dashboardId);
-            $dashboard->update(['status' => 'closed']);
-
-            // Create a new dashboard with the same details
-            $newDashboard = LotteryDashboards::create([
-                'lottery_id' => $dashboard->lottery_id,
-                'dashboard' => $dashboard->dashboard,
-                'price' => $dashboard->price,
-                'date' => $dashboard->date,
-                'draw' => $dashboard->draw,
-                'draw_number' => $dashboard->draw_number,
-                'winning_numbers' => $dashboard->winning_numbers,
-                'dashboardType' => $dashboard->dashboardType,
-                'status' => 'active',
-
-            ]);
-
-            return response()->json([
-                'message' => 'Number allocated successfully. Dashboard is full and a new dashboard has been created.',
-                'new_dashboard_id' => $newDashboard->id
-            ]);
-        }
-
-        session()->forget('cart');
-
-        return response()->json(['message' => 'Checkout successful']);
     }
-
 
 
     public function cancel(Request $request)

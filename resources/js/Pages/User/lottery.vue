@@ -475,7 +475,7 @@ function handleManualDelete() {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }} || {{ props.lotterie.name }}
+                Price {{ selectedLottery ? selectedLottery : 'Lotteries' }} || {{ props.lotterie.name }} || {{ selectedLotteryDetails[0]?.dashboardType }}
             </h2>
         </template>
 

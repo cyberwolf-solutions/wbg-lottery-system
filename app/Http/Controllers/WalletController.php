@@ -65,6 +65,9 @@ class WalletController extends Controller
         $bank = Bank::all();
         $walletAddress = WalletAdress::all();
 
+        // $refund = Transaction::where('type', 'refund')
+        //     ->where('waller_id',)->get();
+
         // dd($wallet);
         // Get all affiliate records where the current user is the referrer
         $affiliateData = Affiliate::where('user_id', Auth::id())
@@ -182,8 +185,6 @@ class WalletController extends Controller
 
             // Store the relative image path for saving in the database
             $imagePath = 'images/request/' . $imageName;
-
-
         }
 
         // Save deposit request
@@ -208,7 +209,7 @@ class WalletController extends Controller
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
             'withdrawal_type' => 'required|String',
-            'wallet_address'=>'required|String'
+            'wallet_address' => 'required|String'
         ]);
 
 
@@ -242,7 +243,7 @@ class WalletController extends Controller
             'status' => 0,
             'withdrawal_date' => now(),
             'withdrawal_type' => $request->withdrawal_type,
-            'address'=>$request->wallet_address
+            'address' => $request->wallet_address
         ]);
         return response()->json(['message' => 'Withdraw request submitted successfully'], 200);
     }
