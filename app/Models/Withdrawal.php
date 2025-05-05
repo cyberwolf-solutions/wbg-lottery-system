@@ -30,4 +30,9 @@ class Withdrawal extends Model
     {
         return $this->belongsTo(Wallet::class);
     }
+    public function user()
+{
+    return $this->hasOneThrough(User::class, Wallet::class, 'id', 'id', 'wallet_id', 'user_id');
+}
+
 }
