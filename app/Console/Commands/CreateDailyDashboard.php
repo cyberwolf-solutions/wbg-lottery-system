@@ -23,23 +23,11 @@ class CreateDailyDashboard extends Command
             $now = Carbon::now('Asia/Colombo');
             Log::info('Current time: ' . $now);
 
-            if ($now->format('H:i') == '23:59') {
+            if ($now->format('H:i') == '00:00') {
                 // Get all unique lottery_id and dashboard combinations
                 $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')
                     ->distinct()
                     ->get();
-
-                // Get tomorrow's date
-                $tomorrow = Carbon::tomorrow();
-                $tomorrowDate = $tomorrow->format('Y-m-d');
-
-                // Check if tomorrow is a holiday
-                $isHoliday = Holiday::where('date', $tomorrowDate)->exists();
-                if ($isHoliday) {
-                    Log::info("Skipped dashboard creation for tomorrow ({$tomorrowDate}) because it's a holiday");
-                    $this->info("Skipped dashboard creation for tomorrow ({$tomorrowDate}) because it's a holiday");
-                    return;
-                }
 
                 foreach ($lotteryDashboardCombinations as $combination) {
                     $lotteryId = $combination->lottery_id;
@@ -53,38 +41,62 @@ class CreateDailyDashboard extends Command
                         ->orderBy('id', 'desc')
                         ->first();
 
-                    // Determine the new draw number and draw count
-                    if ($lastDashboard) {
-                        $newDrawNumber = (int)$lastDashboard->draw_number + 1;
-                        $newDraw = $lastDashboard->draw + 1;
-                    } else {
-                        $newDrawNumber = 1;
-                        $newDraw = 1;
+                    // If there's no last dashboard, we can't determine the next date
+                    if (!$lastDashboard) {
+                        Log::info("No previous dashboard found for lottery_id: {$lotteryId}, dashboard: {$dashboardField}");
+                        continue;
                     }
-                    $formattedDrawNumber = str_pad($newDrawNumber, 3, '0', STR_PAD_LEFT);
 
-                    // Get other attributes from the last dashboard or use defaults
-                    $price = $lastDashboard ? $lastDashboard->price : 1000;
-                    $winningNumbers = $this->generateWinningNumbers();
+                    // Start from the day after the last dashboard date
+                    $currentDate = Carbon::parse($lastDashboard->date);
+                    $nextValidDate = null;
+                    $maxDaysToCheck = 7; 
 
-                    // Check if a dashboard already exists for tomorrow's date
+                    // Find the next non-holiday date
+                    for ($i = 1; $i <= $maxDaysToCheck; $i++) {
+                        $checkDate = $currentDate->copy()->addDays($i);
+                        $isHoliday = Holiday::where('date', $checkDate->format('Y-m-d'))->exists();
+                        
+                        if (!$isHoliday) {
+                            $nextValidDate = $checkDate;
+                            break;
+                        }
+                        Log::info("Skipping holiday date: {$checkDate->format('Y-m-d')} for lottery_id: {$lotteryId}");
+                    }
+
+                    if (!$nextValidDate) {
+                        Log::info("Could not find a non-holiday date within {$maxDaysToCheck} days for lottery_id: {$lotteryId}");
+                        continue;
+                    }
+
+                    // Check if a dashboard already exists for this date
                     $existingDashboard = LotteryDashboards::where('lottery_id', $lotteryId)
                         ->where('dashboard', $dashboardField)
                         ->where('dashboardType', $dashboardType)
-                        ->where('date', $tomorrowDate)
+                        ->where('date', $nextValidDate->format('Y-m-d'))
                         ->first();
 
                     if ($existingDashboard) {
-                        Log::info("Dashboard already exists for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$tomorrowDate}");
+                        Log::info("Dashboard already exists for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$nextValidDate->format('Y-m-d')}");
                         continue;
                     }
+
+                    // Calculate the number of days since last dashboard to determine draw increments
+                    $daysSinceLast = $currentDate->diffInDays($nextValidDate);
+                    $newDrawNumber = (int)$lastDashboard->draw_number + $daysSinceLast;
+                    $newDraw = $lastDashboard->draw + $daysSinceLast;
+                    $formattedDrawNumber = str_pad($newDrawNumber, 3, '0', STR_PAD_LEFT);
+
+                    // Get other attributes from the last dashboard
+                    $price = $lastDashboard->price;
+                    $winningNumbers = $this->generateWinningNumbers();
 
                     // Create the new dashboard
                     LotteryDashboards::create([
                         'lottery_id' => $lotteryId,
                         'dashboard' => $dashboardField,
                         'price' => $price,
-                        'date' => $tomorrowDate, // Always use tomorrow's date
+                        'date' => $nextValidDate->format('Y-m-d'),
                         'draw' => $newDraw,
                         'draw_number' => $formattedDrawNumber,
                         'winning_numbers' => json_encode($winningNumbers),
@@ -92,7 +104,7 @@ class CreateDailyDashboard extends Command
                         'status' => 'active',
                     ]);
 
-                    Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$tomorrowDate}, draw number: {$formattedDrawNumber}");
+                    Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$nextValidDate->format('Y-m-d')}, draw number: {$formattedDrawNumber}");
 
                     // Notify users
                     $users = User::all();
@@ -101,15 +113,15 @@ class CreateDailyDashboard extends Command
                             $lotteryId,
                             $dashboardField,
                             $formattedDrawNumber,
-                            $tomorrowDate
+                            $nextValidDate->format('Y-m-d')
                         ));
                     }
                 }
 
                 $this->info('All dashboards created successfully.');
             } else {
-                Log::info('Command skipped. Current time is not 11:59 PM.');
-                $this->info('Skipped: It is not 11:59 PM Sri Lanka time.');
+                Log::info('Command skipped. Current time is not 00:00 AM Sri Lanka time.');
+                $this->info('Skipped: It is not 00:00 AM Sri Lanka time.');
             }
         } catch (\Exception $e) {
             Log::error("Error creating dashboards: " . $e->getMessage());
