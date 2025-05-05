@@ -12,9 +12,11 @@ use App\Models\Withdrawal;
 use App\Models\Transaction;
 use App\Models\WalletAdress;
 use Illuminate\Http\Request;
+use App\Mail\CreditRequestMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class WalletController extends Controller
@@ -188,7 +190,7 @@ class WalletController extends Controller
         }
 
         // Save deposit request
-        Deposit::create([
+        $deposit = Deposit::create([
             'wallet_id' => Auth::user()->wallet?->id,
             'amount' => $request->amount,
             'deposite_type' => $request->deposit_type,
@@ -198,13 +200,32 @@ class WalletController extends Controller
             'status' => 0,
 
         ]);
+        try {
+            $details = [
+                'amount' => $request->amount,
+                'bank' => $request->bank,
+                'account_number' => $request->account_number,
+                'reference' => $request->reference,
+                'deposit_type' => $request->deposit_type,
+                'image' => $imagePath,
+            ];
+            $userName = Auth::user()->name ?? 'Unknown User';
 
+            Mail::to('takeprofitone@gmail.com')->send(new CreditRequestMail('Deposit', $details, $userName));
+
+            Log::info('Deposit request email sent successfully.', ['deposit_id' => $deposit->id]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send deposit request email.', [
+                'error' => $e->getMessage(),
+                'deposit_id' => $deposit->id
+            ]);
+        }
         return response()->json(['message' => 'Deposit request submitted successfully'], 200);
     }
 
     public function withdraw(Request $request)
     {
-        // Log::info("Request Data: ", $request->all());
+        Log::info("Request Data: ", $request->all());
         $validator = Validator::make($request->all(), [
             'wallet_id' => 'required|exists:wallets,id',
             'amount' => 'required|numeric|min:1',
@@ -232,12 +253,10 @@ class WalletController extends Controller
             return response()->json(['error' => 'Insufficient balance'], 400);
         }
 
-        // Subtract the amount from available_balance
-        // $wallet->available_balance -= $request->amount;
-        // $wallet->save();
+
 
         // $wallet = Wallet::find($request->wallet_id);
-        Withdrawal::create([
+        $withdrawal = Withdrawal::create([
             'wallet_id' => Auth::user()->wallet?->id,
             'amount' => $request->amount,
             'status' => 0,
@@ -245,6 +264,32 @@ class WalletController extends Controller
             'withdrawal_type' => $request->withdrawal_type,
             'address' => $request->wallet_address
         ]);
+
+        try {
+            $details = [
+                'amount' => $request->amount,
+                'withdrawal_type' => $request->withdrawal_type,
+                'wallet_address' => $request->wallet_address,
+            ];
+            $userName = Auth::user()->name ?? 'Unknown User';
+    
+            // Log before attempting to send the email
+            Log::info('Attempting to send withdrawal request email.', [
+                'withdrawal_id' => $withdrawal->id,
+                'to' => 'takeprofitone@gmail.com',
+                'details' => $details,
+                'user_name' => $userName
+            ]);
+    
+            Mail::to('takeprofitone@gmail.com')->send(new CreditRequestMail('Withdrawal', $details, $userName));
+    
+            Log::info('Withdrawal request email sent successfully.', ['withdrawal_id' => $withdrawal->id]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send withdrawal request email.', [
+                'error' => $e->getMessage(),
+                'withdrawal_id' => $withdrawal->id
+            ]);
+        }
         return response()->json(['message' => 'Withdraw request submitted successfully'], 200);
     }
 }

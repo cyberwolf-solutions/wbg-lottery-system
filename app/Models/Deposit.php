@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Deposit extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $table = "deposits";
 
     protected $fillable = [
@@ -21,7 +21,7 @@ class Deposit extends Model
         'reference',
         'image',
         'status',
-     
+
         'decline_reason'
     ];
     protected $dates = ['deleted_at'];
@@ -30,5 +30,10 @@ class Deposit extends Model
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);
+    }
+
+    public function user()
+    {
+        return $this->hasOneThrough(User::class, Wallet::class, 'id', 'id', 'wallet_id', 'user_id');
     }
 }
