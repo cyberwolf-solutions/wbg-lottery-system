@@ -158,7 +158,7 @@
               <ul class="notification-list">
                 <li v-for="msg in latestMessages" :key="msg.id" class="notification-item">
                   <strong>{{ msg.user?.name || 'Unknown' }}</strong>: {{ msg.message }}
-                  <!-- <small class="text-muted">{{ formatDate(msg.created_at) }}</small> -->
+                  <small class="">{{ formatDate(msg.created_at) }}</small>
                 </li>
               </ul>
             </div>
@@ -173,7 +173,7 @@
               <ul class="notification-list">
                 <li v-for="withdraw in latestWithdraws" :key="withdraw.id" class="notification-item">
                   {{ withdraw.user?.name || 'Unknown' }} - {{ withdraw.amount }} 
-                  <!-- <small class="text-muted">{{ formatDate(withdraw.created_at) }}</small> -->
+                  <small class="">{{ formatDate(withdraw.created_at) }}</small>
                 </li>
               </ul>
             </div>
@@ -188,7 +188,7 @@
               <ul class="notification-list">
                 <li v-for="deposit in latestDeposits" :key="deposit.id" class="notification-item">
                   {{ deposit.user?.name || 'Unknown' }} - {{ deposit.amount }} 
-                  <!-- <small class="text-muted">{{ formatDate(deposit.created_at) }}</small> -->
+                  <small class="">{{ formatDate(deposit.created_at) }}</small>
                 </li>
               </ul>
             </div>
@@ -292,7 +292,7 @@ export default {
       this.isSidebarVisible = isVisible;
     },
     formatDate(dateString) {
-      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
     },
     fetchNotifications() {
