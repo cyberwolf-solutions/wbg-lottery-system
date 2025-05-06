@@ -157,9 +157,14 @@
             <div class="widget-content">
               <ul class="notification-list">
                 <li v-for="msg in latestMessages" :key="msg.id" class="notification-item">
-                  <strong>{{ msg.user?.name || 'Unknown' }}</strong>: {{ msg.message }}
-                  <small class="">{{ formatDate(msg.created_at) }}</small>
+                  <div class="d-flex justify-content-between align-items-start flex-column">
+                    <div>
+                      <strong>{{ msg.user?.name || 'Unknown' }}</strong>: {{ msg.message }}
+                    </div>
+                    <small v-html="formatDate(msg.created_at)"></small>
+                  </div>
                 </li>
+
               </ul>
             </div>
           </div>
@@ -172,8 +177,9 @@
             <div class="widget-content">
               <ul class="notification-list">
                 <li v-for="withdraw in latestWithdraws" :key="withdraw.id" class="notification-item">
-                  {{ withdraw.user?.name || 'Unknown' }} - {{ withdraw.amount }} 
-                  <small class="">{{ formatDate(withdraw.created_at) }}</small>
+                  {{ withdraw.user?.name || 'Unknown' }} - {{ withdraw.amount }}
+                  <!-- <small class="">{{ formatDate(withdraw.created_at) }}</small> -->
+                  <small v-html="formatDate(withdraw.created_at)"></small>
                 </li>
               </ul>
             </div>
@@ -187,8 +193,8 @@
             <div class="widget-content">
               <ul class="notification-list">
                 <li v-for="deposit in latestDeposits" :key="deposit.id" class="notification-item">
-                  {{ deposit.user?.name || 'Unknown' }} - {{ deposit.amount }} 
-                  <small class="">{{ formatDate(deposit.created_at) }}</small>
+                  {{ deposit.user?.name || 'Unknown' }} - {{ deposit.amount }}
+                  <small v-html="formatDate(deposit.created_at)"></small>
                 </li>
               </ul>
             </div>
@@ -292,9 +298,13 @@ export default {
       this.isSidebarVisible = isVisible;
     },
     formatDate(dateString) {
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    },
+      const date = new Date(dateString);
+      const optionsDate = { year: 'numeric', month: 'short', day: 'numeric' };
+      const optionsTime = { hour: '2-digit', minute: '2-digit' };
+      return `${date.toLocaleDateString(undefined, optionsDate)} <br> ${date.toLocaleTimeString(undefined, optionsTime)}`;
+    }
+
+    ,
     fetchNotifications() {
       axios.get('/api/admin/notifications')
         .then(response => {
