@@ -294,7 +294,7 @@ onMounted(() => {
                 <h3 class="text-lg font-semibold mb-4">Request Credit</h3>
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Bank details
+                        USDT Deposit Wallet
                     </label>
                     <input id="bank" type="text" :value="props.bank.length ? props.bank[0]?.bank : 'No Bank Available'"
                         disabled
@@ -303,21 +303,15 @@ onMounted(() => {
 
                 <div class="mb-4">
                     <label for="Note" class="block text-sm font-medium text-gray-700">
-                        Wallet Number
+                        Wallet address and details
                     </label>
-                    <input id="number" type="text"
-                        :value="props.bank.length ? props.bank[0]?.number : 'No Bank Available'" disabled
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                    <div class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm bg-gray-100"
+                        style="white-space: pre-line;">
+                        {{ props.bank.length ? props.bank[0]?.number : 'No Bank Available' }}
+                    </div>
                 </div>
-                <!-- <div class="mb-4">
-                    <label for="wnumber" class="block text-sm font-medium text-gray-700">
-                        Wallet Address
-                    </label>
-                    <input id="wnumber" type="text"
-                        :value="props.walletAddress.length ? props.walletAddress[0]?.address : 'No wallet address'"
-                        disabled
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                </div> -->
+
+
                 <div class="mb-4">
                     <label for="creditAmount" class="block text-sm font-medium text-gray-700">
                         Deposit Amount
@@ -569,7 +563,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.transactions - 1) *
                                                     itemsPerPage + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.transactions *
                                                     itemsPerPage,
@@ -652,7 +646,7 @@ onMounted(() => {
                                                     transaction.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?? 'N/A'
-                                                }}</td>
+                                            }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.amount }}</td>
                                         </tr>
                                     </tbody>
@@ -667,7 +661,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.refunds - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.refunds *
                                                     itemsPerPage,
@@ -758,7 +752,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.withdrawals - 1) *
                                                     itemsPerPage + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.withdrawals *
                                                     itemsPerPage,
@@ -847,7 +841,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.deposits - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.deposits *
                                                     itemsPerPage,
@@ -933,10 +927,10 @@ onMounted(() => {
                                                 winningsItem.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.date
-                                                }}</td>
+                                            }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.dashboardType
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -950,7 +944,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.winnings - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.winnings *
                                                     itemsPerPage,
@@ -1036,7 +1030,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.affiliate - 1) * itemsPerPage
                                                     + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.affiliate *
                                                     itemsPerPage,

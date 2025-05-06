@@ -9,34 +9,40 @@
         <Sidebar @sidebar-toggle="handleSidebarToggle" />
         <div :class="['main-content', { 'sidebar-hidden': !isSidebarVisible }]" class="flex-fill">
             <!-- Bank Details Section -->
-            <div class="bank-details">
-                <h3 class="mt-4">Bank Details:</h3>
-
-                <div class="bank-info">
-                    <p><strong>Bank Name:</strong> {{ bankDetails.bank || 'N/A' }}</p>
-                    <p><strong>Account Number:</strong> {{ bankDetails.number || 'N/A' }}</p>
+            <div class="wallet-card">
+                <div class="wallet-section">
+                    <span class="wallet-label">USDT Deposit Wallet</span>
+                    <p class="wallet-value">{{ bankDetails.bank || 'N/A' }}</p>
                 </div>
 
-                <button @click="editBankDetails" class="btn btn-primary btn-sm">Edit</button>
+                <div class="wallet-section">
+                    <span class="wallet-label">Wallet address and details</span>
+                    <pre class="wallet-value wallet-address">{{ bankDetails.number || 'N/A' }}</pre>
+                </div>
+
+                <button @click="editBankDetails" class="btn btn-primary btn-sm mt-3">Edit</button>
             </div>
+
+
 
             <!-- Edit Bank Details Modal -->
             <div v-if="isEditModalOpen" class="modal-overlay">
-                <div class="modal-content">
-                    <h3>Edit Bank Details</h3>
+                <div class="edit-modal">
+                    <h3 class="modal-title">Edit Wallet Details</h3>
                     <form @submit.prevent="updateBankDetails">
-                        <div class="form-group">
-                            <label for="bankName">Bank Name</label>
-                            <input type="text" id="bankName" v-model="bankDetails.bank" class="form-control" required />
+                        <div class="modal-form-group">
+                            <label for="bankName">USDT Deposit Wallet</label>
+                            <input type="text" id="bankName" v-model="bankDetails.bank" required />
                         </div>
-                        <div class="form-group">
-                            <label for="accountNumber">Account Number</label>
-                            <input type="text" id="accountNumber" v-model="bankDetails.number" class="form-control"
-                                required />
+
+                        <div class="modal-form-group">
+                            <label for="accountNumber">Wallet address and details</label>
+                            <textarea id="accountNumber" v-model="bankDetails.number" rows="4" required></textarea>
                         </div>
-                        <div class="form-group mt-3">
-                            <button type="submit" class="btn btn-success">Save</button>
-                            <button type="button" @click="closeEditModal" class="btn btn-secondary">Cancel</button>
+
+                        <div class="modal-actions">
+                            <button type="submit" class="btn-save">💾 Save</button>
+                            <button type="button" @click="closeEditModal" class="btn-cancel">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -63,7 +69,7 @@ export default {
         Sidebar,
     },
     props: {
-      bankDetails: Object, 
+        bankDetails: Object,
     },
     data() {
         return {
@@ -72,8 +78,8 @@ export default {
             isUpdateModalOpen: false,
             updateSuccess: false,
             updateMessage: '',
-           
-            responseMessage: ref(null),  
+
+            responseMessage: ref(null),
             responseClass: ref('bottom-response'),
         };
     },
@@ -123,6 +129,188 @@ export default {
 </script>
 
 <style scoped>
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.edit-modal {
+    width: 100%;
+    max-width: 450px;
+    background: rgba(40, 40, 40, 0.95);
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+}
+
+.modal-title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.modal-form-group {
+    margin-bottom: 18px;
+}
+
+.modal-form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #bbb;
+}
+
+.modal-form-group input,
+.modal-form-group textarea {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    color: #e0e0e0;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-save {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
+.btn-cancel:hover {
+    background-color: #444;
+}
+
+.wallet-card {
+    width: 100%;
+    max-width: 100%;
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.wallet-section {
+    margin-bottom: 20px;
+}
+
+.wallet-label {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wallet-value {
+    font-size: 16px;
+    color: #e0e0e0;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: 6px;
+    white-space: pre-line;
+    word-wrap: break-word;
+}
+
+.wallet-address {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* Optional: Ensure content doesn’t overflow horizontally on small screens */
+@media (max-width: 576px) {
+    .wallet-card {
+        padding: 10px;
+    }
+
+    .wallet-value {
+        font-size: 14px;
+    }
+}
+
+
+.btn-edit {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-edit:hover {
+    background-color: #0d74d1;
+}
+
+.wallet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wallet-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-weight: 600;
+    color: #bbbbbb;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.value {
+    font-size: 15px;
+    color: #e0e0e0;
+    word-break: break-word;
+}
+
+.multiline {
+    white-space: pre-line;
+}
+
 .top-response {
     top: 0;
     left: 50%;
