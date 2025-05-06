@@ -24,7 +24,8 @@ class bankDetailsController extends Controller
     {
         $request->validate([
             'bank' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
+           'number' => 'required|string|max:2000', 
+
         ]);
 
         // Find the bank details and update them
