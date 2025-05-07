@@ -17,7 +17,7 @@ class PurchaseListController extends Controller
         $lottery = LotteryDashboards::with('lottery')
             ->where('lottery_id', $id)
             ->orderBy('dashboard')  
-            ->orderBy('draw_number', 'asc')
+            ->orderBy('draw_number', 'desc')
             ->get();
 
         $pickedNumbers = PickedNumber::where('lottery_id', $id)

@@ -13,7 +13,9 @@ class WalletHistoryController extends Controller
     //
     public function index()
     {
-        $transactions = Transaction::with(['wallet.user'])->get();
+        $transactions = Transaction::with(['wallet.user'])
+        ->orderBy('transaction_date', 'desc')
+        ->get();
 
         // dd($transactions);
 

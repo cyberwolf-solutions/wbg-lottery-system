@@ -18,7 +18,9 @@ class WithdrawalController extends Controller
     public function index()
     {
         // Fetch the withdrawals with the related wallet and user data
-        $credits = Withdrawal::with('wallet.user')->get();
+        $credits = Withdrawal::with('wallet.user')
+        ->orderBy('withdrawal_date', 'desc')
+        ->get();
 
         // Pass withdrawals to the Inertia view
         return Inertia::render('AdminDashboard/withdraw', [
