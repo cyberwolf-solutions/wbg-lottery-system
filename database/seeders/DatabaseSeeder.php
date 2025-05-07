@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
 
             BankSeeder::class,
-            WalletAddressSeeder::class
+            WalletAddressSeeder::class,
+            UserSeeder::class
         ]);
     }
 }

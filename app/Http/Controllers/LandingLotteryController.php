@@ -15,19 +15,18 @@ class LandingLotteryController extends Controller
   {
 
 
-
     $lotteries = Lotteries::with(['dashboards' => function ($query) {
-      $todayAt8PM = now()->setTime(20, 0, 0);
-      $startDate = now()->lt($todayAt8PM)
-        ? $todayAt8PM
-        : now()->addDay()->setTime(20, 0, 0);
-
-      $query->where('date', '>=', $startDate)
+      $query->where('date', '>=', today())
+        ->where('status', 'active') 
         ->orderBy('date', 'asc')
         ->limit(1);
     }])->get();
 
-    // Debug output - remove this after testing
+
+    // dd($lotteries);
+
+
+
     foreach ($lotteries as $lottery) {
       if ($lottery->dashboards->isNotEmpty()) {
         Log::info('Dashboard date:', [
