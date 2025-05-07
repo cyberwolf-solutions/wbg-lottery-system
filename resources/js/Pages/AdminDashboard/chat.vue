@@ -59,7 +59,7 @@
                   </div>
                 </div>
               </div>
-              <!-- Remove the scrollAnchor div -->
+              <div ref="scrollAnchor"></div>
             </div>
             <div v-else class="flex-1 flex items-center justify-center text-gray-500">
               Select a user to view messages
@@ -162,7 +162,7 @@ const openChat = (userId) => {
   }
 
   selectedUserId.value = userId;
-  setTimeout(scrollToBottom, 50);
+  nextTick(() => scrollToBottom());
 }
 
 const handleSidebarToggle = (isVisible) => {
@@ -207,7 +207,9 @@ const sendReply = async () => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString)
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const fullDate = date.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
+  return `${fullDate} ${time}` // Example: "May 7, 2025 03:45 PM"
 }
 
 const getLastMessagePreview = (userId) => {
@@ -224,13 +226,18 @@ const getLastMessagePreview = (userId) => {
 
 const scrollToBottom = () => {
   nextTick(() => {
-    if (scrollAnchor.value) {
-      scrollAnchor.value.scrollIntoView({ behavior: 'smooth' })
+    if (messagesContainer.value) {
+      const isAtBottom =
+        messagesContainer.value.scrollHeight -
+          messagesContainer.value.scrollTop -
+          messagesContainer.value.clientHeight <
+        100; 
+      if (!selectedUserId.value || isAtBottom) {
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+      }
     }
-  })
-}
-
-
+  });
+};
 
 
 const setupEcho = () => {
@@ -267,25 +274,27 @@ const setupEcho = () => {
 
         if (!exists) {
           const isUnread = selectedUserId.value !== userId;
+
+          // 👇 Replace created_at with client-side time to avoid sorting issue
           localGroupedMessages.value[userId].push({
             ...message,
+            created_at: new Date().toISOString(), // override with current time
             isUnread: isUnread
           });
 
-          // Update unread count
           if (isUnread) {
             unreadCounts.value[userId] = (unreadCounts.value[userId] || 0) + 1;
           }
 
-          // If this is the current chat, mark as read and scroll
           if (selectedUserId.value === userId) {
-            scrollToBottom();
+            nextTick(() => scrollToBottom());
           }
         }
       });
+
   }
 };
-// Initialize state
+
 unreadCounts.value = Object.fromEntries(
   props.users.map(user => [user.id, 0])
 )
