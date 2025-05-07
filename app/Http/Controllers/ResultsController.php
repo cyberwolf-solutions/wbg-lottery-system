@@ -191,92 +191,101 @@ class ResultsController extends Controller
             ->get();
 
         $winningPrice = $dashboard->price * 70;
-
-        // Store winners and update wallets
-        foreach ($pickedNumbers as $pickedNumber) {
+        if ($pickedNumbers->isEmpty()) {
+            
             Winner::create([
-                'lottery_id' => $pickedNumber->lottery_id,
-                'lottery_dashboard_id' => $pickedNumber->lottery_dashboard_id,
-                'user_id' => $pickedNumber->user_id,
-                'winning_number' => $pickedNumber->picked_number,
-                'price' => $winningPrice,
-            ]);
-
-            $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
-
-            // Add winning amount to the wallet
-            $wallet->increment('available_balance', $winningPrice);
-
-            // Save the transaction for the winning amount
-            Transaction::create([
-                'wallet_id' => $wallet->id,
-                'amount' => $winningPrice,
-                'type' => 'Winning',
                 'lottery_id' => $validatedData['lottery_id'],
                 'lottery_dashboard_id' => $dashboard->id,
-                'transaction_date' => Carbon::now(),
-                'picked_number' => $pickedNumber->picked_number,
+                'user_id' => 1,  
+                'winning_number' => $winningNumber,
+                'price' => $winningPrice,
             ]);
+        } else {
+            foreach ($pickedNumbers as $pickedNumber) {
+                Winner::create([
+                    'lottery_id' => $pickedNumber->lottery_id,
+                    'lottery_dashboard_id' => $pickedNumber->lottery_dashboard_id,
+                    'user_id' => $pickedNumber->user_id,
+                    'winning_number' => $pickedNumber->picked_number,
+                    'price' => $winningPrice,
+                ]);
 
-            $user = User::find($pickedNumber->user_id);
-            $lottery = Lotteries::find($validatedData['lottery_id']);
+                $wallet = Wallet::firstOrCreate(['user_id' => $pickedNumber->user_id]);
 
-            if ($user) {
-                $user->notify(new WinnerNotification(
-                    $lottery->name,
-                    $pickedNumber->picked_number,
-                    $dashboard->draw_number,
-                    $winningPrice
-                ));
-                Log::info('Notification sent to user', ['user_id' => $user->id]);
-            } else {
-                Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
-            }
+                // Add winning amount to the wallet
+                $wallet->increment('available_balance', $winningPrice);
 
-            // Process affiliate commission (10% of the winner's prize)
-            $affiliate = null;
-            if ($user->affiliate_link) {
-                $affiliate = User::where('user_affiliate_link', $user->affiliate_link)->first();
-                Log::info('Affiliate found', ['affiliate' => $affiliate]);
-            }
-            Log::info('Data', ['affiliate' => $affiliate]);
-
-            if ($affiliate) {
-                $affiliateCommission = $winningPrice * 0.10;
-                $affiliateWallet = Wallet::firstOrCreate(['user_id' => $affiliate->id]);
-
-                // Add commission to affiliate's wallet
-                $affiliateWallet->increment('available_balance', $affiliateCommission);
-
-                // Save the transaction for the affiliate commission
+                // Save the transaction for the winning amount
                 Transaction::create([
-                    'wallet_id' => $affiliateWallet->id,
-                    'amount' => $affiliateCommission,
-                    'type' => 'Affiliate Commission',
+                    'wallet_id' => $wallet->id,
+                    'amount' => $winningPrice,
+                    'type' => 'Winning',
                     'lottery_id' => $validatedData['lottery_id'],
                     'lottery_dashboard_id' => $dashboard->id,
                     'transaction_date' => Carbon::now(),
+                    'picked_number' => $pickedNumber->picked_number,
                 ]);
 
-                Affiliate::create([
-                    'user_id' => $affiliate->id,
-                    'affiliate_user_id' => $user->id,
-                    'price' => $affiliateCommission,
-                    'date' => Carbon::now(),
-                ]);
+                $user = User::find($pickedNumber->user_id);
+                $lottery = Lotteries::find($validatedData['lottery_id']);
 
-                if ($user) {  // Added check for $user existence
-                    $affiliate->notify(new AffiliateCommissionNotification(
-                        $user->name,
-                        $affiliateCommission,
-                        $lottery->name
+                if ($user) {
+                    $user->notify(new WinnerNotification(
+                        $lottery->name,
+                        $pickedNumber->picked_number,
+                        $dashboard->draw_number,
+                        $winningPrice
                     ));
+                    Log::info('Notification sent to user', ['user_id' => $user->id]);
+                } else {
+                    Log::warning('User not found', ['user_id' => $pickedNumber->user_id]);
                 }
 
-                Log::info('Affiliate commission added', [
-                    'affiliate_user_id' => $affiliate->user_id,
-                    'commission' => $affiliateCommission,
-                ]);
+                // Process affiliate commission (10% of the winner's prize)
+                $affiliate = null;
+                if ($user->affiliate_link) {
+                    $affiliate = User::where('user_affiliate_link', $user->affiliate_link)->first();
+                    Log::info('Affiliate found', ['affiliate' => $affiliate]);
+                }
+                Log::info('Data', ['affiliate' => $affiliate]);
+
+                if ($affiliate) {
+                    $affiliateCommission = $winningPrice * 0.10;
+                    $affiliateWallet = Wallet::firstOrCreate(['user_id' => $affiliate->id]);
+
+                    // Add commission to affiliate's wallet
+                    $affiliateWallet->increment('available_balance', $affiliateCommission);
+
+                    // Save the transaction for the affiliate commission
+                    Transaction::create([
+                        'wallet_id' => $affiliateWallet->id,
+                        'amount' => $affiliateCommission,
+                        'type' => 'Affiliate Commission',
+                        'lottery_id' => $validatedData['lottery_id'],
+                        'lottery_dashboard_id' => $dashboard->id,
+                        'transaction_date' => Carbon::now(),
+                    ]);
+
+                    Affiliate::create([
+                        'user_id' => $affiliate->id,
+                        'affiliate_user_id' => $user->id,
+                        'price' => $affiliateCommission,
+                        'date' => Carbon::now(),
+                    ]);
+
+                    if ($user) {  // Added check for $user existence
+                        $affiliate->notify(new AffiliateCommissionNotification(
+                            $user->name,
+                            $affiliateCommission,
+                            $lottery->name
+                        ));
+                    }
+
+                    Log::info('Affiliate commission added', [
+                        'affiliate_user_id' => $affiliate->user_id,
+                        'commission' => $affiliateCommission,
+                    ]);
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ class AdminNotificationController extends Controller
 
         // Get unread messages
         $messages = Message::with('user')
-            ->where('admin_id', $adminId)
+            // ->where('admin_id', $adminId)
             // ->whereNull('read_at')
             ->orderBy('created_at', 'desc')
             ->take(20)
