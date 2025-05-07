@@ -548,9 +548,17 @@ onMounted(() => {
                                                     transaction.picked_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-600">
-                                                {{ transaction.transaction_date ? transaction.transaction_date : 'N/A'
-                                                }}
+                                                {{ new Date(transaction.created_at).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }) }}
                                             </td>
+
+
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.amount }}</td>
                                         </tr>
                                     </tbody>
@@ -563,7 +571,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.transactions - 1) *
                                                     itemsPerPage + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.transactions *
                                                     itemsPerPage,
@@ -645,8 +653,18 @@ onMounted(() => {
                                                     transaction.lottery_dashboard.dashboard }} ||{{
                                                     transaction.lottery_dashboard.draw_number }}
                                             </td>
-                                            <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?? 'N/A'
-                                            }}</td>
+                                            <!-- <td class="px-6 py-4 text-gray-600">{{ transaction.transaction_date ?? 'N/A'
+                                                }}</td> -->
+                                            <td class="px-6 py-4 text-gray-600">
+                                                {{ new Date(transaction.created_at).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }) }}
+                                            </td>
                                             <td class="px-6 py-4 text-gray-800">{{ transaction.amount }}</td>
                                         </tr>
                                     </tbody>
@@ -661,7 +679,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.refunds - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.refunds *
                                                     itemsPerPage,
@@ -730,7 +748,16 @@ onMounted(() => {
                                             class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-green-500 font-medium">{{ withdrawalItem.amount }}
                                             </td>
-                                            <td class="px-6 py-4 text-gray-600">{{ withdrawalItem.withdrawal_date }}
+                                           
+                                            <td class="px-6 py-4 text-gray-600">
+                                                {{ new Date(withdrawalItem.created_at).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }) }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">
                                                 {{
@@ -752,7 +779,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.withdrawals - 1) *
                                                     itemsPerPage + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.withdrawals *
                                                     itemsPerPage,
@@ -820,7 +847,17 @@ onMounted(() => {
                                         <tr v-for="depositItem in paginatedDeposits" :key="depositItem.id"
                                             class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">{{ depositItem.amount }}</td>
-                                            <td class="px-6 py-4 text-gray-600">{{ depositItem.deposit_date }}</td>
+                                            
+                                            <td class="px-6 py-4 text-gray-600">
+                                                {{ new Date(depositItem.created_at).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }) }}
+                                            </td>
                                             <td class="px-6 py-4 text-gray-800">
                                                 {{
                                                     depositItem.status === 0 ? 'Pending' :
@@ -841,7 +878,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.deposits - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.deposits *
                                                     itemsPerPage,
@@ -927,10 +964,10 @@ onMounted(() => {
                                                 winningsItem.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.date
-                                            }}</td>
+                                                }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.dashboardType
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -944,7 +981,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.winnings - 1) * itemsPerPage +
                                                     1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.winnings *
                                                     itemsPerPage,
@@ -1030,7 +1067,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.affiliate - 1) * itemsPerPage
                                                     + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.affiliate *
                                                     itemsPerPage,

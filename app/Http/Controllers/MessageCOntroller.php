@@ -21,7 +21,7 @@ class MessageController extends Controller
 
         if (Auth::guard('admin')->check()) {
             $messages = Message::with('user')
-                ->orderBy('created_at', 'asc')
+                ->orderBy('created_at', 'desc')
                 ->get()
                 ->groupBy('user_id');
 

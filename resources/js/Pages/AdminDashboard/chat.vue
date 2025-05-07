@@ -26,9 +26,12 @@
                     {{ unreadCounts[user.id] }}
                   </span>
                 </div>
-                <div class="text-xs text-gray-400 truncate">
-                  {{ getLastMessagePreview(user.id) }}
+                <div class="text-xs text-gray-400 truncate flex justify-between items-center">
+                  <span>{{ getLastMessagePreview(user.id).preview }}</span>
+                  <span class="ml-2 text-gray-500 whitespace-nowrap">{{ getLastMessagePreview(user.id).createdAt
+                    }}</span>
                 </div>
+
               </li>
             </ul>
           </div>
@@ -165,7 +168,7 @@ const sendReply = async () => {
     if (!localGroupedMessages.value[selectedUserId.value]) {
       localGroupedMessages.value[selectedUserId.value] = []
     }
-    
+
     localGroupedMessages.value[selectedUserId.value].push({
       id: Date.now(), // temporary ID until real one comes from server
       message: newMessage.value,
@@ -185,19 +188,34 @@ const sendReply = async () => {
 }
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-}
+  const date = new Date(dateString);
+  return date.toLocaleString([], {
+    day: '2-digit',
+    month: 'short',  // e.g., Jan, Feb, etc.
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 
 const getLastMessagePreview = (userId) => {
-  const messages = localGroupedMessages.value[userId]
-  if (!messages || messages.length === 0) return 'No messages yet'
-  const lastMsg = messages[messages.length - 1]
-  return lastMsg.message.length > 30
-    ? lastMsg.message.substring(0, 30) + '...'
-    : lastMsg.message
-}
-
+  const messages = localGroupedMessages.value[userId];
+  if (!messages || messages.length === 0) {
+    return { preview: 'No messages yet', createdAt: '' };
+  }
+  const lastMsg = messages[messages.length - 1];
+  return {
+    preview: lastMsg.message.length > 30
+      ? lastMsg.message.substring(0, 30) + '...'
+      : lastMsg.message,
+    createdAt: formatTime(lastMsg.created_at) // format as needed
+  };
+};
+const formatTime = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
 const scrollToBottom = () => {
   nextTick(() => {
     if (scrollAnchor.value) {
@@ -520,6 +538,4 @@ tbody tr:hover {
 .text-gray-400 {
   color: #9ca3af;
 }
-
-
 </style>

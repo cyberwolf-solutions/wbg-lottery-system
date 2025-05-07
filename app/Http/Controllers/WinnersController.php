@@ -21,6 +21,9 @@ class WinnersController extends Controller
     $winners = Winner::with(['user', 'lotteryDashboard'])
         ->where('lottery_id', $id)
         ->get()
+        ->sortByDesc(function ($winner) {
+            return optional($winner->lotteryDashboard)->date;
+        })
         ->groupBy(function ($winner) {
             return $winner->lotteryDashboard ? $winner->lotteryDashboard->dashboard : 'Unknown';
         });

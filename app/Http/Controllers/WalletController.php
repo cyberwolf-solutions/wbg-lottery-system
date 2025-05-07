@@ -39,8 +39,10 @@ class WalletController extends Controller
             ]);
         }
 
-        $winnings = Winner::with('lottery', 'lotteryDashboard')
+        $winnings = Winner::with(['lottery', 'lotteryDashboard'])
             ->where('user_id', Auth::id())
+            ->join('lottery_dashboards', 'winners.lottery_dashboard_id', '=', 'lottery_dashboards.id')
+            ->orderBy('lottery_dashboards.date', 'desc')
             ->get();
 
         // dd($winnings);
@@ -51,17 +53,21 @@ class WalletController extends Controller
             ->whereHas('wallet', function ($query) {
                 $query->where('user_id', Auth::id());
             })
+            ->orderBy('created_at', 'desc')
             ->get();
 
 
         $withdrawal = Withdrawal::whereHas('wallet', function ($query) {
             $query->where('user_id', Auth::id());
         })
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $deposit = Deposit::whereHas('wallet', function ($query) {
             $query->where('user_id', Auth::id());
-        })->get();
+        })
+            ->orderBy('created_at', 'desc')
+            ->get();
         // dd($deposit);
 
         $bank = Bank::all();
@@ -77,6 +83,7 @@ class WalletController extends Controller
                 // You can customize what user data to load
                 $query->select('id', 'name', 'email', 'created_at');
             }])
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($affiliate) {
                 return [
@@ -272,7 +279,7 @@ class WalletController extends Controller
                 'wallet_address' => $request->wallet_address,
             ];
             $userName = Auth::user()->name ?? 'Unknown User';
-    
+
             // Log before attempting to send the email
             Log::info('Attempting to send withdrawal request email.', [
                 'withdrawal_id' => $withdrawal->id,
@@ -280,9 +287,9 @@ class WalletController extends Controller
                 'details' => $details,
                 'user_name' => $userName
             ]);
-    
+
             Mail::to('takeprofitone@gmail.com')->send(new CreditRequestMail('Withdrawal', $details, $userName));
-    
+
             Log::info('Withdrawal request email sent successfully.', ['withdrawal_id' => $withdrawal->id]);
         } catch (\Exception $e) {
             Log::error('Failed to send withdrawal request email.', [

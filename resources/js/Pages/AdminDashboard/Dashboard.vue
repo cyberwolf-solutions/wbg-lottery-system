@@ -43,12 +43,12 @@
 
                 <template v-if="notification.type === 'withdrawal'">
                   <strong>Withdrawal request from {{ notification.user.name }}</strong>
-                  <p>Amount: {{ notification.amount }} | Status: {{ notification.status }}</p>
+                  <p>Amount: {{ notification.amount }} </p>
                 </template>
 
                 <template v-if="notification.type === 'deposit'">
                   <strong>Deposit from {{ notification.user.name }}</strong>
-                  <p>Amount: {{ notification.amount }} | Status: {{ notification.status }}</p>
+                  <p>Amount: {{ notification.amount }} </p>
                 </template>
               </div>
               <div class="notification-time">
@@ -117,7 +117,8 @@
                       class="number-ball small">{{
                         num }}</span>
                   </span>
-                  <span class="result-time">{{ formatDate(result.created_at) }}</span>
+                  <span class="result-time" v-html="formatDate(result.created_at)"></span>
+
                 </li>
               </ul>
             </div>
@@ -478,7 +479,10 @@ export default {
         });
     },
     formatTime(dateString) {
-      return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const date = new Date(dateString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) +
+        ' · ' +
+        date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
   },
 };

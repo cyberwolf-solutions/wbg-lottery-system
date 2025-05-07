@@ -97,8 +97,10 @@
                     <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
                     <p class="card-title title mb-2">{{ lottery.name }}</p>
                     <p class="card-description text-muted mb-4">
-                      Next Draw: {{ formatCountdown(lottery.draw_time) }}
-                    </p>
+  Next Draw: 
+  {{ countdown.days }}d {{ countdown.hours }}h {{ countdown.minutes }}m {{ countdown.seconds }}s
+</p>
+
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>

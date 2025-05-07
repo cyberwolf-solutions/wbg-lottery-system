@@ -153,15 +153,10 @@
                                         If you have any questions</h1>
                                     <div style="width: 50%;margin-left: auto;margin-right: auto;align-items: left;">
                                         <p style="color: #555; font-size: 14px; margin-bottom: 40px;text-align: left;">
-                                            Winners updated weekly. Prize value listed as won may not reflect actual net
-                                            claims
-                                            payment
-                                            amount
-                                            in photo
-                                            due to combined prize claim amounts and other adjustments. Purchase location
-                                            shown where
-                                            applicable.
-                                            All Prizes are 100% commission-FREE.
+                                            Winners updated frequently. Prize value listed as won may not reflect actual
+                                            net
+                                            claims payment amount in photo due to combined prize claim amounts and other
+                                            adjustments. All Prizes are 100% commission-FREE.
                                         </p>
 
                                         <div class="text-center mt-4" style="margin-bottom: 30px;">
