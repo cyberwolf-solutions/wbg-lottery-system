@@ -223,7 +223,7 @@
                     </div>
 
                     <div>
-                        <InputLabel for="affiliate_link" value="Affiliate link" />
+                        <InputLabel for="affiliate_link" value="Affiliate link (Optional)" />
                         <TextInput id="affiliate_link" type="text"
                             class=" block w-full rounded-md border-gray-300 shadow-sm" v-model="form.affiliate_link"
                             autocomplete="affiliate link"></TextInput>
