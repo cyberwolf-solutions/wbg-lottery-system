@@ -23,11 +23,13 @@ class CreateDailyDashboard extends Command
             $now = Carbon::now('Asia/Colombo');
             Log::info('Current time: ' . $now);
 
-            if ($now->format('H:i') == '00:00') {
+            if ($now->format('H:i') == '10:30') {
                 // Get all unique lottery_id and dashboard combinations
                 $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')
                     ->distinct()
                     ->get();
+
+                $createdDashboards = [];
 
                 foreach ($lotteryDashboardCombinations as $combination) {
                     $lotteryId = $combination->lottery_id;
@@ -50,13 +52,13 @@ class CreateDailyDashboard extends Command
                     // Start from the day after the last dashboard date
                     $currentDate = Carbon::parse($lastDashboard->date);
                     $nextValidDate = null;
-                    $maxDaysToCheck = 7; 
+                    $maxDaysToCheck = 7;
 
                     // Find the next non-holiday date
                     for ($i = 1; $i <= $maxDaysToCheck; $i++) {
                         $checkDate = $currentDate->copy()->addDays($i);
                         $isHoliday = Holiday::where('date', $checkDate->format('Y-m-d'))->exists();
-                        
+
                         if (!$isHoliday) {
                             $nextValidDate = $checkDate;
                             break;
@@ -106,16 +108,32 @@ class CreateDailyDashboard extends Command
 
                     Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$nextValidDate->format('Y-m-d')}, draw number: {$formattedDrawNumber}");
 
-                    // Notify users
-                    $users = User::all();
-                    foreach ($users as $user) {
-                        $user->notify(new NewDashboardCreatedNotification(
-                            $lotteryId,
-                            $dashboardField,
-                            $formattedDrawNumber,
-                            $nextValidDate->format('Y-m-d')
-                        ));
+
+                    $createdDashboards[] = [
+                        'lottery_id' => $lotteryId,
+                        'dashboard_name' => $dashboardField,
+                        'draw_number' => $formattedDrawNumber,
+                        'date' => $nextValidDate->format('Y-m-d'),
+                    ];
+
+
+                    if (!empty($createdDashboards)) {
+                        $users = User::all();
+                        foreach ($users as $user) {
+                            $user->notify(new NewDashboardCreatedNotification($createdDashboards));
+                        }
                     }
+
+                    // Notify users
+                    // $users = User::all();
+                    // foreach ($users as $user) {
+                    //     $user->notify(new NewDashboardCreatedNotification(
+                    //         $lotteryId,
+                    //         $dashboardField,
+                    //         $formattedDrawNumber,
+                    //         $nextValidDate->format('Y-m-d')
+                    //     ));
+                    // }
                 }
 
                 $this->info('All dashboards created successfully.');
