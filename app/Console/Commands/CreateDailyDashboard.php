@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Holiday;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Holiday;
+use App\Models\Lotteries;
 use Illuminate\Console\Command;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@ class CreateDailyDashboard extends Command
             $now = Carbon::now('Asia/Colombo');
             Log::info('Current time: ' . $now);
 
-            if ($now->format('H:i') == '10:30') {
+            if ($now->format('H:i') == '00:00') {
                 // Get all unique lottery_id and dashboard combinations
                 $lotteryDashboardCombinations = LotteryDashboards::select('lottery_id', 'dashboard', 'dashboardType')
                     ->distinct()
@@ -109,8 +110,12 @@ class CreateDailyDashboard extends Command
                     Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$nextValidDate->format('Y-m-d')}, draw number: {$formattedDrawNumber}");
 
 
+                    $lottery = Lotteries::find($lotteryId);
+                    $lotteryName = $lottery ? $lottery->name : 'Unknown Lottery';
+
                     $createdDashboards[] = [
                         'lottery_id' => $lotteryId,
+                        'lottery_name' => $lotteryName,
                         'dashboard_name' => $dashboardField,
                         'draw_number' => $formattedDrawNumber,
                         'date' => $nextValidDate->format('Y-m-d'),
