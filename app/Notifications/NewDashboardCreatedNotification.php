@@ -43,7 +43,7 @@ class NewDashboardCreatedNotification extends Notification implements ShouldQueu
 
             foreach ($this->dashboards as $dashboard) {
                 $mail->line("-------------------------------")
-                     ->line("Lottery ID: {$dashboard['lottery_id']}")
+                     ->line("Lottery: {$dashboard['lottery_name']}")
                      ->line("Dashboard: {$dashboard['dashboard_name']}")
                      ->line("Draw Number: {$dashboard['draw_number']}")
                      ->line("Date: {$dashboard['date']}");
