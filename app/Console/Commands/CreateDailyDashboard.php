@@ -109,7 +109,6 @@ class CreateDailyDashboard extends Command
 
                     Log::info("Dashboard created successfully for lottery_id: {$lotteryId}, dashboard: {$dashboardField}, date: {$nextValidDate->format('Y-m-d')}, draw number: {$formattedDrawNumber}");
 
-
                     $lottery = Lotteries::find($lotteryId);
                     $lotteryName = $lottery ? $lottery->name : 'Unknown Lottery';
 
@@ -120,31 +119,21 @@ class CreateDailyDashboard extends Command
                         'draw_number' => $formattedDrawNumber,
                         'date' => $nextValidDate->format('Y-m-d'),
                     ];
+                }
 
-
-                    if (!empty($createdDashboards)) {
-                        $users = User::all();
-                        foreach ($users as $user) {
-                            $user->notify(new NewDashboardCreatedNotification($createdDashboards));
-                        }
+                // Send notifications only if dashboards were created
+                if (!empty($createdDashboards)) {
+                    $users = User::all();
+                    foreach ($users as $user) {
+                        $user->notify(new NewDashboardCreatedNotification($createdDashboards));
                     }
-
-                    // Notify users
-                    // $users = User::all();
-                    // foreach ($users as $user) {
-                    //     $user->notify(new NewDashboardCreatedNotification(
-                    //         $lotteryId,
-                    //         $dashboardField,
-                    //         $formattedDrawNumber,
-                    //         $nextValidDate->format('Y-m-d')
-                    //     ));
-                    // }
+                    Log::info('Notifications sent to users with all created dashboards');
                 }
 
                 $this->info('All dashboards created successfully.');
             } else {
-                Log::info('Command skipped. Current time is not 00:00 AM Sri Lanka time.');
-                $this->info('Skipped: It is not 00:00 AM Sri Lanka time.');
+                Log::info('Command skipped. Current time is not 15:31 Sri Lanka time.');
+                $this->info('Skipped: It is not 15:31 Sri Lanka time.');
             }
         } catch (\Exception $e) {
             Log::error("Error creating dashboards: " . $e->getMessage());
