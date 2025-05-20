@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 
 class LandingController extends Controller
 {
-    public function index()
+    public function index($code = null)
     {
         $now = Carbon::now();
 
@@ -175,6 +175,8 @@ class LandingController extends Controller
                 ];
             }),
             'upcomingDraws' => $lotteriesData,
+            'referralCode' => $code,
+            'showRegisterModal' => $code !== null
         ]);
     }
 }

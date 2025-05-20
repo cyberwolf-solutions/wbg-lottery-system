@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
 });
 
 
+//affiliate 
+Route::get('/ref/{code}', [LandingController::class, 'index'])->name('referral');
 
 // ->middleware(['auth']);
 
@@ -93,9 +95,9 @@ Route::post('/user/broadcasting/auth', function () {
 
 
 
-Route::get('/test-email', function() {
+Route::get('/test-email', function () {
     $recipientEmail = 'nipun.sankalana@gmail.com';
-    
+
     Log::info('Attempting to send test email', [
         'recipient' => $recipientEmail,
         'mail_config' => [
@@ -110,10 +112,10 @@ Route::get('/test-email', function() {
     ]);
 
     try {
-        Mail::raw('Test email content', function($message) use ($recipientEmail) {
+        Mail::raw('Test email content', function ($message) use ($recipientEmail) {
             $message->to($recipientEmail)
-                   ->subject('Test Email');
-            
+                ->subject('Test Email');
+
             Log::info('Email message prepared', [
                 'recipient' => $recipientEmail,
                 'subject' => 'Test Email',
@@ -134,7 +136,6 @@ Route::get('/test-email', function() {
                 'config' => config('mail.mailers.smtp')
             ]
         ]);
-
     } catch (\Exception $e) {
         Log::error('Failed to send test email', [
             'recipient' => $recipientEmail,
