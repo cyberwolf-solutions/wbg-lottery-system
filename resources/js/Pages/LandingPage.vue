@@ -1,7 +1,21 @@
 <template>
 
   <div class="landing-page container-fluid px-0">
-    <Nav />
+    <Nav :referral="referralCode" />
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <RegisterForm :referral="referralCode" />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container-fluid mt-2 mb-3">
       <div class="row mx-5">
         <div
@@ -97,9 +111,9 @@
                     <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
                     <p class="card-title title mb-2">{{ lottery.name }}</p>
                     <p class="card-description text-muted mb-4">
-  Next Draw: 
-  {{ countdown.days }}d {{ countdown.hours }}h {{ countdown.minutes }}m {{ countdown.seconds }}s
-</p>
+                      Next Draw:
+                      {{ countdown.days }}d {{ countdown.hours }}h {{ countdown.minutes }}m {{ countdown.seconds }}s
+                    </p>
 
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
@@ -323,7 +337,8 @@
                     <tr v-for="(dashboard, index) in upcomingDraws" :key="dashboard.id"
                       :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                       <td>
-                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2" style="width: 40px; height: 40px; border-radius: 30px;">
+                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2"
+                          style="width: 40px; height: 40px; border-radius: 30px;">
                         {{ dashboard.name || 'Unknown Lottery' }}
                       </td>
                       <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>
@@ -404,7 +419,20 @@ export default {
     lotteries: Array,
     winning_numbers: Array,
     winners: Array,
-    upcomingDraws: Array
+    upcomingDraws: Array,
+    referralCode: String,
+    showRegisterModal: Boolean
+
+  },
+
+  mounted() {
+
+    if (this.referralCode) {
+      this.$nextTick(() => {
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
+      });
+    }
   },
 
   data() {
@@ -437,6 +465,13 @@ export default {
   },
 
   methods: {
+    openRegisterModal() {
+      const modalEl = document.getElementById('registerModal');
+      if (modalEl) {
+        const registerModal = new bootstrap.Modal(modalEl);
+        registerModal.show();
+      }
+    },
     formatTimeRemaining(drawDate) {
       if (!drawDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
@@ -483,17 +518,17 @@ export default {
 
     startCountdown(drawDate) {
       const dateParts = drawDate.split('-');
-  
+
       const sriLankaOffsetMinutes = 5.5 * 60;
 
-    
+
       const dateInUTC = new Date(
         Date.UTC(
           parseInt(dateParts[0]),
           parseInt(dateParts[1]) - 1,
           parseInt(dateParts[2]),
-          20 - 5, 
-          -30 
+          20 - 5,
+          -30
         )
       );
 
@@ -522,7 +557,7 @@ export default {
 
     formatCountdown(drawDate) {
       if (!drawDate) return "N/A";
-// alert(drawDate);
+      // alert(drawDate);
       const dateParts = drawDate.split('-');
 
 
@@ -533,8 +568,8 @@ export default {
           parseInt(dateParts[0]),
           parseInt(dateParts[1]) - 1,
           parseInt(dateParts[2]),
-          20 - 5, 
-          -30    
+          20 - 5,
+          -30
         )
       );
 
