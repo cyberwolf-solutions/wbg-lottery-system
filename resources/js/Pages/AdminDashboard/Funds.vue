@@ -148,7 +148,7 @@ export default {
     },
     props: {
         users: {
-            type: Object,
+            type: Array, // Changed from Object to Array since get() returns a collection
             required: true
         }
     },
@@ -166,16 +166,14 @@ export default {
             currentPage: 1,
             perPage: 10,
             searchTimeout: null,
-
             responseMessage: null,
             responseClass: 'bottom-response',
-
         };
     },
     computed: {
         filteredUsers() {
-            if (!this.users.data) return [];
-            return this.users.data.filter(user => {
+            if (!this.users) return []; // Adjusted to check for users directly
+            return this.users.filter(user => {
                 const search = this.searchQuery.toLowerCase();
                 return (
                     user.name.toLowerCase().includes(search) ||
@@ -200,22 +198,18 @@ export default {
         showResponse(message, position = 'bottom') {
             this.responseMessage = message;
             this.responseClass = position === 'bottom' ? 'bottom-response' : 'top-response';
-
             setTimeout(() => {
                 this.responseMessage = null;
             }, 3000);
         },
-
         handleSidebarToggle(isVisible) {
             this.isSidebarVisible = isVisible;
         },
         searchUsers() {
             clearTimeout(this.searchTimeout);
             this.searchTimeout = setTimeout(() => {
-                Inertia.get(route('admin.funds.index'), { search: this.searchQuery }, {
-                    preserveState: true,
-                    replace: true
-                });
+                this.currentPage = 1; // Reset to first page on search
+                // Note: Removed Inertia.get call to handle search fully on frontend
             }, 500);
         },
         prevPage() {
@@ -247,54 +241,42 @@ export default {
                 this.showResponse('Please enter a valid amount', 'bottom');
                 return;
             }
-
             try {
                 const response = await axios.post(`/api/admin/funds/${this.selectedUser.id}/update`, {
                     amount: this.addAmount,
                     type: 'add',
                     notes: this.addNotes
                 });
-
                 this.showResponse('Funds added successfully!', 'bottom');
                 this.closeAddModal();
                 window.location.reload();
-
             } catch (error) {
                 this.showResponse('Failed to add funds. Please try again.', 'bottom');
             }
         },
-
         async deductFunds() {
             if (!this.deductAmount || parseFloat(this.deductAmount) <= 0) {
                 this.showResponse('Please enter a valid amount', 'bottom');
                 return;
             }
-
             const currentBalance = parseFloat(this.selectedUser.wallet?.available_balance || 0);
             if (parseFloat(this.deductAmount) > currentBalance) {
                 this.showResponse('Deduction amount cannot exceed available balance', 'bottom');
                 return;
             }
-
             try {
                 const response = await axios.post(`/api/admin/funds/${this.selectedUser.id}/update`, {
                     amount: this.deductAmount,
                     type: 'deduct',
                     notes: this.deductNotes
                 });
-
                 this.showResponse('Funds deducted successfully!', 'bottom');
                 this.closeDeductModal();
                 window.location.reload();
-
             } catch (error) {
                 this.showResponse('Failed to deduct funds. Please try again.', 'bottom');
             }
         }
-
-
-
-
     }
 };
 </script>
