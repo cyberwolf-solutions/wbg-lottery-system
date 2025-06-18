@@ -27,7 +27,7 @@ class CheckLotteryParticipation extends Command
 
         $totalNumbers = 100;
         $threshold = 0.8;
-        
+
         if ($now->format('H:i') == '19:59') {
             $dashboards = LotteryDashboards::where('status', 'active')
                 ->whereDate('date', Carbon::today())
@@ -50,20 +50,34 @@ class CheckLotteryParticipation extends Command
                         // Fetch all picked numbers and group by user
                         $pickedNumbers = PickedNumber::with('user')
                             ->where('lottery_dashboard_id', $dashboard->id)
+                            ->where('status', 'picked')
                             ->get()
                             ->groupBy('user_id');
+
+
+                        $delete = PickedNumber::where('lottery_dashboard_id', $dashboard->id)
+                            ->where('status', 'allocated')
+                            ->delete();
+
+                        Log::info('Deleted allocated numbers: ' . $delete);
+
+                        Log::info("Picked Numbers for  :", $pickedNumbers->toArray());
+
+
+
+
 
                         foreach ($pickedNumbers as $userId => $picks) {
                             $user = $picks->first()->user;
                             $wallet = Wallet::where('user_id', $userId)->first();
-                            
+
                             if ($wallet) {
                                 $totalRefund = 0;
                                 $refundDetails = [];
-                                
+
                                 foreach ($picks as $pick) {
                                     $totalRefund += $dashboard->price;
-                                    
+
                                     // Log each refund transaction
                                     $transaction = Transaction::create([
                                         'user_id' => $userId,
@@ -89,7 +103,7 @@ class CheckLotteryParticipation extends Command
 
                                 // Update wallet with total refund
                                 $wallet->increment('available_balance', $totalRefund);
-                                
+
                                 // Send single notification with all refund details
                                 if ($user) {
                                     // Log before sending notification
@@ -97,7 +111,7 @@ class CheckLotteryParticipation extends Command
                                         'total_refund' => $totalRefund,
                                         'refund_details' => $refundDetails
                                     ]);
-                                    
+
                                     $user->notify(new LotteryRefundNotification($refundDetails, $totalRefund));
                                 }
                             }

@@ -36,6 +36,19 @@
                 <a class="navbar-brand" href="#">
                     <img :src="logoUrl" alt="Logo" height="80" width="100" />
                 </a>
+
+
+                <template v-if="!$page.props.auth.user">
+                    <button class="btn btn-primary text-white px-4 rounded-pill shadow d-lg-none me-2"
+                        data-bs-toggle="modal" data-bs-target="#registerModal">
+                        Join Us
+                    </button>
+                </template>
+                <template v-else>
+                    <a class="btn btn-primary text-white px-4 rounded-pill shadow d-lg-none me-2"
+                        :href="route('login')">Log in</a>
+                </template>
+
                 <button class="navbar-toggler" type="button" @click="toggleSidebar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -51,7 +64,8 @@
                         </li>
                         <li class="nav-item mx-2">
                             <a :href="route('latest.index')" :active="route().current('latest.index')"
-                                class="nav-link">Latest results</a>
+                                class="nav-link">Latest
+                                results</a>
                         </li>
                         <li class="nav-item mx-2">
                             <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')"
