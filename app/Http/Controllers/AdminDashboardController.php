@@ -19,7 +19,7 @@ class AdminDashboardController extends Controller
 
         // Get lottery statistics
         $lotteries = Lotteries::withCount(['dashboards', 'winners'])
-            ->with(['results' => function($query) {
+            ->with(['results' => function ($query) {
                 $query->latest()->take(5);
             }])
             ->get();
@@ -69,7 +69,7 @@ class AdminDashboardController extends Controller
         log::info('Latest messages retrieved', ['latestMessages' => $latestMessages]);
         log::info('Latest withdraws retrieved', ['latestWithdraws' => $latestWithdraws]);
         log::info('Latest deposits retrieved', ['latestDeposits' => $latestDeposits]);
-    
+
         return Inertia::render('AdminDashboard/Dashboard', [
             'lotteries' => $lotteries,
             'userStats' => $userStats,

@@ -170,6 +170,13 @@ class NumberPickController extends Controller
         }
 
         if ($wallet->available_balance < $totalPrice) {
+
+
+            DB::table('picked_numbers')
+                ->where('user_id', $user->id)
+                ->where('status', 'allocated')
+                ->delete();
+
             return response()->json(['message' => 'Insufficient balance'], 400);
         }
 
@@ -179,7 +186,9 @@ class NumberPickController extends Controller
         try {
             $wallet->decrement('available_balance', $totalPrice);
 
-            $dashboardId = null; // Track the dashboard ID for percentage calculation
+
+            $dashboardId = null;
+
 
             foreach ($numbers as $numberData) {
                 $dashboardId = $numberData['dashboard_id'];
@@ -220,8 +229,10 @@ class NumberPickController extends Controller
                     'price' => $dashboard->price,
                     'date' => $dashboard->date,
                     'draw' => $dashboard->draw,
-                    'draw_number' => $dashboard->draw_number, 
-                    'winning_numbers' => $dashboard->winning_numbers, 
+
+                    'draw_number' => $dashboard->draw_number,
+                    'winning_numbers' => $dashboard->winning_numbers,
+
                     'dashboardType' => $dashboard->dashboardType,
                     'status' => 'active',
                 ]);
@@ -243,7 +254,6 @@ class NumberPickController extends Controller
             return response()->json(['message' => 'Checkout failed. Please try again.'], 500);
         }
     }
-
 
     public function cancel(Request $request)
     {
