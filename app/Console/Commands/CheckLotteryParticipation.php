@@ -50,6 +50,7 @@ class CheckLotteryParticipation extends Command
                         // Fetch all picked numbers and group by user
                         $pickedNumbers = PickedNumber::with('user')
                             ->where('lottery_dashboard_id', $dashboard->id)
+
                             ->where('status', 'picked')
                             ->get()
                             ->groupBy('user_id');
@@ -77,6 +78,7 @@ class CheckLotteryParticipation extends Command
 
                                 foreach ($picks as $pick) {
                                     $totalRefund += $dashboard->price;
+
 
                                     // Log each refund transaction
                                     $transaction = Transaction::create([

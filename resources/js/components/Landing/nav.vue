@@ -64,8 +64,10 @@
                         </li>
                         <li class="nav-item mx-2">
                             <a :href="route('latest.index')" :active="route().current('latest.index')"
+
                                 class="nav-link">Latest
                                 results</a>
+
                         </li>
                         <li class="nav-item mx-2">
                             <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')"

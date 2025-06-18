@@ -33,7 +33,9 @@ class DeactivateLotteries extends Command
 
             Log::info("$expiredLotteriesCount expired lotteries deactivated.");
             $this->info("$expiredLotteriesCount expired lotteries deactivated.");
+
         } else {
+
             Log::info('command skipped .Current time is not 8 p.m');
             $this->info('Skipped: Is is not 8 PM Sri lanka time');
         }

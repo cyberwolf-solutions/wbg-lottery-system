@@ -186,7 +186,9 @@ class NumberPickController extends Controller
         try {
             $wallet->decrement('available_balance', $totalPrice);
 
+
             $dashboardId = null;
+
 
             foreach ($numbers as $numberData) {
                 $dashboardId = $numberData['dashboard_id'];
@@ -227,8 +229,10 @@ class NumberPickController extends Controller
                     'price' => $dashboard->price,
                     'date' => $dashboard->date,
                     'draw' => $dashboard->draw,
+
                     'draw_number' => $dashboard->draw_number,
                     'winning_numbers' => $dashboard->winning_numbers,
+
                     'dashboardType' => $dashboard->dashboardType,
                     'status' => 'active',
                 ]);
