@@ -1,7 +1,21 @@
-<template >
+<template>
 
   <div class="landing-page container-fluid px-0">
-    <Nav />
+    <Nav :referral="referralCode" />
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <RegisterForm :referral="referralCode" />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container-fluid mt-2 mb-3">
       <div class="row mx-5">
         <div
@@ -92,12 +106,15 @@
                 <div v-for="lottery in lotteries" :key="lottery.id" class="card-wrapper item col-md-4 col-lg-3"
                   style="margin-left: 10px; margin-top: 10px; margin-bottom: 30px;" onclick="selectCard(this)">
                   <div class="card-box d-flex flex-column justify-content-center align-items-center text-center py-4">
-                    <img class="card-logo rounded-circle mb-3" :src="`/${lottery.image}`" style="height: 80px;" alt="Logo">
+                    <img class="card-logo rounded-circle mb-3" :src="`/${lottery.image}`" style="height: 80px;"
+                      alt="Logo">
                     <h3 class="card-prize text-danger mb-2">{{ lottery.prize }}</h3>
                     <p class="card-title title mb-2">{{ lottery.name }}</p>
                     <p class="card-description text-muted mb-4">
-                      Next Draw: {{ formatCountdown(lottery.draw_time) }}
+                      Next Draw:
+                      {{ countdown.days }}d {{ countdown.hours }}h {{ countdown.minutes }}m {{ countdown.seconds }}s
                     </p>
+
                   </div>
                   <button class="card-button rounded-pill w-50 mx-auto d-block">Play Now</button>
                 </div>
@@ -320,7 +337,8 @@
                     <tr v-for="(dashboard, index) in upcomingDraws" :key="dashboard.id"
                       :style="index % 2 === 0 ? { backgroundColor: '#EEEEEE' } : {}">
                       <td>
-                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2" style="width: 30px; height: 20px;">
+                        <img :src="`/${dashboard.image}`" alt="Flag" class="me-2"
+                          style="width: 40px; height: 40px; border-radius: 30px;">
                         {{ dashboard.name || 'Unknown Lottery' }}
                       </td>
                       <td>USDT{{ ((parseFloat(dashboard.prize) || 0) * 70).toLocaleString() }}</td>
@@ -401,7 +419,20 @@ export default {
     lotteries: Array,
     winning_numbers: Array,
     winners: Array,
-    upcomingDraws: Array
+    upcomingDraws: Array,
+    referralCode: String,
+    showRegisterModal: Boolean
+
+  },
+
+  mounted() {
+
+    if (this.referralCode) {
+      this.$nextTick(() => {
+        const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+        registerModal.show();
+      });
+    }
   },
 
   data() {
@@ -434,6 +465,13 @@ export default {
   },
 
   methods: {
+    openRegisterModal() {
+      const modalEl = document.getElementById('registerModal');
+      if (modalEl) {
+        const registerModal = new bootstrap.Modal(modalEl);
+        registerModal.show();
+      }
+    },
     formatTimeRemaining(drawDate) {
       if (!drawDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
@@ -457,7 +495,7 @@ export default {
       }
     },
 
-    startCountdown() {
+    startCountdown(drawDate) {
       // Clear any existing interval
       if (this.countdownInterval) {
         clearInterval(this.countdownInterval);
@@ -479,8 +517,22 @@ export default {
     },
 
     startCountdown(drawDate) {
-      // Convert drawDate to a timestamp
-      const targetDate = new Date(drawDate).getTime();
+      const dateParts = drawDate.split('-');
+
+      const sriLankaOffsetMinutes = 5.5 * 60;
+
+
+      const dateInUTC = new Date(
+        Date.UTC(
+          parseInt(dateParts[0]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[2]),
+          20 - 5,
+          -30
+        )
+      );
+
+      const targetDate = dateInUTC.getTime();
 
       this.countdownInterval = setInterval(() => {
         const now = new Date().getTime();
@@ -492,22 +544,37 @@ export default {
           return;
         }
 
-        this.countdown.days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        this.countdown.hours = Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        this.countdown.minutes = Math.floor(
-          (distance % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        this.countdown.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        this.countdown = {
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000),
+        };
       }, 1000);
     },
-    formatCountdown(drawTime) {
-      if (!drawTime) return "N/A";
+
+
+
+    formatCountdown(drawDate) {
+      if (!drawDate) return "N/A";
+      // alert(drawDate);
+      const dateParts = drawDate.split('-');
+
+
+      const sriLankaOffsetMinutes = 5.5 * 60;
+
+      const drawDateInUTC = new Date(
+        Date.UTC(
+          parseInt(dateParts[0]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[2]),
+          20 - 5,
+          -30
+        )
+      );
 
       const now = new Date();
-      const drawDate = new Date(drawTime);
-      const diff = drawDate - now;
+      const diff = drawDateInUTC.getTime() - now.getTime();
 
       if (diff <= 0) return "Expired";
 
@@ -516,8 +583,14 @@ export default {
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      return `${days} days ${hours}:${minutes}:${seconds}`;
+      return `${days} days ${this.padZero(hours)}:${this.padZero(minutes)}:${this.padZero(seconds)}`;
     },
+
+    padZero(num) {
+      return num.toString().padStart(2, '0');
+    },
+
+
 
     methods: {
       extractHighlightedNumbers(numbers) {
@@ -551,8 +624,8 @@ export default {
 
 <style scoped>
 body {
-    background-color: #f8f9fa;
-    margin: 0;
+  background-color: #f8f9fa;
+  margin: 0;
 }
 
 /* Base styles for card */

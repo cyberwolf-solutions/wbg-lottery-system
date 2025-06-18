@@ -26,15 +26,22 @@
                     {{ unreadCounts[user.id] }}
                   </span>
                 </div>
-                <div class="text-xs text-gray-400 truncate">
-                  {{ getLastMessagePreview(user.id) }}
+                <div class="text-xs text-gray-400 truncate flex justify-between items-center">
+                  <span class="truncate max-w-[70%]">
+                    {{ getLastMessagePreview(user.id) }}
+                  </span>
+                  <span class="ml-2 whitespace-nowrap text-gray-500">
+                    {{ getLastMessageTime(user.id) }}
+                  </span>
                 </div>
               </li>
+
             </ul>
           </div>
 
           <!-- Chat Area -->
           <div class="flex-1 flex flex-col h-full">
+            <!-- Messages -->
             <!-- Messages -->
             <div v-if="selectedUserId" ref="messagesContainer" class="flex-1 overflow-y-auto p-4">
               <div v-for="msg in selectedMessages" :key="msg.id" class="mb-3" :class="[
@@ -102,14 +109,30 @@ const lastSeenMessages = ref({})
 const localGroupedMessages = ref(
   Object.fromEntries(
     Object.entries(props.groupedMessages).map(([userId, messages]) => {
-      return [userId, messages.map(msg => ({ ...msg, isUnread: true }))]
-    }
-    )
-  ))
+      return [userId, messages.map(msg => ({
+        ...msg,
+        isUnread: false // All loaded messages should be marked as read initially
+      }))]
+    })
+  )
+)
+const getLastMessageTime = (userId) => {
+  const messages = localGroupedMessages.value[userId]
+  if (!messages || messages.length === 0) return ''
 
+  const sorted = [...messages].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+  const lastMsg = sorted[sorted.length - 1]
+
+  const date = new Date(lastMsg.created_at)
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' +
+    date.toLocaleDateString([], { month: 'short', day: 'numeric' })
+}
 
 const selectedMessages = computed(() => {
-  return selectedUserId.value ? localGroupedMessages.value[selectedUserId.value] : []
+  if (!selectedUserId.value) return []
+  return [...localGroupedMessages.value[selectedUserId.value]]
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
 })
 
 const filteredUsers = computed(() => {
@@ -122,26 +145,24 @@ const filteredUsers = computed(() => {
 
 
 const openChat = (userId) => {
-
+  // Mark all messages as read
   if (localGroupedMessages.value[userId]) {
     localGroupedMessages.value[userId].forEach(msg => {
-      msg.isUnread = false
-    })
+      msg.isUnread = false;
+    });
   }
 
+  // Reset unread count for this user
+  unreadCounts.value[userId] = 0;
 
+  // Update last seen message
   if (localGroupedMessages.value[userId]?.length > 0) {
-    const lastMsg = localGroupedMessages.value[userId][localGroupedMessages.value[userId].length - 1]
-    lastSeenMessages.value[userId] = lastMsg.id
+    const lastMsg = localGroupedMessages.value[userId][localGroupedMessages.value[userId].length - 1];
+    lastSeenMessages.value[userId] = lastMsg.id;
   }
 
-  unreadCounts.value[userId] = 0
-
-
-  selectedUserId.value = userId
-
-
-  setTimeout(scrollToBottom, 50)
+  selectedUserId.value = userId;
+  nextTick(() => scrollToBottom());
 }
 
 const handleSidebarToggle = (isVisible) => {
@@ -165,7 +186,7 @@ const sendReply = async () => {
     if (!localGroupedMessages.value[selectedUserId.value]) {
       localGroupedMessages.value[selectedUserId.value] = []
     }
-    
+
     localGroupedMessages.value[selectedUserId.value].push({
       id: Date.now(), // temporary ID until real one comes from server
       message: newMessage.value,
@@ -186,13 +207,18 @@ const sendReply = async () => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString)
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const fullDate = date.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
+  return `${fullDate} ${time}` // Example: "May 7, 2025 03:45 PM"
 }
 
 const getLastMessagePreview = (userId) => {
   const messages = localGroupedMessages.value[userId]
   if (!messages || messages.length === 0) return 'No messages yet'
-  const lastMsg = messages[messages.length - 1]
+
+  const sorted = [...messages].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+  const lastMsg = sorted[sorted.length - 1]
+
   return lastMsg.message.length > 30
     ? lastMsg.message.substring(0, 30) + '...'
     : lastMsg.message
@@ -200,13 +226,18 @@ const getLastMessagePreview = (userId) => {
 
 const scrollToBottom = () => {
   nextTick(() => {
-    if (scrollAnchor.value) {
-      scrollAnchor.value.scrollIntoView({ behavior: 'smooth' })
+    if (messagesContainer.value) {
+      const isAtBottom =
+        messagesContainer.value.scrollHeight -
+          messagesContainer.value.scrollTop -
+          messagesContainer.value.clientHeight <
+        100; 
+      if (!selectedUserId.value || isAtBottom) {
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+      }
     }
-  })
-}
-
-
+  });
+};
 
 
 const setupEcho = () => {
@@ -237,50 +268,36 @@ const setupEcho = () => {
           localGroupedMessages.value[userId] = [];
         }
 
-
         const exists = localGroupedMessages.value[userId].some(
-          m => m.id === message.id ||
-            (m.message === message.message &&
-              new Date(m.created_at).getTime() === new Date(message.created_at).getTime())
+          m => m.id === message.id
         );
 
         if (!exists) {
+          const isUnread = selectedUserId.value !== userId;
+
+          // 👇 Replace created_at with client-side time to avoid sorting issue
           localGroupedMessages.value[userId].push({
             ...message,
-            isUnread: selectedUserId.value !== userId,
+            created_at: new Date().toISOString(), // override with current time
+            isUnread: isUnread
           });
 
-          if (selectedUserId.value !== userId) {
+          if (isUnread) {
             unreadCounts.value[userId] = (unreadCounts.value[userId] || 0) + 1;
           }
 
           if (selectedUserId.value === userId) {
-            scrollToBottom();
+            nextTick(() => scrollToBottom());
           }
         }
       });
+
   }
 };
-// Initialize state
-const initState = () => {
-  props.users.forEach(user => {
-    unreadCounts.value[user.id] = 0
-    lastSeenMessages.value[user.id] = null
 
-
-    if (localGroupedMessages.value[user.id]) {
-      localGroupedMessages.value[user.id].forEach(msg => {
-        msg.isUnread = false
-      })
-
-
-      if (localGroupedMessages.value[user.id].length > 0) {
-        lastSeenMessages.value[user.id] =
-          localGroupedMessages.value[user.id][localGroupedMessages.value[user.id].length - 1].id
-      }
-    }
-  })
-}
+unreadCounts.value = Object.fromEntries(
+  props.users.map(user => [user.id, 0])
+)
 
 onMounted(() => {
   // if (window.Laravel.user) {
@@ -296,11 +313,9 @@ onUnmounted(() => {
   }
 });
 
-watch(selectedMessages, () => {
-  if (selectedUserId.value) {
-    scrollToBottom()
-  }
-}, { deep: true })
+watch(unreadCounts, (newVal) => {
+  console.log('Unread counts updated:', newVal);
+}, { deep: true });
 
 </script>
 <style scoped>
@@ -520,6 +535,4 @@ tbody tr:hover {
 .text-gray-400 {
   color: #9ca3af;
 }
-
-
 </style>

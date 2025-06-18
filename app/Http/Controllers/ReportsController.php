@@ -6,14 +6,17 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Admin;
 use App\Models\Lotteries;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
+use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
     public function player()
     {
         $users = User::with(['wallet', 'affiliates'])
+            ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($user) {
                 return [
@@ -35,6 +38,7 @@ class ReportsController extends Controller
     public function adminReport()
     {
         $admins = Admin::with('roles')
+        ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($admin) {
                 return [
@@ -55,6 +59,8 @@ class ReportsController extends Controller
     public function lotteriesReport()
     {
         $lotteries = Lotteries::with(['dashboards', 'winners'])
+            ->orderBy('created_at', 'asc')
+
             ->get()
             ->map(function ($lottery) {
                 return [
@@ -76,7 +82,8 @@ class ReportsController extends Controller
     public function deactiveLotteryDashboardsReport()
     {
         $dashboards = LotteryDashboards::with('lottery')
-            ->where('status', 'deactive')
+            ->whereIn('status', ['deactive', 'closed'])
+            ->orderBy('date', 'asc')
             ->get()
             ->map(function ($dashboard) {
                 return [
@@ -101,6 +108,7 @@ class ReportsController extends Controller
     {
         $dashboards = LotteryDashboards::with('lottery')
             ->where('status', 'cancelled')
+            ->orderBy('date', 'asc')
             ->get()
             ->map(function ($dashboard) {
                 return [
@@ -118,6 +126,20 @@ class ReportsController extends Controller
 
         return Inertia::render('AdminDashboard/Cancelled', [
             'dashboards' => $dashboards
+        ]);
+    }
+    public function refund()
+    {
+        $refund = Transaction::with([
+            'wallet.user',
+            'lottery',
+            'lotteryDashboard'
+        ])->where('type', 'refund')->get();
+
+        Log::info('Refund Report:', ['refund' => $refund]);
+
+        return Inertia::render('AdminDashboard/refundReport', [
+            'refunds' => $refund
         ]);
     }
 }

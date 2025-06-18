@@ -55,8 +55,8 @@
                         <p>
                             <i class="fab fa-telegram-plane"></i>
                             <a href="https://t.me/+EA7YZi2ogEM3ZjE0" target="_blank"
-                                style="text-decoration: none; color: inherit;">
-                                +971 52 130 9541 (Telegram)
+                                style="text-decoration: none; color: inherit;" title="Contact us on Telegram via phone">
+                                Telegram 
                             </a>
                         </p>
 

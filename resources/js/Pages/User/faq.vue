@@ -43,7 +43,7 @@
                                 from 00 to
                                 99. If the number you booked matches the Last two digits or First two digits of the
                                 official Sri
-                                Lanka National Lottery Board or Development Lottery Board draw, you win 70% of the total
+                                Lanka National Lottery Board or Development Lottery Board draw, you win 70 * of the total
                                 earnings from that round's bookings.
                             </div>
                         </div>
@@ -222,7 +222,7 @@ export default {
 }
 
 body {
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
 }
 
 .faq-container {

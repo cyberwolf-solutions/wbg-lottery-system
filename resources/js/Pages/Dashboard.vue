@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed , onMounted  } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import MessagesIndex from '@/components/UserChat.vue';
 
 
@@ -167,6 +167,8 @@ const walletBalance = computed(() => {
 
         <div class="flex-grow row d-flex justify-content-center align-items-center mt-4 mb-0">
 
+
+
             <!-- Wallet Summary Widget -->
             <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
                 <div class="card-body">
@@ -312,6 +314,28 @@ const walletBalance = computed(() => {
                 </div>
             </div>
 
+
+
+            <!-- YouTube Video Card -->
+            <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
+                <div class="card-body p-0">
+                    <h3 class="text-lg font-semibold mb-3 px-4 pt-3">Need help</h3>
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/-IM2Qheto2M" title="How to play lottery"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-center mb-3">How to Play & Win</h4>
+                        <p class="text-muted text-center">
+                            Watch our quick guide to understand how to participate and win big!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <MessagesIndex ref="messagesIndexRef" :user="authUser" />
         </div>
     </AuthenticatedLayout>
@@ -320,7 +344,7 @@ const walletBalance = computed(() => {
 
 <style>
 .grecaptcha-badge {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 /* Responsive adjustments */

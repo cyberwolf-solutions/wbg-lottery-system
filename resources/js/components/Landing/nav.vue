@@ -36,6 +36,19 @@
                 <a class="navbar-brand" href="#">
                     <img :src="logoUrl" alt="Logo" height="80" width="100" />
                 </a>
+
+
+                <template v-if="!$page.props.auth.user">
+                    <button class="btn btn-primary text-white px-4 rounded-pill shadow d-lg-none me-2"
+                        data-bs-toggle="modal" data-bs-target="#registerModal">
+                        Join Us
+                    </button>
+                </template>
+                <template v-else>
+                    <a class="btn btn-primary text-white px-4 rounded-pill shadow d-lg-none me-2"
+                        :href="route('login')">Log in</a>
+                </template>
+
                 <button class="navbar-toggler" type="button" @click="toggleSidebar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -46,19 +59,25 @@
                             <a :href="route('landing')" :active="route().current('landing')" class="nav-link">Home</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link">How it works</a>
+                            <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link">How it
+                                works</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('latest.index')" :active="route().current('latest.index')" class="nav-link">Latest results</a>
+                            <a :href="route('latest.index')" :active="route().current('latest.index')"
+                                class="nav-link">Latest
+                                results</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')" class="nav-link">Lotteries</a>
+                            <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')"
+                                class="nav-link">Lotteries</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('winner.index')" :active="route().current('winner.index')" class="nav-link">Winners</a>
+                            <a :href="route('winner.index')" :active="route().current('winner.index')"
+                                class="nav-link">Winners</a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a :href="route('contact.index')" :active="route().current('contact.index')" class="nav-link">Contact</a>
+                            <a :href="route('contact.index')" :active="route().current('contact.index')"
+                                class="nav-link">Contact</a>
                         </li>
                         <li class="nav-item mx-5">
                             <template v-if="!$page.props.auth.user">
@@ -89,30 +108,35 @@
                     <a :href="route('landing')" :active="route().current('landing')" class="nav-link">Home</a>
                 </li>
                 <li>
-                    <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link">How it works</a>
+                    <a :href="route('hiw.index')" :active="route().current('hiw.index')" class="nav-link">How it
+                        works</a>
                 </li>
                 <li>
-                    <a :href="route('latest.index')" :active="route().current('latest.index')" class="nav-link">Latest results</a>
+                    <a :href="route('latest.index')" :active="route().current('latest.index')" class="nav-link">Latest
+                        results</a>
                 </li>
                 <li>
-                    <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')" class="nav-link">Lotteries</a>
+                    <a :href="route('landinglottery.index')" :active="route().current('landinglottery.index')"
+                        class="nav-link">Lotteries</a>
                 </li>
                 <li>
-                    <a :href="route('winner.index')" :active="route().current('winner.index')" class="nav-link">Winners</a>
+                    <a :href="route('winner.index')" :active="route().current('winner.index')"
+                        class="nav-link">Winners</a>
                 </li>
                 <li>
-                    <a :href="route('contact.index')" :active="route().current('contact.index')" class="nav-link">Contact</a>
+                    <a :href="route('contact.index')" :active="route().current('contact.index')"
+                        class="nav-link">Contact</a>
                 </li>
                 <li class="mt-3">
                     <template v-if="!$page.props.auth.user">
-                        <button class="btn btn-primary text-white px-4 rounded-pill shadow w-100"
-                            data-bs-toggle="modal" data-bs-target="#registerModal" @click="toggleSidebar">
+                        <button class="btn btn-primary text-white px-4 rounded-pill shadow w-100" data-bs-toggle="modal"
+                            data-bs-target="#registerModal" @click="toggleSidebar">
                             Join Us
                         </button>
                     </template>
                     <template v-else>
-                        <a class="btn btn-primary text-white px-4 rounded-pill shadow w-100"
-                            :href="route('login')">Log in</a>
+                        <a class="btn btn-primary text-white px-4 rounded-pill shadow w-100" :href="route('login')">Log
+                            in</a>
                     </template>
                 </li>
             </ul>
@@ -128,7 +152,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <RegisterForm />
+                    <RegisterForm :referral="referral" />
                 </div>
             </div>
         </div>
@@ -149,6 +173,11 @@ export default {
             sidebarOpen: false
         };
     },
+    props: {
+
+        referral: String
+    },
+
     name: "Nav",
     components: {
         RegisterForm,
@@ -157,9 +186,18 @@ export default {
     mounted() {
         this.fetchLotteries();
     },
+    // In Nav component
+    mounted() {
+        if (this.referral) {
+            this.$nextTick(() => {
+                const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+                registerModal.show();
+            });
+        }
+    },
     methods: {
         async fetchLotteries() {
-            try { 
+            try {
                 const response = await axios.get();
                 this.lotteries = response.data;
             } catch (error) {
@@ -173,13 +211,16 @@ export default {
             } else {
                 document.body.style.overflow = '';
             }
+        },
+        openRegisterModal() {
+            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+            registerModal.show();
         }
     }
 };
 </script>
 
 <style>
-
 /* Modal Styling for Small Screens */
 .modal-content {
     border-radius: 8px;
@@ -192,7 +233,8 @@ export default {
         margin: 0;
         width: 100%;
         max-width: 100%;
-        height: 100vh; /* Full height of the viewport */
+        height: 100vh;
+        /* Full height of the viewport */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -200,8 +242,9 @@ export default {
 
     .modal-content {
         width: 90%;
-        max-height: 90vh; 
-        overflow-y: auto; /* Allow scrolling if content overflows */
+        max-height: 90vh;
+        overflow-y: auto;
+        /* Allow scrolling if content overflows */
         padding: 20px;
         border-radius: 12px;
     }
@@ -215,20 +258,25 @@ export default {
     .modal-body form {
         display: flex;
         flex-direction: column;
-        gap: 20px; /* Space between form fields */
+        gap: 20px;
+        /* Space between form fields */
     }
 
     .modal-body label {
-        font-size: 1.1rem; /* Larger font for readability */
+        font-size: 1.1rem;
+        /* Larger font for readability */
         font-weight: 500;
         margin-bottom: 5px;
         color: #333;
     }
 
     .modal-body input {
-        font-size: 1rem; /* Larger font for input text */
-        padding: 12px; /* More padding for touch targets */
-        height: 48px; /* Taller input fields */
+        font-size: 1rem;
+        /* Larger font for input text */
+        padding: 12px;
+        /* More padding for touch targets */
+        height: 48px;
+        /* Taller input fields */
         border-radius: 6px;
         border: 1px solid #ccc;
         width: 100%;
@@ -251,7 +299,8 @@ export default {
 
     /* Adjust checkbox or smaller elements */
     .modal-body .form-check-label {
-        font-size: 0.95rem; /* Slightly smaller for secondary text */
+        font-size: 0.95rem;
+        /* Slightly smaller for secondary text */
     }
 
     /* Close button */
@@ -263,7 +312,8 @@ export default {
 /* General modal styling for larger screens */
 @media (min-width: 577px) {
     .modal-dialog {
-        max-width: 500px; /* Default Bootstrap modal width */
+        max-width: 500px;
+        /* Default Bootstrap modal width */
     }
 
     .modal-body label {
@@ -282,10 +332,13 @@ export default {
         height: 40px;
     }
 }
+
 body {
     overflow-x: hidden;
 }
-html, body {
+
+html,
+body {
     height: 100%;
 }
 
@@ -416,10 +469,12 @@ html, body {
 
 /* Show regular navbar items on desktop */
 @media (min-width: 992px) {
-    .mobile-sidebar, .sidebar-overlay {
+
+    .mobile-sidebar,
+    .sidebar-overlay {
         display: none;
     }
-    
+
     .navbar-collapse {
         display: flex !important;
     }

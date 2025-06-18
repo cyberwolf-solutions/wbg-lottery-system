@@ -1,5 +1,5 @@
     <script setup>
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import GuestLayout from '@/Layouts/GuestLayout.vue';
     import InputError from '@/Components/InputError.vue';
     import InputLabel from '@/Components/InputLabel.vue';
@@ -10,6 +10,14 @@
     import { watchEffect } from 'vue';
 
     const { executeRecaptcha } = useReCaptcha();  // This should now work
+
+
+    const props = defineProps({
+        referral: {
+            type: String,
+            default: null
+        }
+    });
 
     watchEffect(() => {
         if (!executeRecaptcha) {
@@ -30,7 +38,7 @@
         email: '',
         password: '',
         password_confirmation: '',
-        affiliate_link: '',
+        affiliate_link: props.referral ? `${window.location.origin}/ref/${props.referral}` : '',
         errors: {}
     });
 
@@ -223,10 +231,10 @@
                     </div>
 
                     <div>
-                        <InputLabel for="affiliate_link" value="Affiliate link" />
+                        <InputLabel for="affiliate_link" value="Affiliate link (Optional)" />
                         <TextInput id="affiliate_link" type="text"
                             class=" block w-full rounded-md border-gray-300 shadow-sm" v-model="form.affiliate_link"
-                            autocomplete="affiliate link"></TextInput>
+                            autocomplete="affiliate-link" readonly=""></TextInput>
                     </div>
                     <div class="flex items-center mb-6 mt-2">
                         <input type="checkbox" id="terms" v-model="agreeterms" class="mr-2 w-4 h-4" />
@@ -281,7 +289,7 @@
                         <label class="flex items-center">
                             <input type="checkbox" v-model="loginForm.remember"
                                 class="rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
-                                
+
                             <span class="ms-2 text-sm text-gray-600">Remember me</span>
                         </label>
                         <!-- Forgot Password -->

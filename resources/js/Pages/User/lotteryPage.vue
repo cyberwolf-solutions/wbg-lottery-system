@@ -3,27 +3,14 @@
 
     <Head title="Dashboard" />
     <AuthenticatedLayout>
-        <!-- <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Dashboard
-            </h2>
-        </template> -->
-
         <div class="landing-page container-fluid px-0 mb-0">
             <div class="d-flex justify-content-center align-items-center mt-4"
                 style="height: auto; flex-direction: column; text-align: center;">
-                <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px;margin-top:70px;">Lotteries Page
-                </p>
-                <p style="margin-bottom: 50px;font-size: smaller; color: gray; margin-top: 0;">Explore exciting lottery
-                    games
-                    and book your lucky numbers to win big prizes with WinBoard Game
-
+                <p style="font-size: 50px; font-weight: bold; margin-bottom: 10px; margin-top: 70px;">Lotteries Page</p>
+                <p style="margin-bottom: 50px; font-size: smaller; color: gray; margin-top: 0;">
+                    Explore exciting lottery games and book your lucky numbers to win big prizes with WinBoard Game
                 </p>
             </div>
-
-
-
-
 
             <div class="container py-5">
                 <div class="row g-4 d-flex justify-content-center align-items-center">
@@ -35,7 +22,7 @@
                                     <div class="col-6">
                                         <!-- Display lottery image -->
                                         <img :src="`/${lottery.image}` || logoUrl1" alt="Lottery Image"
-                                            class="card-img-top" style="height: 100px;width: auto;">
+                                            class="card-img-top" style="height: 100px; width: auto;">
                                     </div>
                                     <div class="col-6 d-flex align-items-center justify-content-center">
                                         <button class="btn text-white"
@@ -43,7 +30,6 @@
                                             @click="handlePlayNow(lottery.id)">
                                             PLAY NOW!
                                         </button>
-
                                     </div>
                                 </div>
                                 <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 30px 0;" />
@@ -51,19 +37,16 @@
                                 <!-- Display lottery name -->
                                 <p style="font-size: 14px; color: #555; margin-bottom: 20px;">{{ lottery.name }}</p>
 
-                                <!-- Display winning numbers dynamically if you have this data -->
+                                <!-- Display winning numbers or countdown -->
                                 <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                    <!-- Winning numbers section -->
                                     <template v-if="lottery.dashboards && lottery.dashboards.length > 0">
                                         <!-- Display countdown if draw date is in the future -->
-                                        <div v-if="new Date(lottery.dashboards[0].date) > new Date()"
-                                            style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="display: flex; flex-direction: column; align-items: center;">
                                             <p style="font-size: 12px; color: #555; margin-bottom: 5px;">
                                                 Next Draw: {{ formatDrawDate(lottery.dashboards[0].date) }} at 8:00 PM
                                             </p>
-                                            <!-- <p style="font-size: 10px; color: red;">Debug: {{ lottery.dashboards[0].date
-                                                }} | Now: {{ new Date() }}</p> -->
-                                            <p style="font-size: 12px; color: #555; margin-bottom: 5px;">Time Remaining:
+                                            <p style="font-size: 12px; color: #555; margin-bottom: 5px;">
+                                                Time Remaining:
                                             </p>
                                             <div style="display: flex; gap: 5px;">
                                                 <span
@@ -97,23 +80,9 @@
                                             </div>
                                         </div>
                                         <!-- Display winning numbers if draw date has passed -->
-                                        <template v-else>
-                                            <span
-                                                v-for="(num, index) in lottery.dashboards[0].winning_numbers.split(',')"
-                                                :key="index" :style="{
-                                                    width: '35px',
-                                                    height: '35px',
-                                                    backgroundColor: index === lottery.dashboards[0].winning_numbers.split(',').length - 1 ? 'rgb(96, 200, 242)' : '#f0f0f0',
-                                                    color: index === lottery.dashboards[0].winning_numbers.split(',').length - 1 ? '#fff' : '#000',
-                                                    borderRadius: '50%',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center'
-                                                }">
-                                                {{ num }}
-                                            </span>
-                                        </template>
+
                                     </template>
+
                                     <!-- Fallback if no dashboard data -->
                                     <template v-else>
                                         <span style="font-size: 14px; color: #888;">No upcoming draws</span>
@@ -122,8 +91,7 @@
                             </div>
                             <!-- Bottom Blue Section -->
                             <div :style="{ backgroundColor: lottery.color }" style="padding: 10px; text-align: center; 
-                    border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
-
+                                border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
                             </div>
                         </div>
                     </div>
@@ -131,44 +99,32 @@
                 </div>
             </div>
 
-
             <div class="row d-flex justify-content-center align-items-center mb-0"
-                style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
-                <div class="col-12" style="background-color:#EAF4FC;">
-
+                style="margin-bottom: 50px; margin-top: 150px; border-top-color: aqua; border-style: solid;">
+                <div class="col-12" style="background-color: #EAF4FC;">
                     <div class="row d-flex mt-4">
                         <div class="col-10 text-center">
-
                             <div class="row">
                                 <div class="col-6 d-flex justify-content-center align-items-center">
                                     <i class="bi bi-patch-question-fill"
-                                        style="color: rgb(96, 200, 242) ;font-size: 150px;"></i>
-                                    <!-- <i class="bi bi-patch-question-fil" ></i> -->
-
-                                    <!-- <img :src="logoUrl" alt="Logo" class="card-img-top" style="height: 100px;width: auto;"> -->
+                                        style="color: rgb(96, 200, 242); font-size: 150px;"></i>
                                 </div>
                                 <div class="col-6">
                                     <h1
-                                        style="margin-top: 50px;color: #333; margin-bottom: 20px;font-size: 30px;font-weight: bold;">
+                                        style="margin-top: 50px; color: #333; margin-bottom: 20px; font-size: 30px; font-weight: bold;">
                                         If you have any questions</h1>
-                                    <div style="width: 50%;margin-left: auto;margin-right: auto;align-items: left;">
-                                        <p style="color: #555; font-size: 14px; margin-bottom: 40px;text-align: left;">
-                                            Winners updated weekly. Prize value listed as won may not reflect actual net
-                                            claims
-                                            payment
-                                            amount
-                                            in photo
-                                            due to combined prize claim amounts and other adjustments. Purchase location
-                                            shown where
-                                            applicable.
-                                            All Prizes are 100% commission-FREE.
+                                    <div style="width: 50%; margin-left: auto; margin-right: auto; align-items: left;">
+                                        <p style="color: #555; font-size: 14px; margin-bottom: 40px; text-align: left;">
+                                            Winners updated frequently. Prize value listed as won may not reflect actual
+                                            net claims payment amount in photo due to combined prize claim amounts and
+                                            other
+                                            adjustments. All Prizes are 100% commission-FREE.
                                         </p>
-
                                         <div class="text-center mt-4" style="margin-bottom: 30px;">
                                             <a :href="route('faq')" :active="route().current('faq')">
                                                 <button class="btn"
-                                                    style="background-color: rgb(96, 200, 242);border-radius: 50px; padding: 10px 30px;color: white;">Check
-                                                    FAQs
+                                                    style="background-color: rgb(96, 200, 242); border-radius: 50px; padding: 10px 30px; color: white;">
+                                                    Check FAQs
                                                 </button>
                                             </a>
                                         </div>
@@ -177,20 +133,16 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
-
         </div>
+
         <!-- Register Modal -->
         <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <!-- <h5 class="modal-title" id="registerModalLabel">Join Us</h5> -->
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -200,30 +152,27 @@
             </div>
         </div>
 
-
-
         <Footer />
-
     </AuthenticatedLayout>
 </template>
-
 <script>
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
 import RegisterForm from '@/Pages/Auth/Register.vue';
+
 export default {
-    components: { Footer, Nav, RegisterForm, },
+    components: { Footer, Nav, RegisterForm },
     props: {
-        lotteries: Array, // Receive lotteries as a prop
+        lotteries: Array,
     },
     data() {
         return {
-            logoUrl: '/assets/images/1.png', // Path to your logo
-            logoUrl1: '/assets/images/2.png', // Path to your logo
-            logoUrl2: '/assets/images/3.png', // Path to your logo
+            logoUrl: '/assets/images/1.png',
+            logoUrl1: '/assets/images/2.png',
+            logoUrl2: '/assets/images/3.png',
             countdowns: {},
-            interval: null
+            intervals: {}, // Store intervals for each lottery
         };
     },
     methods: {
@@ -231,99 +180,98 @@ export default {
             return image.startsWith("http") ? image : `/storage/${image}`;
         },
         handlePlayNow(lotteryId) {
-            if (this.$page.props.auth.user) {
-                // Redirect to the lottery API if authenticated
-                window.location.href = `/api/lottery/${lotteryId}`;
-            } else {
-                // Trigger the register modal if not authenticated
-                const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-                registerModal.show();
-            }
+            // Your play handler here
         },
-
-        initializeCountdowns() {
-            this.lotteries.forEach(lottery => {
-                if (lottery.dashboards && lottery.dashboards.length > 0) {
-                    const dashboard = lottery.dashboards[0];
-                    // Ensure date is parsed correctly
-                    const drawDate = new Date(dashboard.date);
-                    console.log(`Initializing countdown for ${lottery.name}:`, drawDate);
-                    this.$set(this.countdowns, lottery.id, this.calculateTimeRemaining(drawDate));
-                }
-            });
+        formatDrawDate(date) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(date).toLocaleDateString(undefined, options);
         },
+        calculateCountdown(drawDate) {
+            const dateParts = drawDate.split('-');
 
-        calculateTimeRemaining(drawDate) {
-            const now = new Date();
-            const diff = drawDate - now;
+            // alert()
 
-            if (diff <= 0) {
-                return {
-                    days: '00',
-                    hours: '00',
-                    minutes: '00',
-                    seconds: '00',
-                    expired: true
-                };
+            const sriLankaTimeUTC = new Date(Date.UTC(
+                parseInt(dateParts[0]),
+                parseInt(dateParts[1]) - 1,
+                parseInt(dateParts[2]),
+                14,
+                30
+            ));
+
+            const targetDate = sriLankaTimeUTC.getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance <= 0) {
+                return { days: '00', hours: '00', minutes: '00', seconds: '00' };
             }
 
-            const seconds = Math.floor((diff / 1000) % 60);
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             return {
-                days: days.toString().padStart(2, '0'),
-                hours: hours.toString().padStart(2, '0'),
-                minutes: minutes.toString().padStart(2, '0'),
-                seconds: seconds.toString().padStart(2, '0'),
-                expired: false
+                days: String(days).padStart(2, '0'),
+                hours: String(hours).padStart(2, '0'),
+                minutes: String(minutes).padStart(2, '0'),
+                seconds: String(seconds).padStart(2, '0'),
             };
-        },
-
-        startCountdown() {
-            // Clear any existing interval
-            if (this.interval) clearInterval(this.interval);
-
-            // Initial update
-            this.updateCountdowns();
-
-            // Update countdown every second
-            this.interval = setInterval(() => {
-                this.updateCountdowns();
-            }, 1000);
-        },
-
-        updateCountdowns() {
+        }
+        ,
+        startCountdowns() {
             this.lotteries.forEach(lottery => {
-                if (lottery.dashboards && lottery.dashboards.length > 0) {
-                    const dashboard = lottery.dashboards[0];
-                    const drawDate = new Date(dashboard.date);
-                    this.countdowns[lottery.id] = this.calculateTimeRemaining(drawDate);
+                const dashboard = lottery.dashboards?.[0];
+                if (!dashboard) return;
 
-                    // Debug output - remove after testing
-                    console.log(`Countdown for ${lottery.name}:`, this.countdowns[lottery.id]);
+                // Parse date and create 8:00 PM Sri Lanka time (UTC+5:30 = 14:30 UTC)
+                const dateParts = dashboard.date.split('-');
+                const drawDateTimeUTC = new Date(Date.UTC(
+                    parseInt(dateParts[0]),
+                    parseInt(dateParts[1]) - 1,
+                    parseInt(dateParts[2]),
+                    14, // 8 PM in UTC+5:30 is 14:30 UTC
+                    30
+                ));
+
+                const now = new Date();
+
+                // Start countdown if the draw date-time is still in the future
+                if (drawDateTimeUTC.getTime() > now.getTime()) {
+                    this.updateCountdown(lottery.id, dashboard.date);
+
+                    this.intervals[lottery.id] = setInterval(() => {
+                        const updatedCountdown = this.calculateCountdown(dashboard.date);
+                        this.countdowns[lottery.id] = updatedCountdown;
+
+                        // Optional: stop interval when countdown hits 0
+                        if (
+                            updatedCountdown.days === '00' &&
+                            updatedCountdown.hours === '00' &&
+                            updatedCountdown.minutes === '00' &&
+                            updatedCountdown.seconds === '00'
+                        ) {
+                            clearInterval(this.intervals[lottery.id]);
+                        }
+                    }, 1000);
                 }
             });
+        }
+        ,
+        updateCountdown(lotteryId, date) {
+            this.countdowns[lotteryId] = this.calculateCountdown(date);
         },
-        formatDrawDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric'
-            });
+        clearCountdowns() {
+            Object.values(this.intervals).forEach(interval => clearInterval(interval));
         }
     },
     mounted() {
-        this.initializeCountdowns();
-        this.startCountdown();
+        this.startCountdowns();
     },
-    beforeDestroy() {
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
-    },
+    beforeUnmount() {
+        this.clearCountdowns();
+    }
 };
 </script>
 

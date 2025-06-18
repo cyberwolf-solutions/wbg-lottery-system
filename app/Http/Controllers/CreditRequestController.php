@@ -16,7 +16,9 @@ class CreditRequestController extends Controller
     //
     public function index()
     {
-        $credits = Deposit::with('wallet.user')->get();
+        $credits = Deposit::with('wallet.user')
+        ->orderBy('deposit_date', 'desc')
+        ->get();
 
         // dd($credits);
         // Log::info('Fetched Deposits:', ['credits' => $credits]);

@@ -12,17 +12,11 @@ class NewDashboardCreatedNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    protected $lotteryId;
-    protected $dashboardName;
-    protected $drawNumber;
-    protected $date;
+    protected $dashboards;
 
-    public function __construct($lotteryId, $dashboardName, $drawNumber, $date)
+    public function __construct(array $dashboards)
     {
-        $this->lotteryId = $lotteryId;
-        $this->dashboardName = $dashboardName;
-        $this->drawNumber = $drawNumber;
-        $this->date = $date;
+        $this->dashboards = $dashboards;
     }
 
     public function via($notifiable)
@@ -32,33 +26,41 @@ class NewDashboardCreatedNotification extends Notification implements ShouldQueu
 
     public function toMail($notifiable)
     {
-        Log::info('Attempting to send new dashboard email notification', [
+        Log::info('Attempting to send new dashboards email notification', [
             'recipient' => $notifiable->email,
-            'lottery_id' => $this->lotteryId,
-            'dashboard' => $this->dashboardName,
-            'draw_number' => $this->drawNumber,
+            'dashboard_count' => count($this->dashboards),
         ]);
 
         try {
             $mail = (new MailMessage)
-                ->subject('New Dashboard Created')
-                ->line("A new dashboard has been created for your lottery.")
-                ->line("Lottery ID: {$this->lotteryId}")
-                ->line("Dashboard: {$this->dashboardName}")
-                ->line("Draw Number: {$this->drawNumber}")
-                ->line("Date: {$this->date}")
-                ->action('View Dashboard', url('/dashboard'))
+                ->subject('New Dashboards Created');
+
+            if (count($this->dashboards) > 1) {
+                $mail->line("New dashboards have been created for your lotteries:");
+            } else {
+                $mail->line("A new dashboard has been created for your lottery:");
+            }
+
+            foreach ($this->dashboards as $dashboard) {
+                $mail->line("-------------------------------")
+                     ->line("Lottery: {$dashboard['lottery_name']}")
+                     ->line("Dashboard: {$dashboard['dashboard_name']}")
+                     ->line("Draw Number: {$dashboard['draw_number']}")
+                     ->line("Date: {$dashboard['date']}");
+            }
+
+            $mail->action('View Dashboards', url('/dashboard'))
                 ->line('Thank you for using our platform!');
 
-            Log::info('New dashboard email notification prepared successfully', [
+            Log::info('New dashboards email notification prepared successfully', [
                 'recipient' => $notifiable->email,
-                'subject' => 'New Dashboard Created'
+                'subject' => 'New Dashboards Created'
             ]);
 
             return $mail;
 
         } catch (\Exception $e) {
-            Log::error('Failed to prepare new dashboard email notification', [
+            Log::error('Failed to prepare new dashboards email notification', [
                 'error' => $e->getMessage(),
                 'recipient' => $notifiable->email,
                 'trace' => $e->getTraceAsString()
@@ -69,12 +71,13 @@ class NewDashboardCreatedNotification extends Notification implements ShouldQueu
 
     public function toArray($notifiable)
     {
+        $message = count($this->dashboards) > 1 ? 
+            "New dashboards have been created for your lotteries." : 
+            "A new dashboard has been created for your lottery.";
+
         return [
-            'lottery_id' => $this->lotteryId,
-            'dashboard_name' => $this->dashboardName,
-            'draw_number' => $this->drawNumber,
-            'date' => $this->date,
-            'message' => "A new dashboard has been created for lottery {$this->lotteryId} ({$this->dashboardName}) with draw number {$this->drawNumber}.",
+            'dashboards' => $this->dashboards,
+            'message' => $message,
         ];
     }
 }

@@ -160,8 +160,11 @@ const sendMessage = async () => {
 
 const formatTime = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formattedDate = date.toLocaleDateString();
+  return `${formattedDate} • ${time}`;
 };
+
 
 const scrollToBottom = () => {
   nextTick(() => {

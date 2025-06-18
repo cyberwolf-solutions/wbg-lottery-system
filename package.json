@@ -23,6 +23,7 @@
         "@coreui/vue": "^5.4.1",
         "bootstrap": "^5.3.3",
         "chart.js": "^4.4.7",
+        "dayjs": "^1.11.13",
         "jspdf": "^3.0.1",
         "jspdf-autotable": "^5.0.2",
         "laravel-echo": "^2.0.2",

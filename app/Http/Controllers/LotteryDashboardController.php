@@ -24,7 +24,10 @@ class LotteryDashboardController extends Controller
 
         // dd($lotteries);
         $lot = $lottery->toArray();
-        $dashboard = LotteryDashboards::where('lottery_id', $id)->get();
+        $dashboard = LotteryDashboards::where('lottery_id', $id)
+            ->orderBy('date', 'desc')
+            ->get();
+
 
         // dd($dashboard);
 
@@ -44,7 +47,7 @@ class LotteryDashboardController extends Controller
                 'date' => 'required|date',
                 'lottery_id' => 'required|exists:lotteries,id',
                 'dashboard' => 'required|string',
-                'drawNumber' =>'required'
+                'drawNumber' => 'required'
             ]);
 
             Log::info('ok', $request->all());
@@ -70,17 +73,17 @@ class LotteryDashboardController extends Controller
             // Create 10 dashboards for "First Digits" and 10 for "Last Digits"
             $createdDays = 0;
             while ($createdDays < 10) {
-                $startDate->addDay(); 
-    
+                $startDate->addDay();
+
                 // Check if this date is a holiday
                 $isHoliday = Holiday::where('date', $startDate->toDateString())->exists();
                 if ($isHoliday) {
                     Log::info("Skipping dashboard creation on holiday: " . $startDate->toDateString());
-                    continue; 
+                    continue;
                 }
-    
+
                 $currentDrawNumber = str_pad($drawNumber, 3, '0', STR_PAD_LEFT);
-    
+
                 // First Digits Dashboard
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
@@ -93,7 +96,7 @@ class LotteryDashboardController extends Controller
                     'status' => 'active',
                     'dashboardType' => 'First Digits',
                 ]);
-    
+
                 // Last Digits Dashboard
                 $dashboards[] = LotteryDashboards::create([
                     'price' => $validated['price'],
@@ -106,11 +109,11 @@ class LotteryDashboardController extends Controller
                     'status' => 'active',
                     'dashboardType' => 'Last Digits',
                 ]);
-    
-                
+
+
                 $draw++;
                 $drawNumber++;
-                $createdDays++; 
+                $createdDays++;
             }
 
             // Return the response with created dashboards

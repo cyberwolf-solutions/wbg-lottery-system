@@ -5,45 +5,71 @@
             <div class="dashboard-banner">
                 <div class="navbar">
                     <h2 class="lottery-name fw-bold text-danger">Lottery Purchases</h2>
+                    <div class="search-controls">
+                        <input v-model="searchDate" type="date" class="form-control" placeholder="Filter by date">
+                        <select v-model="searchStatus" class="form-control">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="lottery-table">
                     <h3 class="mt-4">{{ lottery[0]?.lottery?.name }} Purchase Details</h3>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dashboard ID</th>
-                                <th>Dashboard</th>
-                                <th>Draw Number</th>
-                                <th>Draw Date</th>
-                                <th>Type</th>
-                                <th>Percentage</th>
-                                <th>View</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(dashboard, index) in lottery" :key="index">
-                                <td>{{ dashboard.id }}</td>
-                                <td>{{ dashboard.dashboard }}</td>
-                                <td>{{ dashboard.draw_number }}</td>
-                                <td>{{ dashboard.date }}</td>
-                                <td>{{ dashboard.dashboardType }}</td>
-                                <td>{{ calculatePercentage(dashboard.id) }}%</td>
+                    <!-- Grouped by Dashboard Name -->
+                    <div v-for="dashboardGroup in paginatedDashboardGroups" :key="dashboardGroup.name" class="dashboard-group">
+                        <h4 class="dashboard-name-header">{{ dashboardGroup.name }}</h4>
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Draw Number</th>
+                                    <th>Draw Date</th>
+                                    <th>Status</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="dashboard in getPaginatedItems(dashboardGroup.name, dashboardGroup.items)" :key="dashboard.id" @click="viewDetails(dashboard)">
 
-                                <td>
-                                    <button @click="viewDetails(dashboard)" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button @click="confirmDelete(dashboard)" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <td>{{ dashboard.draw_number }}</td>
+                                    <td>{{ formatDate(dashboard.date) }}</td>
+                                    <td>
+                                        <span :class="['status-badge', dashboard.status === 'active' ? 'active' : 'closed']">
+                                            {{ dashboard.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="percentage-bar">
+                                            <div class="percentage-fill" :style="{ width: calculatePercentage(dashboard.id) + '%' }">
+                                                {{ calculatePercentage(dashboard.id) }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-controls mt-2">
+    <button class="btn btn-sm btn-primary" 
+        @click="groupPrevPage(dashboardGroup.name)"
+        :disabled="(groupPagination[dashboardGroup.name] || 1) === 1">
+        Previous
+    </button>
+
+    <span>
+        Page {{ groupPagination[dashboardGroup.name] || 1 }} 
+        of {{ Math.ceil(dashboardGroup.items.length / perPage) }}
+    </span>
+
+    <button class="btn btn-sm btn-primary" 
+        @click="groupNextPage(dashboardGroup.name, dashboardGroup.items.length)"
+        :disabled="(groupPagination[dashboardGroup.name] || 1) === Math.ceil(dashboardGroup.items.length / perPage)">
+        Next
+    </button>
+</div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -52,18 +78,21 @@
         <div v-if="isPickerOpen" class="modal-overlay">
             <div class="modal-content">
                 <button @click="isPickerOpen = false" class="close-button">×</button>
-                <h3>Picked Numbers</h3>
-                <div class="number-grid">
-                    <button v-for="num in numberOptions" :key="num"
-                        :class="['number-button', { 'highlighted': isNumberPicked(num) }]" @click="selectNumber(num)"
-                        @mouseover="showUserTooltip(num)" @mouseleave="hideUserTooltip">
-                        {{ num }}
-                    </button>
+                <h3>Picked Numbers for {{ currentDashboard?.dashboard }} (Draw #{{ currentDashboard?.draw_number }})</h3>
+                <div class="number-grid-container">
+                    <div class="number-grid">
+                        <button v-for="num in numberOptions" :key="num"
+                            :class="['number-button', { 'picked': isNumberPicked(num) }]" 
+                            @mouseover="showUserTooltip(num)" 
+                            @mouseleave="hideUserTooltip">
+                            {{ num }}
+                            <span v-if="isNumberPicked(num)" class="picked-badge">✓</span>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- User Tooltip -->
                 <div v-if="hoveredNumber && hoveredUser" class="user-tooltip">
-                    Picked by: {{ hoveredUser }}
+                    Number {{ hoveredNumber }} picked by: {{ hoveredUser }}
                 </div>
             </div>
         </div>
@@ -78,293 +107,264 @@ export default {
         Sidebar,
     },
     props: {
-        lottery: Array,
-        pickedNumbers: Array,
+        lottery: {
+            type: Array,
+            default: () => []
+        },
+        pickedNumbers: {
+            type: Object,
+            default: () => ({})
+        }
     },
     data() {
-        return {
-            isSidebarVisible: true,
-            isPickerOpen: false,
-            selectedDashboard: null, // Store selected dashboard
-            selectedPickedNumbers: [], // Store picked numbers for the selected dashboard
-            numberOptions: Array.from({ length: 100 }, (_, i) => String(i).padStart(2, "0")),
-            hoveredNumber: null,
-            hoveredUser: null,
-        };
+    return {
+        isSidebarVisible: true,
+        isPickerOpen: false,
+        currentDashboard: null,
+        selectedPickedNumbers: [],
+        numberOptions: Array.from({ length: 100 }, (_, i) => String(i).padStart(2, "0")),
+        hoveredNumber: null,
+        hoveredUser: null,
+        currentPage: 1,
+        perPage: 6,
+        groupPagination: {}, 
+        searchDate: '',
+        searchStatus: ''
+    };
+},
+
+    computed: {
+        filteredDashboards() {
+            return this.lottery.filter(dashboard => {
+                const matchesDate = !this.searchDate || 
+                    new Date(dashboard.date).toDateString() === new Date(this.searchDate).toDateString();
+                const matchesStatus = !this.searchStatus || 
+                    dashboard.status === this.searchStatus;
+                return matchesDate && matchesStatus;
+            });
+        },
+        groupedDashboards() {
+            const groups = {};
+            this.filteredDashboards.forEach(dashboard => {
+                if (!groups[dashboard.dashboard]) {
+                    groups[dashboard.dashboard] = {
+                        name: dashboard.dashboard,
+                        items: []
+                    };
+                }
+                groups[dashboard.dashboard].items.push(dashboard);
+            });
+            return Object.values(groups);
+        },
+        paginatedDashboardGroups() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.groupedDashboards.slice(start, end);
+        },
+        totalPages() {
+            return Math.ceil(this.groupedDashboards.length / this.perPage);
+        }
     },
     methods: {
+        getPaginatedItems(groupName, items) {
+        const page = this.groupPagination[groupName] || 1;
+        const start = (page - 1) * this.perPage;
+        const end = start + this.perPage;
+        return items.slice(start, end);
+    },
+    groupPrevPage(groupName) {
+        if (!this.groupPagination[groupName]) {
+            this.groupPagination = { ...this.groupPagination, [groupName]: 1 };
+        }
+        if (this.groupPagination[groupName] > 1) {
+            this.groupPagination = { 
+                ...this.groupPagination, 
+                [groupName]: this.groupPagination[groupName] - 1 
+            };
+        }
+    },
+    groupNextPage(groupName, totalItems) {
+        if (!this.groupPagination[groupName]) {
+            this.groupPagination = { ...this.groupPagination, [groupName]: 1 };
+        }
+        const totalPages = Math.ceil(totalItems / this.perPage);
+        if (this.groupPagination[groupName] < totalPages) {
+            this.groupPagination = { 
+                ...this.groupPagination, 
+                [groupName]: this.groupPagination[groupName] + 1 
+            };
+        }
+    },
         calculatePercentage(dashboardId) {
-            const pickedNumbers = this.pickedNumbers[dashboardId] || []; // Get picked numbers for the specific dashboard
-            const totalNumbers = this.numberOptions.length;
+            const pickedNumbers = this.pickedNumbers[dashboardId] || [];
             const pickedCount = pickedNumbers.length;
-            return ((pickedCount / totalNumbers) * 100).toFixed(1);
+            const percentage = Math.min(100, pickedCount);
+            return percentage;
+        },
+        formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
         },
         viewDetails(dashboard) {
-            this.selectedDashboard = dashboard.id;
-            this.selectedPickedNumbers = this.pickedNumbers[dashboard.id] || []; // Load numbers for selected dashboard
+            this.currentDashboard = dashboard;
+            this.selectedPickedNumbers = this.pickedNumbers[dashboard.id] || [];
             this.isPickerOpen = true;
         },
-        selectNumber(num) {
-            this.selectedNumber = num;
-        },
-        confirmSelection() {
-            alert(`Selected Number: ${this.selectedNumber}`);
-            this.isPickerOpen = false;
-        },
         isNumberPicked(num) {
-            if (!this.selectedPickedNumbers) return false;
             return this.selectedPickedNumbers.some(item => item.number === num);
         },
-
         showUserTooltip(num) {
-            if (!this.selectedPickedNumbers) return;
-
             const pickedNumber = this.selectedPickedNumbers.find(item => item.number === num);
             if (pickedNumber) {
                 this.hoveredNumber = num;
                 this.hoveredUser = pickedNumber.user;
             }
         },
-
         hideUserTooltip() {
             this.hoveredNumber = null;
             this.hoveredUser = null;
         },
         handleSidebarToggle(isVisible) {
-      this.isSidebarVisible = isVisible;
-    },
+            this.isSidebarVisible = isVisible;
+        },
+        prevPage() {
+            if (this.currentPage > 1) this.currentPage--;
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) this.currentPage++;
+        }
     }
 };
 </script>
-
-
 <style scoped>
-
-
-#app.dark-theme {
+/* Main layout styles */
+.dark-theme {
     background-color: #121212;
     color: #e0e0e0;
-    font-family: 'Arial', sans-serif;
-    min-height: 100vh;
 }
 
 .main-content {
     margin-left: 250px;
     padding: 20px;
-    background-color: #1e1e1e;
     transition: margin-left 0.3s ease;
 }
 
-.main-content.sidebar-hidden {
+.sidebar-hidden {
     margin-left: 0;
 }
 
 .dashboard-banner {
     background-color: #1a1a1a;
     border-radius: 8px;
-    overflow: hidden;
     padding: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    height: auto;
 }
 
-.navbar {
+/* Search controls */
+.search-controls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #444;
+    gap: 10px;
+    margin-left: auto;
 }
 
-.lottery-name {
-    font-size: 24px;
+.search-controls .form-control {
+    width: 200px;
+    background-color: #2c2c2c;
     color: #e0e0e0;
+    border: 1px solid #444;
 }
 
-.create-dashboard-btn {
-    background-color: #5a5a5a;
-    color: #e0e0e0;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.create-dashboard-btn:hover {
-    background-color: #777;
-}
-
-.lottery-prices,
-.dashboards {
+/* Dashboard group styles */
+.dashboard-group {
+    margin-bottom: 30px;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    padding: 15px;
     margin-top: 20px;
 }
 
-.lottery-prices h3,
-.dashboards h3 {
-    color: #e0e0e0;
-    font-size: 20px;
-}
-
-.lottery-prices ul,
-.dashboards ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.lottery-prices li,
-.dashboards li {
-    color: #b0b0b0;
-    font-size: 16px;
-}
-
-.dashboards a {
-    color: #1e90ff;
-    text-decoration: none;
-}
-
-.dashboards a:hover {
-    text-decoration: underline;
-}
-
-#app.dark-theme {
-    background-color: #121212;
-    color: #e0e0e0;
-    font-family: 'Arial', sans-serif;
-    min-height: 100vh;
-}
-
-.main-content {
-    margin-left: 250px;
-    padding: 20px;
-    background-color: #1e1e1e;
-    transition: margin-left 0.3s ease;
-}
-
-.main-content.sidebar-hidden {
-    margin-left: 0;
-}
-
-.dashboard-banner {
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    height: auto;
-}
-
-.lottery-table h3 {
-    color: #e0e0e0;
-    font-size: 20px;
+.dashboard-name-header {
+    color: #f8f9fa;
+    padding: 10px 15px;
+    background-color: #333;
+    border-radius: 4px;
     margin-bottom: 15px;
 }
 
-table {
+/* Table styles */
+.dashboard-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #2c2c2c;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
 }
 
-th,
-td {
+.dashboard-table th,
+.dashboard-table td {
     padding: 12px 15px;
     text-align: left;
-    color: #e0e0e0;
     border-bottom: 1px solid #444;
+    cursor: pointer;
 }
 
-th {
+.dashboard-table th {
     background-color: #333;
+    color: #fff;
 }
 
-td a {
-    color: #1e90ff;
-    text-decoration: none;
-}
-
-td a:hover {
-    text-decoration: underline;
-}
-
-tbody tr:hover {
+.dashboard-table tr:hover {
     background-color: #444;
 }
-</style>
-<style scoped>
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+
+/* Status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
 
-/* Modal Content */
-.modal-content {
-    background-color: #333;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 400px;
-    width: 100%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    color: #e0e0e0;
-}
-
-h3 {
-    margin-bottom: 15px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    background-color: #444;
-    color: #e0e0e0;
-    border: 1px solid #555;
-    border-radius: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    margin-top: 10px;
-    border-radius: 5px;
-}
-
-button.btn-success {
+.status-badge.active {
     background-color: #28a745;
-    color: #fff;
+    color: white;
 }
 
-button.btn-danger {
+.status-badge.closed {
     background-color: #dc3545;
-    color: #fff;
+    color: white;
 }
 
-button:hover {
-    opacity: 0.9;
+/* Percentage bar */
+.percentage-bar {
+    width: 100%;
+    background-color: #444;
+    border-radius: 4px;
+    height: 24px;
+    position: relative;
 }
 
-/* Modal Overlay */
-/* Modal Overlay */
+.percentage-fill {
+    height: 100%;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    transition: width 0.3s ease;
+}
+
+/* Pagination controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0 10px; /* Adjusted margin for bottom placement */
+}
+
+/* Modal styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -375,57 +375,45 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 1000;
 }
 
-/* Modal Content */
 .modal-content {
-    background-color: #333;
+    background-color: #2c2c2c;
     padding: 20px;
     border-radius: 8px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    color: #e0e0e0;
-    position: relative;
-    max-height: 80vh;
-    /* Limit the height of the modal */
-    overflow: hidden;
-    /* Hide any overflow outside the modal */
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
-/* Number Picker Grid */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.number-grid-container {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
 .number-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 10px;
     padding: 15px;
-    max-height: 60vh;
-    /* Set a specific height for the grid */
-    overflow-y: auto;
-    /* Enable scrolling within the grid if there are many numbers */
 }
 
-/* Adjusting the overflow behavior of the modal itself */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    overflow: auto;
-    /* Allow overflow to be handled properly */
-}
-
-/* Number Button */
 .number-button {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: 2px solid #e0e0e0;
     background-color: #333;
@@ -433,20 +421,41 @@ button:hover {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: all 0.2s;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
-/* Hover & Active Effects */
-.number-button:hover {
-    background-color: #555;
-    transform: scale(1.1);
+.number-button.picked {
+    background-color: #28a745;
+    border-color: #28a745;
 }
 
-.number-button.highlighted {
-    background-color: green;
-    color: white;
+.picked-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #fff;
+    color: #28a745;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.user-tooltip {
+    position: fixed;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1001;
 }
 </style>

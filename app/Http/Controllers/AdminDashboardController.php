@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lotteries;
 use App\Models\User;
-use App\Models\Results;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Models\Deposit;
+use App\Models\Message;
+use App\Models\Results;
+use App\Models\Lotteries;
+use App\Models\Withdrawal;
+use Illuminate\Support\Facades\Log;
 
 class AdminDashboardController extends Controller
 {
@@ -16,7 +19,7 @@ class AdminDashboardController extends Controller
 
         // Get lottery statistics
         $lotteries = Lotteries::withCount(['dashboards', 'winners'])
-            ->with(['results' => function($query) {
+            ->with(['results' => function ($query) {
                 $query->latest()->take(5);
             }])
             ->get();
@@ -59,11 +62,21 @@ class AdminDashboardController extends Controller
 
         // Log::info('Jackpot information retrieved', ['jackpots' => $jackpots]);
 
+        $latestMessages = Message::latest()->take(5)->with('user')->get();
+        $latestWithdraws = Withdrawal::latest()->take(5)->with('user')->get();
+        $latestDeposits = Deposit::latest()->take(5)->with('user')->get();
+
+        log::info('Latest messages retrieved', ['latestMessages' => $latestMessages]);
+        log::info('Latest withdraws retrieved', ['latestWithdraws' => $latestWithdraws]);
+        log::info('Latest deposits retrieved', ['latestDeposits' => $latestDeposits]);
+
         return Inertia::render('AdminDashboard/Dashboard', [
             'lotteries' => $lotteries,
             'userStats' => $userStats,
             'recentResults' => $recentResults,
-            // 'jackpots' => $jackpots,
+            'latestMessages' => $latestMessages,
+            'latestWithdraws' => $latestWithdraws,
+            'latestDeposits' => $latestDeposits,
         ]);
     }
 }
