@@ -266,7 +266,7 @@ Route::middleware(['web'])->group(function () {
             Route::get('/Lottery-reports', [ReportsController::class, 'lotteriesReport']);
             Route::get('/Lottery-Expired', [ReportsController::class, 'deactiveLotteryDashboardsReport']);
             Route::get('/Lottery-Cancelled', [ReportsController::class, 'cancelledLotteryDashboardsReport']);
-            Route::get('/refund' , [ReportsController::class, 'refund']);
+            Route::get('/refund', [ReportsController::class, 'refund']);
 
 
 
@@ -306,17 +306,14 @@ Route::middleware(['web'])->group(function () {
 
             //backup
             Route::get('/backup', [BackUpController::class, 'index']);
-            Route::get('/admin/backup', [BackupController::class, 'backup'])
-                ->name('admin.backup')
-                ->middleware(['auth', 'admin']); 
+            Route::get('/backup/db', [BackupController::class, 'backup'])
+                ->name('admin.backup');
 
             // Route::get("/customers", function () {
             //     return Inertia::render("AdminDashboard/Customers");
             // });
             Route::get('/notifications', [AdminNotificationController::class, 'index']);
             Route::post('/notifications/mark-as-read', [AdminNotificationController::class, 'markAsRead']);
-
-
         });
     });
 });
