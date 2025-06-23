@@ -61,11 +61,18 @@ export default {
         }
         
         try {
-            const response = await axios({
-                url: route('admin.backup'),
-                method: 'GET',
-                responseType: 'blob',
-            });
+           const response = await axios({
+            url: route('admin.backup'),
+            method: 'GET',
+            responseType: 'blob',
+            withCredentials: true, // Add this line
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                // If using token auth:
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            }
+        });
 
             if (response.data instanceof Blob) {
                 const url = window.URL.createObjectURL(response.data);
