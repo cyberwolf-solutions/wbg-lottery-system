@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Ifsnop\Mysqldump\Mysqldump;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Process\Process;
@@ -21,7 +22,7 @@ class BackUpController extends Controller
 
         return Inertia::render('AdminDashboard/bacup');
     }
-    
+
 
 
 
@@ -50,7 +51,7 @@ class BackUpController extends Controller
                 'lock-tables' => false,
             ];
 
-            $dump = new Mysqldump(
+            $dump = new \Ifsnop\Mysqldump\Mysqldump(
                 "mysql:host={$host};dbname={$db}",
                 $user,
                 $pass,
@@ -61,6 +62,14 @@ class BackUpController extends Controller
 
             return response()->download($filePath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
+            // Log the error with full context
+            Log::error('Database backup failed', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return response()->json([
                 'error' => 'Backup failed: ' . $e->getMessage()
             ], 500);

@@ -15,13 +15,18 @@ class FundsController extends Controller
     {
         $search = $request->input('search');
 
-        $users = User::with('wallet')
+        $users = User::with([
+            'wallet',
+            'wallet.transactions' => function ($query) {
+                $query->orderBy('created_at', 'desc')->limit(5);
+            }
+        ])
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->get(); 
-
+            ->orderBy('id', 'desc')
+            ->get();
         return Inertia::render('AdminDashboard/Funds', [
             'users' => $users,
         ]);

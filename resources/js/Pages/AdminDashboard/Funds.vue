@@ -40,8 +40,11 @@
                                     <button @click="openAddModal(user)" class="btn btn-sm btn-success me-1">
                                         <i class="bi bi-plus-lg"></i> Add
                                     </button>
-                                    <button @click="openDeductModal(user)" class="btn btn-sm btn-danger">
+                                    <button @click="openDeductModal(user)" class="btn btn-sm btn-danger me-1">
                                         <i class="bi bi-dash-lg"></i> Deduct
+                                    </button>
+                                    <button @click="openWalletModal(user)" class="btn btn-sm btn-info me-1">
+                                        <i class="bi bi-eye"></i> View Wallet
                                     </button>
                                 </td>
                             </tr>
@@ -135,6 +138,63 @@
                 </div>
             </div>
         </div>
+
+         <!-- Wallet Details Modal -->
+        <div v-if="showWalletModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h3>Wallet Details for {{ selectedUser?.name }}</h3>
+                    <button @click="closeModal" class="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Summary</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p><strong>Available Balance:</strong> ${{
+                                        safeFormatBalance(selectedUser?.wallet?.available_balance) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Recent Transactions</h5>
+                            <div class="transaction-list">
+                                <div v-if="!selectedUser?.wallet?.transactions?.length" class="alert alert-info">
+                                    No transactions found
+                                </div>
+                                <table v-else class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="tx in selectedUser?.wallet?.transactions" :key="tx.id">
+                                            <td>{{ formatDate(tx.created_at) }}</td>
+                                            <td>{{ tx.type }}</td>
+                                            <td
+                                                :class="{ 'text-success': tx.amount > 0, 'text-danger': tx.amount < 0 }">
+                                                ${{ safeFormatBalance(Math.abs(tx.amount)) }}
+                                            </td>
+                                            <td>{{ tx.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @click="closeModal" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        
     </div>
 </template>
 
@@ -168,6 +228,7 @@ export default {
             searchTimeout: null,
             responseMessage: null,
             responseClass: 'bottom-response',
+             showWalletModal: false,
         };
     },
     computed: {
@@ -190,6 +251,11 @@ export default {
         }
     },
     methods: {
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        },
         safeFormatBalance(value) {
             if (value === null || value === undefined) return '0.00';
             const num = Number(value);
@@ -276,12 +342,47 @@ export default {
             } catch (error) {
                 this.showResponse('Failed to deduct funds. Please try again.', 'bottom');
             }
-        }
+        },
+          openWalletModal(user) {
+            this.selectedUser = user;
+            this.showWalletModal = true;
+        },
+
+        closeModal() {
+            this.showWalletModal = false;
+            this.selectedUser = null;
+        },
     }
 };
 </script>
 
 <style scoped>
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.transaction-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
 /* Main Layout */
 #app.dark-theme {
     background-color: #121212;
