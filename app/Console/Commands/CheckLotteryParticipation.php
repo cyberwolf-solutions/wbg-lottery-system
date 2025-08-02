@@ -55,11 +55,11 @@ class CheckLotteryParticipation extends Command
                             ->groupBy('user_id');
 
 
-                        $delete = PickedNumber::where('lottery_dashboard_id', $dashboard->id)
-                            ->where('status', 'allocated')
-                            ->delete();
+                        // $delete = PickedNumber::where('lottery_dashboard_id', $dashboard->id)
+                        //     ->where('status', 'allocated')
+                        //     ->delete();
 
-                        Log::info('Deleted allocated numbers: ' . $delete);
+                        // Log::info('Deleted allocated numbers: ' . $delete);
 
                         Log::info("Picked Numbers for  :", $pickedNumbers->toArray());
 
@@ -78,27 +78,33 @@ class CheckLotteryParticipation extends Command
                                 foreach ($picks as $pick) {
                                     $totalRefund += $dashboard->price;
 
-                                    // Log each refund transaction
-                                    $transaction = Transaction::create([
-                                        'user_id' => $userId,
-                                        'amount' => $dashboard->price,
-                                        'type' => 'refund',
-                                        'description' => 'Refund for cancelled lottery',
-                                        'wallet_id' => $wallet->id,
-                                        'transaction_date' => now(),
-                                        'lottery_id' => $dashboard->lottery_id,
-                                        'lottery_dashboard_id' => $dashboard->id,
-                                        'picked_number' => $pick->number,
-                                    ]);
+                                    try {
 
-                                    $refundDetails[] = [
-                                        'lottery_name' => $dashboard->lottery->name,
-                                        'draw_number' => $dashboard->draw_number,
-                                        'picked_number' => $pick->number,
-                                        'amount' => $dashboard->price
-                                    ];
+                                        // Log each refund transaction
+                                        $transaction = Transaction::create([
+                                            'user_id' => $userId,
+                                            'amount' => $dashboard->price,
+                                            'type' => 'refund',
+                                            'description' => 'Refund for cancelled lottery',
+                                            'wallet_id' => $wallet->id,
+                                            'transaction_date' => now(),
+                                            'lottery_id' => $dashboard->lottery_id,
+                                            'lottery_dashboard_id' => $dashboard->id,
+                                            'picked_number' => $pick->number,
+                                        ]);
 
-                                    Log::info("Refunded user {$userId} amount {$dashboard->price} for number {$pick->number}.");
+                                        $refundDetails[] = [
+                                            'lottery_name' => $dashboard->lottery->name,
+                                            'draw_number' => $dashboard->draw_number,
+                                            'picked_number' => $pick->number,
+                                            'amount' => $dashboard->price
+                                        ];
+
+                                        Log::info("Refunded user {$userId} amount {$dashboard->price} for number {$pick->number}.");
+                                    } catch (\Exception $e) {
+                                        Log::error("Failed to create refund transaction for user {$userId}, Pick {$pick->number}: " . $e->getMessage());
+                                        continue; // Skip to next pick
+                                    }
                                 }
 
                                 // Update wallet with total refund
