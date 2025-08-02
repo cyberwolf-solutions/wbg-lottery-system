@@ -16,20 +16,26 @@ class PurchaseListController extends Controller
     {
         $lottery = LotteryDashboards::with('lottery')
             ->where('lottery_id', $id)
+
             ->orderBy('dashboard')
+
             ->orderBy('draw_number', 'desc')
             ->get();
 
         $pickedNumbers = PickedNumber::where('lottery_id', $id)
+
             ->where('status', 'picked')
             ->with('user:id,name')
+
             ->get()
             ->groupBy('lottery_dashboard_id')
             ->map(function ($items) {
                 return $items->map(function ($item) {
                     return [
                         'number' => $item->picked_number,
+
                         'user' => $item->user->name
+
                     ];
                 });
             });
