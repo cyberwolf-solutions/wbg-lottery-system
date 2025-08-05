@@ -49,7 +49,7 @@
                                 <td>
                                     <span v-if="refund.lottery_dashboard">
                                         {{ refund.lottery_dashboard.dashboard }} || {{
-                                            formatDate(refund.lottery_dashboard.dashboard) }} ||
+                                            formatDate(refund.lottery_dashboard.date) }} ||
                                         {{ refund.lottery_dashboard.draw_number }}
                                     </span>
                                     <span v-else>N/A</span>
