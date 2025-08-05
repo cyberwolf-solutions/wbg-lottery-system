@@ -22,7 +22,7 @@ class LotteryDashboards extends Model
         'draw',
         'draw_number',
         'winning_numbers',
-      
+
         'status',
         'dashboardType',
         'created_by',
