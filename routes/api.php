@@ -267,6 +267,9 @@ Route::middleware(['web'])->group(function () {
             Route::get('/Lottery-Expired', [ReportsController::class, 'deactiveLotteryDashboardsReport']);
             Route::get('/Lottery-Cancelled', [ReportsController::class, 'cancelledLotteryDashboardsReport']);
             Route::get('/refund', [ReportsController::class, 'refund']);
+            Route::get('/cancelled', [ReportsController::class, 'cancelled']);
+            Route::get('/User-Picks', [ReportsController::class, 'UserPicks']);
+            Route::get('/Picked-Numbers', [ReportsController::class, 'PickedNumbers']);
 
 
 

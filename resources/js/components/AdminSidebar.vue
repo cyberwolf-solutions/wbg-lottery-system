@@ -161,7 +161,7 @@ export default {
           permission: "manage dashboards",
           subItems: []
         },
-        
+
         {
           id: 9,
           name: "Results",
@@ -238,8 +238,11 @@ export default {
             { id: 6, name: "Expired Dashboards", link: "/api/admin/Lottery-Expired", permission: "manage reports" },
             { id: 6, name: "Cancelled Dashboards", link: "/api/admin/Lottery-Cancelled", permission: "manage reports" },
             { id: 7, name: "Refund", link: "/api/admin/refund", permission: "manage reports" },
-        
-            
+            { id: 8, name: "Cancelled Picks", link: "/api/admin/cancelled", permission: "manage reports" },
+            { id: 9, name: "User Picks", link: "/api/admin/User-Picks", permission: "manage reports" },
+            { id: 10, name: "Picked numbers", link: "/api/admin/Picked-Numbers", permission: "manage reports" },
+
+
           ],
         },
       ],
@@ -252,14 +255,14 @@ export default {
         .map(item => {
           // Create a shallow copy of the item to avoid direct mutation
           const menuItem = { ...item };
-          
+
           // Process subItems if they exist
           if (menuItem.subItems && menuItem.subItems.length) {
-            menuItem.subItems = menuItem.subItems.filter(subItem => 
+            menuItem.subItems = menuItem.subItems.filter(subItem =>
               this.hasPermission(subItem.permission)
             );
           }
-          
+
           return menuItem;
         })
         .filter(item => {
@@ -269,9 +272,9 @@ export default {
           // 2. It has subItems AND at least one subItem is visible
           const hasPermission = this.hasPermission(item.permission);
           const hasVisibleSubItems = item.subItems && item.subItems.length > 0;
-          
-          return (!item.subItems || !item.subItems.length) 
-            ? hasPermission 
+
+          return (!item.subItems || !item.subItems.length)
+            ? hasPermission
             : hasVisibleSubItems;
         });
     }
@@ -279,26 +282,26 @@ export default {
   methods: {
     hasPermission(requiredPermission) {
       if (!requiredPermission) return true; // No permission required
-      
+
       // Normalize the required permission
       const requiredPerm = requiredPermission.trim().toLowerCase();
-      
+
       // Check against user permissions
       return this.userPermissions.some(userPerm => {
         const userPermNormalized = userPerm.trim().toLowerCase();
-        
+
         // Exact match
         if (userPermNormalized === requiredPerm) return true;
-        
+
         // Wildcard permissions
         if (userPermNormalized === '*.*') return true; // Super admin
-        
+
         // Partial wildcard (e.g., manage.*)
         if (userPermNormalized.endsWith('.*')) {
           const permPrefix = userPermNormalized.split('.')[0];
           return requiredPerm.startsWith(permPrefix);
         }
-        
+
         return false;
       });
     },
@@ -306,11 +309,11 @@ export default {
     isActive(link) {
       return window.location.pathname === link;
     },
-    
+
     isDropdownActive(item) {
       return item.subItems?.some(subItem => this.isActive(subItem.link));
     },
-    
+
     toggleDropdown(id) {
       const menuItem = this.menuItems.find(item => item.id === id);
       if (menuItem) {
@@ -318,16 +321,16 @@ export default {
         this.saveSidebarState();
       }
     },
-    
+
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
       this.$emit("sidebar-toggle", this.isSidebarVisible);
     },
-    
+
     saveSidebarState() {
       localStorage.setItem('sidebarMenuState', JSON.stringify(this.menuItems));
     },
-    
+
     loadSidebarState() {
       const savedState = localStorage.getItem('sidebarMenuState');
       if (savedState) {
@@ -342,7 +345,7 @@ export default {
         }
       }
     },
-    
+
     async fetchUserPermissions() {
       try {
         const response = await axios.get('/api/admin/permissions');
@@ -353,7 +356,7 @@ export default {
         this.loading.permissions = false;
       }
     },
-    
+
     async fetchLotteryData() {
       this.loading.lotteries = true;
       try {
@@ -366,7 +369,7 @@ export default {
         this.loading.lotteries = false;
       }
     },
-    
+
     updateMenuWithLotteries(lotteries) {
       const lotteryMenuUpdates = [
         {
@@ -398,7 +401,7 @@ export default {
         }
       });
     },
-    
+
     async logout() {
       try {
         const response = await axios.post('/api/admin/logout');
@@ -414,11 +417,11 @@ export default {
     try {
       await this.fetchUserPermissions();
       this.loadSidebarState();
-      
+
       // Only fetch lottery data if we have relevant permissions
-      if (this.hasPermission('manage dashboards') || 
-          this.hasPermission('view purchases') || 
-          this.hasPermission('manage winners')) {
+      if (this.hasPermission('manage dashboards') ||
+        this.hasPermission('view purchases') ||
+        this.hasPermission('manage winners')) {
         this.fetchLotteryData();
       }
     } catch (error) {

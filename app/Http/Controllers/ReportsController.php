@@ -9,6 +9,7 @@ use App\Models\Lotteries;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
+use App\Models\PickedNumber;
 use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
@@ -38,7 +39,7 @@ class ReportsController extends Controller
     public function adminReport()
     {
         $admins = Admin::with('roles')
-        ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($admin) {
                 return [
@@ -139,6 +140,47 @@ class ReportsController extends Controller
         Log::info('Refund Report:', ['refund' => $refund]);
 
         return Inertia::render('AdminDashboard/refundReport', [
+            'refunds' => $refund
+        ]);
+    }
+
+
+    public function cancelled()
+    {
+        $refund = PickedNumber::onlyTrashed()
+            ->with(['lottery', 'lotteryDashboard', 'user'])
+            ->get();
+
+
+
+        return Inertia::render('AdminDashboard/refundPicks', [
+            'refunds' => $refund
+        ]);
+    }
+
+    public function UserPicks()
+    {
+        $refund = PickedNumber::with(['lottery', 'lotteryDashboard', 'user'])
+            ->withTrashed()
+            ->get();
+
+
+        return Inertia::render('AdminDashboard/UserPicks', [
+            'refunds' => $refund
+        ]);
+    }
+
+
+    public function PickedNumbers()
+    {
+
+
+        $refund = PickedNumber::with(['lottery', 'lotteryDashboard', 'user'])
+            ->withTrashed()
+            ->get();
+
+
+        return Inertia::render('AdminDashboard/PickedNumbers', [
             'refunds' => $refund
         ]);
     }
