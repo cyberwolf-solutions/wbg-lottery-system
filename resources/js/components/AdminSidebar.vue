@@ -238,7 +238,9 @@ export default {
             { id: 6, name: "Expired Dashboards", link: "/api/admin/Lottery-Expired", permission: "manage reports" },
             { id: 6, name: "Cancelled Dashboards", link: "/api/admin/Lottery-Cancelled", permission: "manage reports" },
             { id: 7, name: "Refund", link: "/api/admin/refund", permission: "manage reports" },
-            { id: 7, name: "Cancelled Picks", link: "/api/admin/cancelled", permission: "manage reports" },
+            { id: 8, name: "Cancelled Picks", link: "/api/admin/cancelled", permission: "manage reports" },
+            { id: 9, name: "User Picks", link: "/api/admin/User-Picks", permission: "manage reports" },
+            { id: 10, name: "Picked numbers", link: "/api/admin/Picked-Numbers", permission: "manage reports" },
 
 
           ],
