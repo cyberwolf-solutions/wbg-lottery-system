@@ -157,4 +157,31 @@ class ReportsController extends Controller
             'refunds' => $refund
         ]);
     }
+
+    public function UserPicks()
+    {
+        $refund = PickedNumber::with(['lottery', 'lotteryDashboard', 'user'])
+            ->withTrashed()
+            ->get();
+
+
+        return Inertia::render('AdminDashboard/UserPicks', [
+            'refunds' => $refund
+        ]);
+    }
+
+
+    public function PickedNumbers()
+    {
+
+
+        $refund = PickedNumber::with(['lottery', 'lotteryDashboard', 'user'])
+            ->withTrashed()
+            ->get();
+
+
+        return Inertia::render('AdminDashboard/PickedNumbers', [
+            'refunds' => $refund
+        ]);
+    }
 }
