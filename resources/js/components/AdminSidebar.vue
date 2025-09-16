@@ -101,6 +101,13 @@ export default {
           permission: "view wallet history"
         },
         {
+          id: 19,
+          name: "Email",
+          link: "/api/admin/email",
+          isOpen: false,
+          permission: "view wallet history"
+        },
+        {
           id: 16,
           name: "Messages",
           link: "/api/admin/messages",

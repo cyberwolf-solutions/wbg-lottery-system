@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\roleController;
 use App\Http\Controllers\testController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\BackUpController;
 use App\Http\Controllers\HoidayController;
@@ -278,6 +279,9 @@ Route::middleware(['web'])->group(function () {
 
 
             Route::get('/Funds', [FundsController::class, 'index']);
+
+            Route::get('/email', [EmailController::class, 'index']);
+            Route::post('/send-email', [EmailController::class, 'sendEmail']);
 
             Route::post('/funds/{user}/update', [FundsController::class, 'updateWallet'])->name('admin.funds.update');
 
