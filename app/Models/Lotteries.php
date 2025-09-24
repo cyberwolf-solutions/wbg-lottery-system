@@ -31,10 +31,27 @@ class Lotteries extends Model
     {
         return $this->hasMany(LotteryDashboards::class, 'lottery_id');
     }
+    public function digitDashboards()
+    {
+        return $this->hasMany(DigitLotteryDashboard::class, 'lottery_id');
+    }
+
     public function winners()
     {
         return $this->hasManyThrough(Winner::class, LotteryDashboards::class, 'lottery_id', 'lottery_dashboard_id');
     }
+    public function digitwinners()
+    {
+        return $this->hasManyThrough(
+            DigitWinners::class,
+            DigitLotteryDashboard::class,
+            'lottery_id',                 // Foreign key on DigitLotteryDashboard
+            'digit_lottery_dashboard_id', // ✅ correct foreign key on digit_winners
+            'id',                         // Local key on Lotteries
+            'id'                          // Local key on DigitLotteryDashboard
+        );
+    }
+
 
     public function results()
     {

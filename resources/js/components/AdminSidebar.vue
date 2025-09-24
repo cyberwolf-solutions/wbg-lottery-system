@@ -15,15 +15,177 @@
 
       <!-- Sidebar Menu -->
       <ul class="nav flex-column mt-5" v-if="!loading.permissions">
+        <!-- Dashboard -->
+        <li class="nav-item category-header">MAIN</li>
+        <li class="nav-item">
+          <a href="/api/admin/dashboard" class="nav-link" :class="{ active: isActive('/api/admin/dashboard') }"
+            aria-label="Go to Dashboard">
+            Dashboard
+          </a>
+        </li>
+
+        <!-- User Management -->
+        <li class="nav-item category-header">USER MANAGEMENT</li>
         <template v-for="item in visibleMenuItems" :key="item.id">
-          <li class="nav-item">
-            <!-- Main Menu Item -->
+          <li class="nav-item" v-if="['Users', 'Players', 'Affiliates', 'Roles'].includes(item.name)">
             <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
               :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
               {{ item.name }}
             </a>
 
-            <!-- Dropdown Menu Item -->
+            <template v-else>
+              <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
+                :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+                <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <transition name="submenu-transition">
+                <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                  <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
+                    <a :href="subItem.link" class="nav-link" :class="{ active: isActive(subItem.link) }">
+                      {{ subItem.name }}
+                    </a>
+                  </li>
+                </ul>
+              </transition>
+            </template>
+          </li>
+        </template>
+
+        <!-- Lottery Management -->
+        <li class="nav-item category-header">LOTTERY MANAGEMENT</li>
+        <template v-for="item in visibleMenuItems" :key="item.id">
+          <li class="nav-item"
+            v-if="['Lotteries', 'Lottery Dashboards', 'Digit Dashboards', 'Results', 'Holidays', 'Edit Draw Dates'].includes(item.name) || (item.subItems && item.subItems.some(si => ['Holidays', 'Edit Draw Dates'].includes(si.name)))">
+            <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
+              :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
+              {{ item.name }}
+            </a>
+
+            <template v-else>
+              <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
+                :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+                <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <transition name="submenu-transition">
+                <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                  <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
+                    <a :href="subItem.link" class="nav-link" :class="{ active: isActive(subItem.link) }">
+                      {{ subItem.name }}
+                    </a>
+                  </li>
+                </ul>
+              </transition>
+            </template>
+          </li>
+        </template>
+
+        <!-- Financial Management -->
+        <li class="nav-item category-header">FINANCIAL MANAGEMENT</li>
+        <template v-for="item in visibleMenuItems" :key="item.id">
+          <li class="nav-item"
+            v-if="['Funds', 'Wallet History', 'Credit Request', 'Purchase List', 'Digit Purchase List', 'Bank Details', 'Withdrawal Requests', 'Credit Requests'].includes(item.name) || (item.subItems && item.subItems.some(si => ['Credit Requests', 'Withdrawal Requests'].includes(si.name)))">
+            <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
+              :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
+              {{ item.name }}
+            </a>
+
+            <template v-else>
+              <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
+                :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+                <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <transition name="submenu-transition">
+                <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                  <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
+                    <a :href="subItem.link" class="nav-link" :class="{ active: isActive(subItem.link) }">
+                      {{ subItem.name }}
+                    </a>
+                  </li>
+                </ul>
+              </transition>
+            </template>
+          </li>
+        </template>
+
+        <!-- Winners & Reports -->
+        <li class="nav-item category-header">WINNERS & REPORTS</li>
+        <template v-for="item in visibleMenuItems" :key="item.id">
+          <li class="nav-item"
+            v-if="['Winners', 'Digit Winners', 'Reports'].includes(item.name) || item.name.includes('Report')">
+            <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
+              :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
+              {{ item.name }}
+            </a>
+
+            <template v-else>
+              <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
+                :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+                <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <transition name="submenu-transition">
+                <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                  <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
+                    <a :href="subItem.link" class="nav-link" :class="{ active: isActive(subItem.link) }">
+                      {{ subItem.name }}
+                    </a>
+                  </li>
+                </ul>
+              </transition>
+            </template>
+          </li>
+        </template>
+
+        <!-- Communications -->
+        <li class="nav-item category-header">COMMUNICATIONS</li>
+        <template v-for="item in visibleMenuItems" :key="item.id">
+          <li class="nav-item" v-if="['Email', 'Messages', 'Notices'].includes(item.name)">
+            <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
+              :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
+              {{ item.name }}
+            </a>
+
+            <template v-else>
+              <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
+                :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
+                {{ item.name }}
+                <i :class="['fas float-end', item.isOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+              </a>
+
+              <!-- Submenu Items -->
+              <transition name="submenu-transition">
+                <ul v-if="item.isOpen" class="nav flex-column ms-3">
+                  <li v-for="subItem in item.subItems" :key="subItem.id" class="nav-item">
+                    <a :href="subItem.link" class="nav-link" :class="{ active: isActive(subItem.link) }">
+                      {{ subItem.name }}
+                    </a>
+                  </li>
+                </ul>
+              </transition>
+            </template>
+          </li>
+        </template>
+
+        <!-- System -->
+        <li class="nav-item category-header">SYSTEM</li>
+        <template v-for="item in visibleMenuItems" :key="item.id">
+          <li class="nav-item" v-if="['Back-Up'].includes(item.name)">
+            <a v-if="!item.subItems || !item.subItems.length" :href="item.link" class="nav-link"
+              :class="{ active: isActive(item.link) }" :aria-label="'Go to ' + item.name">
+              {{ item.name }}
+            </a>
+
             <template v-else>
               <a href="#" @click.prevent="toggleDropdown(item.id)" class="nav-link"
                 :class="{ active: isDropdownActive(item) }" :aria-label="'Go to ' + item.name">
@@ -89,8 +251,6 @@ export default {
           subItems: [
             { id: 3, name: "Users", link: "/api/admin/users", permission: "manage users" },
             { id: 4, name: "Roles", link: "/api/admin/Roles", permission: "manage roles" },
-            // { id: 5, name: "Players", link: "/api/admin/players", permission: "manage players" },
-            // { id: 6, name: "Affiliates", link: "/api/admin/affiliate", permission: "manage affiliates" },
           ],
         },
         {
@@ -168,17 +328,46 @@ export default {
           permission: "manage dashboards",
           subItems: []
         },
-
+        {
+          id: 21,
+          name: "Digit Dashboards",
+          link: "#",
+          isOpen: false,
+          permission: "manage dashboards",
+          subItems: []
+        },
+        // {
+        //   id: 9,
+        //   name: "Results",
+        //   link: "/api/admin/results",
+        //   isOpen: false,
+        //   permission: "view results"
+        // },
         {
           id: 9,
           name: "Results",
-          link: "/api/admin/results",
+          link: "#",
           isOpen: false,
-          permission: "view results"
+          permission: "view results",
+          subItems: [
+            { id: 1, name: "Results", link: "/api/admin/results", permission: "view results" },
+            { id: 2, name: "Digit Results", link: "/api/admin/digit-results", permission: "view results" }
+          ],
         },
+
         {
           id: 4,
           name: "Winners",
+          link: "#",
+          isOpen: false,
+          permission: "manage winners",
+          subItems: [
+            { id: 6, name: "Lottery 2", link: "/api/adminWin", permission: "manage winners" },
+          ],
+        },
+        {
+          id: 25,
+          name: "Digit Winners",
           link: "#",
           isOpen: false,
           permission: "manage winners",
@@ -207,7 +396,15 @@ export default {
             { id: 7, name: "Lottery 1", link: "/api/purchase", permission: "view purchases" },
           ],
         },
-
+        {
+          id: 22, // Unique ID for the new menu item
+          name: "Digit Purchase List",
+          link: "#",
+          isOpen: false,
+          permission: "view purchases",
+          subItems: []
+        }
+        ,
         {
           id: 7,
           name: "Wallet History",
@@ -222,16 +419,6 @@ export default {
           isOpen: false,
           permission: "manage bank"
         },
-        // {
-        //   id: 7,
-        //   name: "Wallet History",
-        //   link: "#",
-        //   isOpen: false,
-        //   permission: "view wallet history",
-        //   subItems: [
-        //     { id: 7, name: "Transaction History", link: "/api/admin/walletHistory", permission: "view transactions" },
-        //   ],
-        // },
         {
           id: 13,
           name: "Reports",
@@ -248,8 +435,6 @@ export default {
             { id: 8, name: "Cancelled Picks", link: "/api/admin/cancelled", permission: "manage reports" },
             { id: 9, name: "User Picks", link: "/api/admin/User-Picks", permission: "manage reports" },
             { id: 10, name: "Picked numbers", link: "/api/admin/Picked-Numbers", permission: "manage reports" },
-
-
           ],
         },
       ],
@@ -385,21 +570,50 @@ export default {
           linkTemplate: "/api/admin/lottery/dashboard/{id}"
         },
         {
+
+          name: "Digit Dashboards",
+          permission: "manage dashboards",
+          linkTemplate: "/api/admin/lottery/digitdashboard/{id}"
+        },
+        {
           name: "Purchase List",
           permission: "view purchases",
           linkTemplate: "/api/admin/purchase/{id}"
         },
         {
+          name: "Digit Purchase List",
+          permission: "view purchases",
+          linkTemplate: "/api/admin/digit-purchase/{id}"
+        },
+        {
           name: "Winners",
           permission: "manage winners",
           linkTemplate: "/api/admin/adminWin/{id}"
+        },
+        {
+          name: "Digit Winners",
+          permission: "manage winners",
+          linkTemplate: "/api/admin/adminWin-digit/{id}"
         }
       ];
 
       lotteryMenuUpdates.forEach(menuUpdate => {
         const menuItem = this.menuItems.find(item => item.name === menuUpdate.name);
         if (menuItem) {
-          menuItem.subItems = lotteries.map(lottery => ({
+          // Filter lotteries based on menu type
+          let filteredLotteries = lotteries;
+          if (menuUpdate.name === "Digit Dashboards") {
+            filteredLotteries = lotteries.filter(lottery => lottery.type !== '1_digit');
+          } else if (menuUpdate.name === "Lottery Dashboards") {
+            filteredLotteries = lotteries.filter(lottery => lottery.type !== '1_digit');
+          }
+          if (menuUpdate.name === "Digit Purchase List") {
+            filteredLotteries = lotteries.filter(lottery => lottery.type !== '1_digit');
+          } else if (menuUpdate.name === "Purchase List") {
+            filteredLotteries = lotteries.filter(lottery => lottery.type !== '1_digit');
+          }
+
+          menuItem.subItems = filteredLotteries.map(lottery => ({
             id: lottery.id,
             name: lottery.name,
             link: menuUpdate.linkTemplate.replace('{id}', lottery.id),
@@ -438,7 +652,19 @@ export default {
   }
 };
 </script>
+
 <style scoped>
+/* Add category header styling */
+.category-header {
+  padding: 10px 15px;
+  margin-top: 15px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #aaa;
+  border-bottom: 1px solid #444;
+}
+
 .logout-btn {
   background: none;
   border: none;
@@ -447,6 +673,7 @@ export default {
   width: 100%;
   text-align: left;
   padding: 0.5rem 1rem;
+  margin-top: 20px;
 }
 
 .logout-btn:hover {
@@ -459,7 +686,6 @@ export default {
     text-align: center;
   }
 }
-
 
 .sidebar {
   width: 250px;

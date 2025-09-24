@@ -31,7 +31,8 @@ const props = defineProps({
     bank: Array,
     walletAddress: Array,
     winnings: Array,
-    affiliateData: Array
+    affiliateData: Array,
+    digitwinnings: Array
 });
 
 // Modal control functions
@@ -216,6 +217,12 @@ const paginatedWinnings = computed(() => {
     const start = (currentPage.value.winnings - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return props.winnings.slice(start, end);
+});
+
+const paginateddigitWinnings = computed(() => {
+    const start = (currentPage.value.winnings - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return props.digitwinnings.slice(start, end);
 });
 
 const paginatedAffiliate = computed(() => {
@@ -571,7 +578,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.transactions - 1) *
                                                     itemsPerPage + 1
-                                                }}</span>
+                                                    }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.transactions *
                                                     itemsPerPage,
@@ -679,7 +686,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.refunds - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.refunds *
                                                     itemsPerPage,
@@ -748,7 +755,7 @@ onMounted(() => {
                                             class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-green-500 font-medium">{{ withdrawalItem.amount }}
                                             </td>
-                                           
+
                                             <td class="px-6 py-4 text-gray-600">
                                                 {{ new Date(withdrawalItem.created_at).toLocaleString('en-US', {
                                                     year: 'numeric',
@@ -779,7 +786,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.withdrawals - 1) *
                                                     itemsPerPage + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.withdrawals *
                                                     itemsPerPage,
@@ -847,7 +854,7 @@ onMounted(() => {
                                         <tr v-for="depositItem in paginatedDeposits" :key="depositItem.id"
                                             class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
                                             <td class="px-6 py-4 text-gray-800">{{ depositItem.amount }}</td>
-                                            
+
                                             <td class="px-6 py-4 text-gray-600">
                                                 {{ new Date(depositItem.created_at).toLocaleString('en-US', {
                                                     year: 'numeric',
@@ -878,7 +885,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.deposits - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.deposits *
                                                     itemsPerPage,
@@ -964,10 +971,10 @@ onMounted(() => {
                                                 winningsItem.lottery_dashboard.draw_number }}
                                             </td>
                                             <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.date
-                                                }}</td>
+                                            }}</td>
                                             <td class="px-6 py-4 text-gray-800">{{
                                                 winningsItem.lottery_dashboard.dashboardType
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -981,7 +988,111 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.winnings - 1) * itemsPerPage +
                                                     1
-                                                    }}</span>
+                                                }}</span>
+                                                to
+                                                <span class="font-medium">{{ Math.min(currentPage.winnings *
+                                                    itemsPerPage,
+                                                    winnings.length) }}</span>
+                                                of
+                                                <span class="font-medium">{{ winnings.length }}</span>
+                                                results
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                                                aria-label="Pagination">
+                                                <button @click="prevPage('winnings')"
+                                                    :disabled="currentPage.winnings === 1"
+                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.winnings === 1 }"
+                                                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Previous</span>
+                                                    &larr; Previous
+                                                </button>
+
+                                                <button v-for="page in visiblePageRange('winnings')" :key="page"
+                                                    @click="goToPage('winnings', page)"
+                                                    :class="{ 'bg-blue-50 border-blue-500 text-blue-600 z-10': currentPage.winnings === page, 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': currentPage.winnings !== page }"
+                                                    class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                                    {{ page }}
+                                                </button>
+
+                                                <button @click="nextPage('winnings')"
+                                                    :disabled="currentPage.winnings === totalPages.winnings"
+                                                    :class="{ 'opacity-50 cursor-not-allowed': currentPage.deposits === totalPages.winnings }"
+                                                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Next</span>
+                                                    Next &rarr;
+                                                </button>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div
+                        class="card bg-gradient-to-r from-gray-100 via-blue-50 to-indigo-50 rounded-xl shadow-lg p-4 mt-16">
+                        <div class="card-header text-xl font-bold text-gray-800 mb-4">Single Digit Winnings</div>
+                        <div class="card-body">
+                            <div class="overflow-x-auto bg-white shadow-xl rounded-lg p-6">
+                                <table class="min-w-full table-auto">
+                                    <thead class="bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Price
+                                            </th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Winning Number</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Lottery Name</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Draw
+                                                Number</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Draw
+                                                Date</th>
+                                            <th
+                                                class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+                                                Type
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="winningsItem in paginateddigitWinnings" :key="winningsItem.id"
+                                            class="hover:bg-gray-100 transition-all duration-200 ease-in-out">
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.price }}</td>
+                                            <td class="px-6 py-4 text-gray-600">{{ winningsItem.winning_number }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery.name }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{
+                                                winningsItem.lottery_dashboard.draw_number }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-800">{{ winningsItem.lottery_dashboard.date
+                                            }}</td>
+                                            <td class="px-6 py-4 text-gray-800">{{
+                                                winningsItem.lottery_dashboard.dashboardType
+                                            }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Pagination for Winnings -->
+                                <div
+                                    class="flex items-center justify-between mt-4 px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm text-gray-700">
+                                                Showing
+                                                <span class="font-medium">{{ (currentPage.winnings - 1) * itemsPerPage +
+                                                    1
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.winnings *
                                                     itemsPerPage,
@@ -1067,7 +1178,7 @@ onMounted(() => {
                                                 Showing
                                                 <span class="font-medium">{{ (currentPage.affiliate - 1) * itemsPerPage
                                                     + 1
-                                                    }}</span>
+                                                }}</span>
                                                 to
                                                 <span class="font-medium">{{ Math.min(currentPage.affiliate *
                                                     itemsPerPage,

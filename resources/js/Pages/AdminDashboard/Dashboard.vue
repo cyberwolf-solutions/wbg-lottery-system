@@ -123,6 +123,25 @@
               </ul>
             </div>
           </div>
+          <div class="widget medium-widget">
+            <div class="widget-header">
+              <h3>Recent Digit Results</h3>
+            </div>
+            <div class="widget-content">
+              <ul class="results-list">
+                <li v-for="result in recentDigitResults" :key="result.id" class="result-item">
+                  <span class="lottery-name">{{ result.lottery.name }}</span>
+                  <span class="winning-number">
+                    <span v-for="(num, index) in result.winning_number.split('')" :key="index"
+                      class="number-ball small">{{
+                        num }}</span>
+                  </span>
+                  <span class="result-time" v-html="formatDate(result.created_at)"></span>
+
+                </li>
+              </ul>
+            </div>
+          </div>
 
           <div class="widget medium-widget">
             <div class="widget-header">
@@ -228,6 +247,10 @@ export default {
       default: () => ({})
     },
     recentResults: {
+      type: Array,
+      default: () => []
+    },
+    recentDigitResults: {
       type: Array,
       default: () => []
     },

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DigitLotteryDashboard;
+use App\Models\DigitPickedNumber;
 use Inertia\Inertia;
 use App\Models\Lottery;
 use App\Models\Lotteries;
@@ -88,5 +90,63 @@ class LotteriesController extends Controller
         $dashboard->save();
 
         return response()->json(['message' => 'Dashboard deactivated successfully']);
+    }
+
+
+
+
+    public function digitshow($id)
+    {
+
+
+        $lotteries = Lotteries::find($id);
+        $user = Auth::user();
+        $wallet = $user->wallet;
+        // dd($wallet);
+
+        Log::info($lotteries);
+
+
+        // $lotterydashboards = LotteryDashboards::where('lottery_id', $id)->where('status', 'active')->with('lottery')->get();
+        $lotterydashboards = DigitLotteryDashboard::where('lottery_id', $id)
+            ->where('status', 'active')
+            ->with('lottery')
+            ->orderBy('date', 'asc')
+            ->get();
+        // dd($lotterydashboards);
+
+        $dashboardTypes = DigitLotteryDashboard::where('lottery_id', $id)
+            ->where('status', 'active')
+            ->pluck('dashboardType')
+            ->unique()
+            ->values();
+
+
+
+
+
+        // dd($dashboardTypes);
+        $pickedNumbers = DigitPickedNumber::whereIn('digit_lottery_dashboard_id', $lotterydashboards->pluck('id'))
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'picked_number' => $item->picked_number,
+                    'lottery_dashboard_id' => $item->digit_lottery_dashboard_id
+                ];
+            })
+            ->toArray();
+
+        // dd($pickedNumbers);
+
+
+        // Pass the lottery data to the Inertia page
+        return Inertia::render('User/digitlottery', [
+            'lotterie' => $lotteries,
+            'lotterydashboards' => $lotterydashboards,
+            'pickedNumbers' => $pickedNumbers,
+            'wallet' => $wallet,
+            'dashboardTypes' => $dashboardTypes,
+            'status' => session('status'),
+        ]);
     }
 }
