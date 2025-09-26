@@ -27,10 +27,11 @@ class DigitWinners extends Model
 
 
 
-    public function lotteryDashboard()
+    public function dashboard()
     {
         return $this->belongsTo(DigitLotteryDashboard::class, 'digit_lottery_dashboard_id');
     }
+
 
     // Relationship with User
     public function user()

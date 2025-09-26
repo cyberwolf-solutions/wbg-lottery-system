@@ -33,4 +33,8 @@ class DigitLotteryDashboard extends Model
         return $this->hasMany(DigitPickedNumber::class, 'digit_lottery_dashboard_id');
         // Explicitly specify the foreign key column name
     }
+    public function winners()
+    {
+        return $this->hasMany(DigitWinners::class, 'digit_lottery_dashboard_id');
+    }
 }
