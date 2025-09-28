@@ -11,6 +11,7 @@
                 </div>
 
                 <div class="lottery-table">
+
                     <div class="alert alert-danger" v-if="errors.length">
                         <ul>
                             <li v-for="error in errors" :key="error">{{ error }}</li>
@@ -26,6 +27,7 @@
                     <h3 class="mt-4 mb-3">Assign Permissions</h3>
                     <table class="table table-bordered">
                         <thead class="table-dark">
+
                             <tr>
                                 <th>Module</th>
                                 <th>Permissions</th>

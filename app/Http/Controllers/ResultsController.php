@@ -107,6 +107,7 @@ class ResultsController extends Controller
 
             // Fetch the two dashboards (FirstDigit and LastDigit) for the given draw number
             $dashboards = LotteryDashboards::where('draw_number', $validatedData['draw_number'])
+
                 ->where('lottery_id', $validatedData['lottery_id'])
                 ->whereIn('dashboardType', ['First Digits', 'Last Digits'])
                 ->where('dashboard', $validatedData['dashboard_name'])

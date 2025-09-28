@@ -50,6 +50,7 @@ class CheckLotteryParticipation extends Command
                         // Fetch all picked numbers and group by user
                         $pickedNumbers = PickedNumber::with('user')
                             ->where('lottery_dashboard_id', $dashboard->id)
+
                             ->where('status', 'picked')
                             ->get()
                             ->groupBy('user_id');
@@ -78,6 +79,7 @@ class CheckLotteryParticipation extends Command
                                 foreach ($picks as $pick) {
                                     $totalRefund += $dashboard->price;
 
+
                                     try {
 
                                         // Log each refund transaction
@@ -105,6 +107,7 @@ class CheckLotteryParticipation extends Command
                                         Log::error("Failed to create refund transaction for user {$userId}, Pick {$pick->number}: " . $e->getMessage());
                                         continue; // Skip to next pick
                                     }
+
                                 }
 
                                 // Update wallet with total refund
