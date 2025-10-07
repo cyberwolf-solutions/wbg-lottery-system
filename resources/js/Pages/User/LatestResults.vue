@@ -51,23 +51,36 @@ import { Head } from '@inertiajs/vue3';
 
                             <p style="font-size: 14px; color: #555; margin-bottom: 20px;">Winning numbers</p>
 
-                            <div v-if="lottery.dashboardInfo?.displayDigits"
-                                style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                                <!-- Highlighted Digit -->
-                                <span v-for="(digit, index) in lottery.dashboardInfo.displayDigits.digits"
-                                    :key="'digit-' + index" style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
+                            <div style="margin-bottom: 15px;">
+                                <div v-if="lottery.dashboardInfo?.normalDigits"
+                                    style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <span style="font-size: 12px; margin-right: 10px;">Normal:</span>
+                                    <span v-for="(digit, index) in lottery.dashboardInfo.normalDigits"
+                                        :key="'normal-digit-' + index" style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
                         border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                    {{ digit }}
-                                </span>
+                                        {{ digit }}
+                                    </span>
+                                </div>
+
+                                <div v-if="lottery.dashboardInfo?.digitDigits"
+                                    style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <span style="font-size: 12px; margin-right: 10px;">Digit:</span>
+                                    <span v-for="(digit, index) in lottery.dashboardInfo.digitDigits"
+                                        :key="'digit-digit-' + index" style="width: 35px; height: 35px; background-color: rgb(96, 200, 242); color: #fff; 
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                        {{ digit }}
+                                    </span>
+                                </div>
+
+                                <div v-if="!lottery.dashboardInfo?.normalDigits && !lottery.dashboardInfo?.digitDigits">
+                                    <p>No results available yet</p>
+                                </div>
 
                                 <!-- Display position indicator -->
-                                <span style="display: flex; align-items: center; margin-left: 10px; font-size: 12px;">
-                                    <!-- ({{ lottery.dashboardInfo.displayDigits.position }} digit) -->
+                                <span
+                                    style="display: flex; align-items: center; justify-content: center; font-size: 12px; margin-top: 10px;">
+                                    <!-- ({{ lottery.dashboardInfo.position }} digits) -->
                                 </span>
-                            </div>
-
-                            <div v-else style="margin-bottom: 15px;">
-                                <p>No results available yet</p>
                             </div>
                         </div>
 

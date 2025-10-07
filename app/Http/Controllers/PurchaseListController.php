@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\DigitLotteryDashboard;
+use App\Models\DigitPickedNumber;
 use App\Models\PickedNumber;
 
 class PurchaseListController extends Controller
@@ -45,4 +47,35 @@ class PurchaseListController extends Controller
             'pickedNumbers' => $pickedNumbers,
         ]);
     }
+
+
+
+    public function digitindex($id)
+    {
+        $lottery = DigitLotteryDashboard::with('lottery')
+            ->where('lottery_id', $id)
+            ->orderBy('dashboard')
+            ->orderBy('draw_number', 'desc')
+            ->get();
+
+        $pickedNumbers = DigitPickedNumber::where('lottery_id', $id)
+            ->where('status', 'picked')
+            ->with('user:id,name')
+            ->get()
+            ->groupBy('digit_lottery_dashboard_id')
+            ->map(function ($items) {
+                return $items->map(function ($item) {
+                    return [
+                        'number' => $item->picked_number,
+                        'user' => $item->user->name
+                    ];
+                });
+            });
+
+        return Inertia::render('AdminDashboard/DigitPurchase', [
+            'lottery' => $lottery,
+            'pickedNumbers' => $pickedNumbers,
+        ]);
+    }
 }
+

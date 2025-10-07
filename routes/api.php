@@ -78,8 +78,12 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['web'])->group(function () {
     Route::post('/pick-number', [NumberPickController::class, 'pickNumber']);
+    Route::post('/digit-pick-number', [NumberPickController::class, 'digitpickNumber']);
     Route::post('/checkout', [NumberPickController::class, 'checkout']);
+    Route::post('/digitcheckout', [NumberPickController::class, 'digitcheckout']);
     Route::post('/delete-picked-numbers', [NumberPickController::class, 'cancel']);
+
+    Route::post('/delete-digit-picked-numbers', [NumberPickController::class, 'digitcancel']);
 
     Route::post('/deactivate-dashboard', [LotteriesController::class, 'deactivate']);
 
@@ -121,6 +125,7 @@ Route::middleware(['web'])->group(function () {
     });
 
     Route::get('/lottery/{id}', [LotteriesController::class, 'show']);
+    Route::get('/digitlottery/{id}', [LotteriesController::class, 'digitshow']);
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -202,10 +207,17 @@ Route::middleware(['web'])->group(function () {
             Route::get('/lottery/dashboard/{id}',  [LotteryDashboardController::class, 'index']);
             Route::post('/dashboard/create', [LotteryDashboardController::class, 'store']);
 
+            Route::get('/lottery/digitdashboard/{id}',  [LotteryDashboardController::class, 'OneDigit']);
+
+            Route::post('/digitdashboard/create', [LotteryDashboardController::class, 'digitstore']);
+
+
 
 
             //purchase List
             Route::get('/purchase/{id}', [PurchaseListController::class, 'index']);
+            Route::get('/digit-purchase/{id}', [PurchaseListController::class, 'digitindex']);
+
 
             //creditreq
             Route::get('/creditReq', [CreditRequestController::class, 'index']);
@@ -218,9 +230,21 @@ Route::middleware(['web'])->group(function () {
 
             //results and winners
             Route::get('/results', [ResultsController::class, 'index']);
-            Route::post('/results/store', [ResultsController::class, 'store']);
-            Route::get('/adminWin/{id}', [WinnersController::class, 'index']);
 
+            Route::post('/results/store', [ResultsController::class, 'store']);
+            Route::post('/digitresults/store', [ResultsController::class, 'digitstore']);
+
+
+
+            Route::get('/adminWin/{id}', [WinnersController::class, 'index']);
+            Route::get('/adminWin-digit/{id}', [WinnersController::class, 'digitindex']);
+
+
+
+            Route::get('/digit-results', [ResultsController::class, 'digitindex']);
+
+            Route::post('/digit-results/store', [ResultsController::class, 'digitstore']);
+            // Route::get('/adminWin/{id}', [WinnersController::class, 'index']);
 
 
             //wallet history

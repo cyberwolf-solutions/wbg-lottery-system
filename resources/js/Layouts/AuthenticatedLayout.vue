@@ -10,61 +10,56 @@ import Footer from '@/Components/Footer.vue';
 import axios from 'axios';
 
 const showingNavigationDropdown = ref(false);
-
 const notifications = ref([]);
+const lotteries = ref([]);
 
+// Fetch notifications
 const fetchNotifications = async () => {
     try {
         const response = await axios.get('/api/notifications');
         notifications.value = response.data;
-        console.log('Notifications fetched:', notifications.value);
     } catch (error) {
         console.error('Error fetching notifications:', error);
     }
 };
 
-
-
-onMounted(fetchNotifications);
-
-
-const lotteries = ref([]);
-
-
+// Fetch lotteries list
 const fetchLotteries = async () => {
     try {
-        const response = await axios.get('/api/lotteriesdropdown'); // Adjust the API endpoint if needed
-        lotteries.value = response.data; // Assuming response.data is an array of lotteries
+        const response = await axios.get('/api/lotteriesdropdown');
+        lotteries.value = response.data;
     } catch (error) {
         console.error("Error fetching lotteries:", error);
     }
 };
 
-
-
+// Normal lottery redirect
 const fetchLotteryData = async (lotteryId) => {
     try {
-
-        const response = await axios.get(`/api/lottery/${lotteryId}`);
-        console.log(`API called for lottery ID: ${lotteryId}`, response.data);
-
-
         window.location.href = `/api/lottery/${lotteryId}`;
     } catch (error) {
         console.error("Error fetching lottery data:", error);
     }
 };
 
+// Digit lottery redirect
+const fetchDigitLotteryData = async (lotteryId) => {
+    try {
+        window.location.href = `/api/digitlottery/${lotteryId}`;
+    } catch (error) {
+        console.error("Error fetching digit lottery data:", error);
+    }
+};
 
-
-
-
-onMounted(fetchLotteries);
-
+onMounted(() => {
+    fetchNotifications();
+    fetchLotteries();
+});
 </script>
 
+
 <template>
-   
+
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav class="border-b border-gray-100 bg-white">
@@ -120,7 +115,7 @@ onMounted(fetchLotteries);
                                     Affiliate
                                 </NavLink>
                                 <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                                    <div class="relative ms-3">
+                                    <div class="relative">
                                         <Dropdown align="right" width="48">
                                             <template #trigger>
                                                 <span class="inline-flex rounded-md">
@@ -140,6 +135,44 @@ onMounted(fetchLotteries);
                                             <template #content>
                                                 <div v-for="lottery in lotteries" :key="lottery.id">
                                                     <DropdownLink @click="fetchLotteryData(lottery.id)"
+                                                        class="text-sm text-gray-700 hover:text-gray-900">
+                                                        {{ lottery.name }}
+                                                    </DropdownLink>
+                                                </div>
+                                            </template>
+                                            <template #content1>
+                                                <div v-for="lottery in lotteries" :key="lottery.id">
+                                                    <DropdownLink @click="fetchLotteryData(lottery.id)"
+                                                        class="text-sm text-gray-700 hover:text-gray-900">
+                                                        {{ lottery.name }}
+                                                    </DropdownLink>
+                                                </div>
+                                            </template>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+
+                                <div class="hidden sm:ms-6 sm:flex sm:items-center">
+                                    <div class="relative">
+                                        <Dropdown align="right" width="48">
+                                            <template #trigger>
+                                                <span class="inline-flex rounded-md">
+                                                    <button type="button"
+                                                        class="inline-flex items-center rounded-md bg-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
+                                                        Digit Lotteries
+                                                        <svg class="-me-0.5 ms-2 h-4 w-4"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                            fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </template>
+                                            <template #content>
+                                                <div v-for="lottery in lotteries" :key="lottery.id">
+                                                    <DropdownLink @click="fetchDigitLotteryData(lottery.id)"
                                                         class="text-sm text-gray-700 hover:text-gray-900">
                                                         {{ lottery.name }}
                                                     </DropdownLink>

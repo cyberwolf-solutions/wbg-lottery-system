@@ -1,5 +1,4 @@
 <template>
-
     <Nav />
 
     <Head title="Dashboard" />
@@ -20,19 +19,17 @@
             </p>
         </div>
 
-
-
-
         <div class="winners-container">
             <div v-for="lottery in lotteries" :key="lottery.id" class="lottery-section">
                 <h2 class="lottery-title">{{ lottery.name }}</h2>
 
-                <!-- Check if the lottery has dashboards with winners -->
+                <!-- Dashboard Winners -->
                 <div v-if="lottery.dashboards && lottery.dashboards.length > 0">
+                    <h3 class="winner-type-title">Dashboard Winners</h3>
                     <div class="winners-grid">
-                        <div v-for="winner in getWinners(lottery.dashboards)" :key="winner.id" class="winner-card">
+                        <div v-for="winner in getWinners(lottery.dashboards, 'dashboard')" :key="winner.id"
+                            class="winner-card">
                             <div class="winner-image-container">
-                                <!-- <img :src="`/${winner.user.image}` || logoUrl1" alt="Winner" class="winner-image"> -->
                                 <img :src="winner.user.image ? `/${winner.user.image}` : logoUrl1" alt="Winner"
                                     class="winner-image">
                                 <div class="winner-badge">USDT {{ winner.price }}</div>
@@ -51,23 +48,51 @@
                     </div>
                 </div>
                 <div v-else class="no-winners">
-                    No winners yet for this lottery
+                    No dashboard winners yet for this lottery
+                </div>
+
+                <!-- Digit Winners -->
+                <div v-if="lottery.digit_dashboards && lottery.digit_dashboards.length > 0">
+
+                    <h3 class="winner-type-title">Digit Winners</h3>
+                    <div class="winners-grid">
+                        <div v-for="winner in getDigitWinners(lottery.digit_dashboards)" :key="winner.id"
+                            class="winner-card">
+
+                            <div class="winner-image-container">
+                                <img :src="winner.user.image ? `/${winner.user.image}` : logoUrl1" alt="Winner"
+                                    class="winner-image">
+                                <div class="winner-badge">USDT {{ winner.price }}</div>
+                                <div class="digit-label">Digit</div>
+                            </div>
+                            <div class="winner-details">
+                                <h3>{{ winner.user.name }}</h3>
+                                <div class="winner-meta">
+                                    <p><i class="bi bi-calendar"></i> {{ winner.lotteryDashboard.date }}</p>
+                                    <p><i class="bi bi-ticket"></i> Draw #{{ winner.lotteryDashboard.draw_number }}</p>
+                                    <p><i class="bi bi-trophy"></i> {{ winner.lotteryDashboard.dashboard }}</p>
+                                    <p v-if="winner.lotteryDashboard.dashboardType"><i class="bi bi-info-circle"></i> {{
+                                        winner.lotteryDashboard.dashboardType }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="no-winners">
+                    No digit winners yet for this lottery
                 </div>
             </div>
         </div>
 
-        <!-- ------ -->
-
+        <!-- How to Collect Your Wins Section -->
         <div class="row d-flex justify-content-center align-items-center mb-0"
             style="margin-bottom: 50px;margin-top: 150px;border-top-color: aqua;border-style: solid;">
             <div class="col-12" style="background-color:#EAF4FC;">
-
                 <div class="row d-flex justify-content-center align-items-center mt-4">
                     <div class="col-10 text-center">
                         <h1
                             style="margin-top: 50px;color: #333; margin-bottom: 20px;font-size: 30px;font-weight: bold;">
-                            How to
-                            Collect Your Wins</h1>
+                            How to Collect Your Wins</h1>
                         <div style="width: 50%;margin-left: auto;margin-right: auto;">
                             <p style="color: #555; font-size: 14px; margin-bottom: 40px;">
                                 How to be a winner from every board
@@ -81,27 +106,22 @@
 
                         <div
                             style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 100px;">
-
                             <!-- Win Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
                                 <i class="bi bi-trophy-fill"
                                     style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;font-weight: bolder;">Win</h3>
                                 <p style="color: #555; font-size: 12px;">
-                                    :Help your friends to join and win
+                                    Help your friends to join and win
                                 </p>
                             </div>
 
                             <!-- Notification Section -->
                             <div
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
                                 <i class="bi bi-bell"
                                     style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-
                                 <h3 style="color: #333; margin-bottom: 10px;">Notification</h3>
                                 <p style="color: #555; font-size: 14px;">
                                     Receive an instant notification by email or SMS!
@@ -113,28 +133,21 @@
                                 style="background-color:#EAF4FC; border: 1px solid rgb(96, 200, 242); border-radius: 10px; padding: 20px; width: 300px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                                 <i class="bi bi-gift-fill"
                                     style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;font-size: 100px;color: rgb(96, 200, 242);"></i>
-                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;border-radius: 100px;height: 150px;width: 150px;"> -->
-                                <!-- <img :src="logoUrl" alt="Logo" style="margin-bottom: 15px;margin-left: auto;margin-right: auto;"> -->
                                 <h3 style="color: #333; margin-bottom: 10px;">Collect Your Prize</h3>
                                 <p style="color: #555; font-size: 14px;">
-                                    .Earn 10% of their prize if they win!
+                                    Earn 10% of their prize if they win!
                                 </p>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
-
-
 
         <Footer />
     </AuthenticatedLayout>
 </template>
+
 <script>
 import Footer from "@/components/Landing/footer.vue";
 import Nav from "@/components/Landing/nav.vue";
@@ -167,19 +180,34 @@ export default {
         };
     },
     methods: {
-        getWinners(dashboards) {
-       
+        getWinners(dashboards, type = 'dashboard') {
             const winners = dashboards
                 .filter(dashboard => dashboard.winners && dashboard.winners.length > 0)
                 .flatMap(dashboard =>
                     dashboard.winners.map(winner => ({
                         ...winner,
-                        dashboard, 
+                        dashboard,
+                        type
                     }))
                 );
 
             return winners
                 .sort((a, b) => new Date(b.dashboard.date) - new Date(a.dashboard.date))
+                .slice(0, 3);
+        },
+        getDigitWinners(digitDashboards) {
+            const winners = digitDashboards
+                .filter(dashboard => dashboard.winners && dashboard.winners.length > 0)
+                .flatMap(dashboard =>
+                    dashboard.winners.map(winner => ({
+                        ...winner,
+                        lotteryDashboard: dashboard,
+                        type: 'digit'
+                    }))
+                );
+
+            return winners
+                .sort((a, b) => new Date(b.lotteryDashboard.date) - new Date(a.lotteryDashboard.date))
                 .slice(0, 3);
         },
     },
@@ -217,13 +245,19 @@ export default {
     background: linear-gradient(90deg, #60c8f2, #4d9539);
 }
 
+.winner-type-title {
+    font-size: 1.4rem;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
 .winners-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* Fixed 3 columns */
     gap: 30px;
     min-width: 0;
-    /* Prevent overflow */
 }
 
 .winner-card {
@@ -262,6 +296,19 @@ export default {
     top: 15px;
     right: 15px;
     background: linear-gradient(135deg, #4d9539, #60c8f2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.digit-label {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #ff9800;
     color: white;
     padding: 8px 15px;
     border-radius: 20px;
@@ -309,14 +356,12 @@ export default {
 @media (max-width: 992px) {
     .winners-grid {
         grid-template-columns: repeat(2, 1fr);
-        /* 2 columns on medium screens */
     }
 }
 
 @media (max-width: 768px) {
     .winners-grid {
         grid-template-columns: 1fr;
-        /* 1 column on small screens */
     }
 
     .lottery-title {
@@ -329,6 +374,7 @@ export default {
     }
 }
 
+/* Remaining styles unchanged */
 .carousel-item {
     padding: 20px;
 }
@@ -359,16 +405,6 @@ body {
 a:hover {
     transform: scale(1.1);
 }
-
-/* .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 20px auto;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    } */
 
 .header {
     display: flex;
@@ -465,27 +501,19 @@ a:hover {
     color: #333;
 }
 
-/* Base button styles */
 button {
     padding: 8px 16px;
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
     background: transparent;
-    /* Transparent background by default */
     transition: background-color 0.3s, color 0.3s;
-    /* Smooth hover effect */
 }
 
-/* Clear button styles */
 .btn-clear {
     border: 1px solid rgb(77, 149, 57);
     color: rgb(77, 149, 57);
     border-radius: 100px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    -ms-border-radius: 100px;
-    -o-border-radius: 100px;
     margin-bottom: 20px;
 }
 
@@ -494,20 +522,14 @@ button {
     color: white;
 }
 
-/* Quick Pick button styles */
 .btn-quick-pick {
     border: 1px solid rgb(96, 200, 242);
     color: rgb(44, 186, 242);
     border-radius: 100px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    -ms-border-radius: 100px;
-    -o-border-radius: 100px;
     margin-bottom: 20px;
 }
 
 .btn-quick-pick:hover {
-
     background-color: rgb(96, 200, 242);
     color: white;
 }

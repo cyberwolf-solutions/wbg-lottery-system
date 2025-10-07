@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Winner;
 use App\Models\Lotteries;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WinnerController extends Controller
 {
@@ -14,9 +15,11 @@ class WinnerController extends Controller
      */
     public function index()
     {
-    
-        $lotteries = Lotteries::with(['dashboards.winners.user'])->get();
-   
+        $lotteries = Lotteries::with(['dashboards.winners.user', 'digitDashboards.winners.user'])->get();
+
+        $lotteries1 = Lotteries::with(['digitDashboards.winners.user'])->get();
+        Log::info('Lotteries Data:', $lotteries1->toArray());
+
         return Inertia::render('User/Winners', [
             'lotteries' => $lotteries,
         ]);

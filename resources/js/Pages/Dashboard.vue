@@ -15,6 +15,7 @@ const props = defineProps({
     withdrawals: Array,
     authUser: Object,
     allNotices: Array,
+    digitpurchaseHistory: Array,
 });
 const messagesIndexRef = ref(null);
 
@@ -277,6 +278,59 @@ const walletBalance = computed(() => {
                         </thead>
                         <tbody>
                             <tr v-for="purchase in currentPagePurchases" :key="purchase.id">
+                                <td class="border px-4 py-2 text-center">
+                                    {{ purchase.lottery_dashboard?.draw_number || 'N/A' }}
+                                </td>
+                                <td class="border px-4 py-2 text-center">
+                                    {{ purchase.lottery_dashboard?.date || 'N/A' }}
+                                </td>
+                                <td class="border px-4 py-2 text-center">
+                                    {{ purchase.lottery_dashboard?.lottery.name || 'N/A' }}
+                                </td>
+                                <td class="border px-4 py-2 text-center">
+                                    {{ purchase.picked_number || 'N/A' }}
+                                </td>
+                                <td class="border px-4 py-2 text-center">
+                                    <span class="px-2 py-1 rounded-full text-xs" :class="{
+                                        'bg-green-100 text-green-800': purchase.status === 'won',
+                                        'bg-red-100 text-red-800': purchase.status === 'lost',
+                                        'bg-yellow-100 text-yellow-800': purchase.status === 'pending'
+                                    }">
+                                        {{ purchase.status || 'pending' }}
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination Controls -->
+                    <div class="mt-4 flex justify-center">
+                        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-l-lg">Previous</button>
+                        <span class="px-4 py-2">Page {{ currentPage }} of {{ totalPages }}</span>
+                        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-r-lg">Next</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card col-12 col-md-10 col-lg-8 shadow-lg mb-4" style="border: none;">
+                <div class="card-body">
+                    <h3 class="text-lg font-semibold mb-3">Single Digits Purchase History</h3>
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2">Draw Number</th>
+                                <th class="py-2">Date</th>
+                                <th class="py-2">Lottery</th>
+                                <th class="py-2">Numbers Picked</th>
+                                <th class="py-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="purchase in digitpurchaseHistory" :key="purchase.id">
                                 <td class="border px-4 py-2 text-center">
                                     {{ purchase.lottery_dashboard?.draw_number || 'N/A' }}
                                 </td>

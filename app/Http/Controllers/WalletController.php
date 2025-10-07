@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use App\Models\WalletAdress;
 use Illuminate\Http\Request;
 use App\Mail\CreditRequestMail;
+use App\Models\DigitWinners;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -44,6 +45,13 @@ class WalletController extends Controller
             ->join('lottery_dashboards', 'winners.lottery_dashboard_id', '=', 'lottery_dashboards.id')
             ->orderBy('lottery_dashboards.date', 'desc')
             ->get();
+
+        $digitwinnings = DigitWinners::with(['lottery', 'lotteryDashboard'])
+            ->where('user_id', Auth::id())
+            ->join('digit_lottery_dashboards', 'digit_winners.digit_lottery_dashboard_id', '=', 'digit_lottery_dashboards.id')
+            ->orderBy('digit_lottery_dashboards.date', 'desc')
+            ->get();
+
 
         // dd($winnings);
 
@@ -105,6 +113,7 @@ class WalletController extends Controller
             'bank' => $bank,
             'walletAddress' => $walletAddress,
             'winnings' =>  $winnings,
+            'digitwinnings' =>  $digitwinnings,
             'affiliateData' => $affiliateData
         ]);
     }

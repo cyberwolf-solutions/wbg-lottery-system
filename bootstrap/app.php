@@ -43,10 +43,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->booted(function (Application $app) {
         $schedule = $app->make(Schedule::class);
         $schedule->command('lottery:deactivate')->everyMinute();
+        $schedule->command('lottery:digitdeactivate')->everyMinute();
 
         $schedule->command('lottery:check-participation')->hourly();
+        $schedule->command('lottery:check-digitparticipation')->hourly();
 
         $schedule->command('generate:dashboard')->dailyAt('00:00');
+        $schedule->command('generate:digitdashboard')->dailyAt('00:00');
 
         $schedule->command('db:backup')->hourly();
     })

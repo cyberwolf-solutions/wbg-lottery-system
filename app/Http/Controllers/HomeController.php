@@ -11,6 +11,7 @@ use App\Models\PickedNumber;
 use Illuminate\Http\Request;
 use App\Models\LotteryDashboards;
 use App\Http\Controllers\Controller;
+use App\Models\DigitPickedNumber;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -19,6 +20,9 @@ class HomeController extends Controller
     public function dashboard()
     {
         $purchaseHistory = PickedNumber::with('lotteryDashboard.lottery')
+            ->where('user_id', Auth::id())
+            ->get();
+        $digitpurchaseHistory = DigitPickedNumber::with('lotteryDashboard.lottery')
             ->where('user_id', Auth::id())
             ->get();
 
@@ -54,6 +58,7 @@ class HomeController extends Controller
         // dd($deposits);
         return Inertia::render('Dashboard', [
             'purchaseHistory' => $purchaseHistory,
+            'digitpurchaseHistory' => $digitpurchaseHistory,
             'wallet' => $wallet,
             'lotteryDashboards' => $lotteryDashboards,
             'pickedNumbers' => [],

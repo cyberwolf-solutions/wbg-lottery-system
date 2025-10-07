@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Deposit;
+use App\Models\DigitResult;
 use App\Models\Message;
 use App\Models\Results;
 use App\Models\Lotteries;
@@ -18,11 +19,17 @@ class AdminDashboardController extends Controller
         Log::info('Admin Dashboard index method accessed');
 
         // Get lottery statistics
-        $lotteries = Lotteries::withCount(['dashboards', 'winners'])
-            ->with(['results' => function ($query) {
-                $query->latest()->take(5);
-            }])
+        $lotteries = Lotteries::withCount(['dashboards', 'digitDashboards', 'winners', 'digitwinners'])
+            ->with([
+                'results' => function ($query) {
+                    $query->latest()->take(5);
+                },
+                'digitDashboards' => function ($query) {
+                    $query->latest()->take(5); // optional: limit recent digit dashboards
+                }
+            ])
             ->get();
+
 
         Log::info('Lottery statistics retrieved', ['lotteries' => $lotteries]);
 
@@ -41,7 +48,12 @@ class AdminDashboardController extends Controller
             ->take(5)
             ->get();
 
-        Log::info('Recent results retrieved', ['recentResults' => $recentResults]);
+        $recentDigitResults = DigitResult::with(['lottery', 'dashboard'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Log::info('Recent results retrieved', ['recentResults' => $recentResults]);
 
         // Get jackpot information
         // $jackpots = Lotteries::with(['results' => function($query) {
@@ -74,6 +86,7 @@ class AdminDashboardController extends Controller
             'lotteries' => $lotteries,
             'userStats' => $userStats,
             'recentResults' => $recentResults,
+            'recentDigitResults' => $recentDigitResults,
             'latestMessages' => $latestMessages,
             'latestWithdraws' => $latestWithdraws,
             'latestDeposits' => $latestDeposits,
